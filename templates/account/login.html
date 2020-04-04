@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+    <body class="bg-gradient-primary">
+
+    <div class="container">
+        <div class="col-8">
+
+            <div class="card my-5 ">
+                <div class="card-body">
+                    <!-- Nested Row within Card Body -->
+
+                    <div class="p-5">
+                        <div class="text-center">
+                            <h1 class="h4 text-gray-900 mb-4">Создание Аккаунта</h1>
+                        </div>
+                        <form class="user">
+
+                            <div class="form-group">
+                                <input type="email" class="form-control form-control-user" id="exampleInputEmail"
+                                       placeholder="Электронная Почта">
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-6 mb-3 mb-sm-0">
+                                    <input type="password" class="form-control form-control-user"
+                                           id="exampleInputPassword" placeholder="Пароль">
+                                </div>
+                                <div class="col-sm-6">
+                                    <input type="password" class="form-control form-control-user"
+                                           id="exampleRepeatPassword" placeholder="Повторите Пароль">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-user btn-block">
+                                Войти
+                            </button>
+                            <hr>
+                            <a href="index.html" class="btn btn-google btn-user btn-block">
+                                <i class="fab fa-google fa-fw"></i> Google
+                            </a>
+                        </form>
+                        <hr>
+                        <div class="text-center">
+                            <a class="small" href="forgot-password.html">Забыли Пароль?</a>
+                        </div>
+                        <div class="text-center">
+                            <a class="small" href="login.html">Уже есть аккаунт? Войдите</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock content %}
