@@ -14,21 +14,25 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.conf import settings
+from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 from course import views
-
+handler404 = 'course.views.handler404'
+handler403 = 'course.views.handler403'
+handler500 = 'course.views.handler500'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.index, name='index')
-    # path('account/login/', views.account_login, name='account_login'),
-    # path('account/logout/', views.account_logout, name='account_logout'),
-    # path('account/signup/', views.account_signup, name='account_signup'),
-    # path('account/forgot/', views.account_forgot, name='account_forgot'),
-    # path('account/recover/<str:code1>/<str:code2>/', views.account_recover, name='account_recover'),
-    # path('account/activate/<str:code1>/<str:code2>/', views.account_activate, name='account_activate'),
-    # path('account/view/', views.account_view_my, name='account_view_my'),
-    # path('account/view/<str:nickname>/', views.account_view_others, name='account_view_others'),
+    path('', views.index, name='index'),
+    path('account/login/', views.account_login, name='account_login'),
+    path('account/logout/', views.account_logout, name='account_logout'),
+    path('account/signup/', views.account_signup, name='account_signup'),
+    path('account/forgot/', views.account_forgot, name='account_forgot'),
+    path('account/recover/', views.account_recover, name='account_recover'),
+    path('account/activate/', views.account_activate, name='account_activate'),
+    path('account/view/', views.account_view_my, name='account_view_my'),
+    path('account/view/<str:nickname>/', views.account_view_others, name='account_view_others'),
+    url(r'^(?P<exception>.*)/$', views.handler404, name="page_404"),
 ]

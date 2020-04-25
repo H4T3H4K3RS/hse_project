@@ -24,8 +24,8 @@ SECRET_KEY = ')c(g60@ut@$k1m&325ybnqkk&#8ew*5yp_0o+o=#lpq!f133uv'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['*']
+HOST = '127.0.0.1:8000'
 # Application definition
 
 INSTALLED_APPS = [
@@ -51,7 +51,6 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'courrent.urls'
 
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -71,6 +70,14 @@ TEMPLATES = [
         },
     },
 ]
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'linkitservice@yandex.ru'
+EMAIL_HOST_PASSWORD = 'LinkitService2020'
+DEFAULT_FROM_EMAIL = 'linkitservice@yandex.ru'
+EMAIL_USE_TLS = True
 
 WSGI_APPLICATION = 'courrent.wsgi.application'
 
@@ -125,16 +132,31 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME': 'course.validators.NumberValidator',
     },
+    {
+        'NAME': 'course.validators.UppercaseValidator',
+    },
+    {
+        'NAME': 'course.validators.LowercaseValidator',
+    },
+    {
+        'NAME': 'course.validators.SymbolValidator',
+    }
 ]
+
+
+AUTHENTICATION_BACKENDS = (
+    'course.utils.PasswordlessAuthBackend',
+)
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 

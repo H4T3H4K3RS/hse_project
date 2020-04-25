@@ -1,0 +1,95 @@
+{% extends 'mail/base.html' %}
+{% block title %}
+    Восстановление Пароля
+{% endblock title %}
+{% block preheader %}
+    <!-- start preheader -->
+    <div class="preheader"
+         style="display: none; max-width: 0; max-height: 0; overflow: hidden; font-size: 1px; line-height: 1px; color: #fff; opacity: 0;">
+        Подтвердите адрес электронной почты для создания аккаунта на сайте {{ host }}.
+    </div>
+    <!-- end preheader -->
+{% endblock preheader %}
+{% block body %}
+    <tr>
+        <td align="center" bgcolor="#e9ecef">
+            <!--[if (gte mso 9)|(IE)]>
+            <table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
+                <tr>
+                    <td align="center" valign="top" width="600">
+            <![endif]-->
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+
+                <!-- start copy -->
+                <tr>
+                    <td align="left" bgcolor="#ffffff"
+                        style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
+                        <p style="margin: 0;">Нажмите на кнопку ниже, чтобы подтвердить учётную запись. Если вы не
+                            создавали учётную запись на сайте, проигнорируйте данное сообщение.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="left" bgcolor="#ffffff">
+                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                            <tr>
+                                <td align="center" bgcolor="#ffffff" style="padding: 12px;">
+                                    <table border="0" cellpadding="0" cellspacing="0">
+                                        <tr>
+                                            <td align="center" bgcolor="#1a82e2" style="border-radius: 6px;">
+                                                <a href="http://{{ host }}/account/activate?token={{ token }}&code={{ code }}&user={{ user.username }}"
+                                                   target="_blank"
+                                                   style="display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">Подтвердить</a>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="left" bgcolor="#ffffff"
+                        style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
+                        <p style="margin: 0;">Если кнопка не работает, то скопируйте ссылку ниже.</p>
+                        <p style="margin: 0;"><a
+                                href="http://{{ host }}/account/activate?token={{ token }}&code={{ code }}&user={{ user.username }}"
+                                target="_blank">http://{{ host }}/account/activate?token={{ token }}&code={{ code }}&user={{ user.username }}</a>
+                        </p>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+{% endblock body %}
+{% block footer %}
+    <tr>
+        <td align="center" bgcolor="#e9ecef" style="padding: 24px;">
+            <!--[if (gte mso 9)|(IE)]>
+            <table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
+                <tr>
+                    <td align="center" valign="top" width="600">
+            <![endif]-->
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px;">
+
+                <!-- start permission -->
+                <tr>
+                    <td align="center" bgcolor="#e9ecef"
+                        style="padding: 12px 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 20px; color: #666;">
+                        <p style="margin: 0;">Вы получили данное письмо, т.к. зарегистрировались на сайте {{ host }}.
+                            Если вы не регистрировались на сайте {{ host }}, можете просто удалить данное письмо.</p>
+                    </td>
+                </tr>
+                <!-- end permission -->
+                <!-- start unsubscribe -->
+                <tr>
+                    <td align="center" bgcolor="#e9ecef"
+                        style="padding: 12px 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 20px; color: #666;">
+                        <p style="margin: 0;">Если вы не создавали учётную запись на сайте, проигнорируйте данное
+                            сообщение.</p>
+                    </td>
+                </tr>
+                <!-- end unsubscribe -->
+            </table>
+        </td>
+    </tr>
+{% endblock footer %}

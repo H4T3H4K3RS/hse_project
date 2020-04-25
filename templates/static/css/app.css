@@ -1,0 +1,11 @@
+.btn-toggle-pass {
+  border: none;
+  position: absolute;
+  top: 11px;
+  background: transparent;
+  right: 0;
+}
+
+.btn-toggle-pass.active {
+  color: var(--success);
+}

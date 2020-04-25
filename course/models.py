@@ -5,7 +5,7 @@ from taggit.managers import TaggableManager
 
 
 class Profile(models.Model):
-    type = models.IntegerField(default=1)  # 1 - teacher, 2 - pupil
+    verified = models.BooleanField(default=False)
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     description = models.CharField(default="Описание", max_length=500)
     balance = models.FloatField(default=200)  # 200 rubles present on account creation
@@ -14,6 +14,14 @@ class Profile(models.Model):
     telegram = models.URLField(default='')
     facebook = models.URLField(default='')
     website = models.URLField(default='')
+
+
+class Code(models.Model):
+    generated = models.DateTimeField(auto_now_add=True)
+    token = models.CharField(max_length=64)
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    code = models.CharField(max_length=64)
+    activate = models.BooleanField(default=0)  # 0 - activate, 1 - recover
 
 
 class Course(models.Model):
