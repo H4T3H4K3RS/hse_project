@@ -3,5 +3,12 @@
     Главная
 {% endblock title %}
 {% block content %}
-    <a href="{% url 'account_logout' %}"> {{ request.user }} </a>
+    <body>
+    <div id="messages"></div>
+    {% include 'blocks/nav.html' %}
+    <div id="AjaxLoader"></div>
+    <div id="content">
+        {% include 'api/index.html' %}
+    </div>
+    </body>
 {% endblock content %}

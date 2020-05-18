@@ -1,0 +1,106 @@
+Топ ссылок:
+<br>
+{% for link in links %}
+    {% if link.folder.user != request.user %}
+        <button class="vote_btn" data-id="{{ link.id }}" data-type="account" data-data="{{ user.username }}" data-vote="1">
+            &#8657;
+        </button>
+        [ Рейтинг: {{ link.rating }} ] |
+        <button class="vote_btn" data-id="{{ link.id }}" data-type="account" data-data="{{ user.username }}" data-vote="-1">
+            &#8659;
+        </button>
+    {% else %}
+        [ Рейтинг: {{ link.rating }} ] |
+    {% endif %}
+    <a href="{{ link.link }}" target="_blank">{{ link.link }}</a>
+    {% if request.user == link.folder.user %}
+        <button class="delete_link_btn" data-id="{{ link.id }}" data-type="account" data-data="{{ user.username }}">
+            Удалить
+        </button>
+        <button>
+            <a href="{% url 'link_edit' link.id %}" class="button_link">
+                Редактировать
+            </a>
+        </button>
+        {% if link.link in saved_links_links %}
+            {% for saved_link in saved_links %}
+                {% if link.link == saved_link.link %}
+                    <button class="favourite_delete_btn" data-id="{{ saved_link.id }}" data-type="account" data-data="{{ user.username }}">
+                        Удалить из Сохранённых
+                    </button>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+
+            <button class="favourite_add_btn" data-id="{{ link.id }}" data-type="account" data-data="{{ user.username }}">
+                Добавить в Сохранённые
+            </button>
+        {% endif %}
+    {% else %}
+        {% if link.link in saved_links_links %}
+            {% for saved_link in saved_links %}
+                {% if link.link == saved_link.link %}
+                    <button class="favourite_delete_btn" data-id="{{ saved_link.id }}" data-type="account" data-data="{{ user.username }}">
+                        Удалить из Сохранённых
+                    </button>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <button class="favourite_add_btn" data-id="{{ link.id }}" data-type="account" data-data="{{ user.username }}">
+                Добавить в Сохранённые
+            </button>
+        {% endif %}
+        <button>
+            <a href="{% url 'account_view_others' link.folder.user %}" class="button_link">К Источнику</a>
+        </button>
+    {% endif %}
+    <br>
+{% endfor %}
+Топ подборок:
+<br>
+{% for folder in folders %}
+    [ Рейтинг: {{ folder.rating }} ] |
+    <a href="{% url 'folder_view' folder.id %}" target="_blank">{{ folder.name }}</a>
+    {% if request.user == folder.user %}
+        <button class="delete_folder_btn" data-id="{{ folder.id }}" data-type="account" data-data="{{ user.username }}">
+            Удалить
+        </button>
+        <button>
+            <a href="{% url 'folder_edit' folder.id %}" class="button_link">
+                Редактировать
+            </a>
+        </button>
+    {% endif %}
+
+    <br>
+{% endfor %}
+Сохранённые:
+<br>
+<div id="saved_links">
+    {% for link in saved %}
+        <a href="{{ link.link }}" target="_blank">{{ link.link }}</a>
+        {% if request.user == link.user %}
+            <button class="favourite_delete_btn" data-id="{{ link.id }}" data-type="account" data-data="{{ user.username }}">
+                Удалить из Сохранённых
+            </button>
+            <button>
+                <a href="{% url 'account_view_others' link.original %}" class="button_link">К Источнику</a>
+            </button>
+        {% else %}
+            {% if link.link in saved_links_links %}
+                {% for saved_link in saved_links %}
+                    {% if link.link == saved_link.link %}
+                        <button class="favourite_delete_btn" data-id="{{ link.id }}" data-type="account" data-data="{{ user.username }}">
+                            Удалить из Сохранённых
+                        </button>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <button class="favourite_add_alt_btn" data-id="{{ link.id }}" data-type="account" data-data="{{ user.username }}">
+                    Добавить в Сохранённые
+                </button>
+            {% endif %}
+        {% endif %}
+        <br>
+    {% endfor %}
+</div>

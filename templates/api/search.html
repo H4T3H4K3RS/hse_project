@@ -1,0 +1,61 @@
+<strong>Найденные ссылки: {{ links|length }}</strong>
+<br>
+{% for link in links %}
+    {% if link.folder.user != request.user %}
+        <button class="vote_btn" data-id="{{ link.id }}" data-type="search" data-data="" data-vote="1">
+            &#8657;
+        </button>
+        [ Рейтинг: {{ link.rating }} ] |
+        <button class="vote_btn" data-id="{{ link.id }}" data-type="search" data-data="" data-vote="-1">
+            &#8659;
+        </button>
+    {% else %}
+        [ Рейтинг: {{ link.rating }} ] |
+    {% endif %}
+    <a href="{{ link.link }}" target="_blank">{{ link.link }}</a>
+    {% if link.folder.user != request.user %}
+        <button>
+            <a href="{% url 'account_view_others' link.folder.user %}" class="button_link">К Источнику</a>
+        </button>
+    {% else %}
+        <button class="delete_link_btn" data-id="{{ link.id }}" data-type="search" data-data="">
+            Удалить
+        </button>
+        <button>
+            <a href="{% url 'link_edit' link.id %}" class="button_link">
+                Редактировать
+            </a>
+        </button>
+    {% endif %}
+    {% if link.link in saved_links_links %}
+        {% for saved_link in saved_links %}
+            {% if link.link == saved_link.link %}
+                <button class="favourite_delete_btn" data-id="{{ saved_link.id }}" data-type="search" data-data="">
+                    Удалить из Сохранённых
+                </button>
+            {% endif %}
+        {% endfor %}
+    {% else %}
+
+        <button class="favourite_add_btn" data-id="{{ link.id }}" data-type="search" data-data="">
+            Добавить в Сохранённые
+        </button>
+    {% endif %}
+    <br>
+{% endfor %}
+<strong>Найденные подборки: {{ folders|length }}</strong>
+<br>
+{% for folder in folders %}
+    [ Рейтинг: {{ folder.rating }} ] |
+    <a href="{% url 'folder_view' folder.id %}" target="_blank">{{ folder.name }}</a>
+    {% if folder.user == request.user %}
+        <strong> Ваша </strong>
+    {% endif %}
+    <br>
+{% endfor %}
+<strong>Найденные пользователи: {{ users|length }}</strong>
+<br>
+{% for user in users %}
+    <a href="{% url 'account_view_others' user.user %}" target="_blank">{{ user.user }}</a>
+    <br>
+{% endfor %}

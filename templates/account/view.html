@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}
+    Просмотр Аккаунта | {{ user.username }}
+{% endblock %}
+{% block content %}
+    <body>
+    <div id="messages">
+
+    </div>
+    {% include 'blocks/nav.html' %}
+    <h1>{{ user.username }}</h1>
+
+    <div id="AjaxLoader"></div>
+    <div id="content">
+        {% include 'api/account.html' %}
+    </div>
+    </body>
+{% endblock content %}

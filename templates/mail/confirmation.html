@@ -36,7 +36,7 @@
                                     <table border="0" cellpadding="0" cellspacing="0">
                                         <tr>
                                             <td align="center" bgcolor="#1a82e2" style="border-radius: 6px;">
-                                                <a href="http://{{ host }}/account/activate?token={{ token }}&code={{ code }}&user={{ user.username }}"
+                                                <a href="{{ host }}/account/activate?token={{ token }}&code={{ code }}&user={{ user.username }}"
                                                    target="_blank"
                                                    style="display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px;">Подтвердить</a>
                                             </td>
@@ -52,8 +52,8 @@
                         style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
                         <p style="margin: 0;">Если кнопка не работает, то скопируйте ссылку ниже.</p>
                         <p style="margin: 0;"><a
-                                href="http://{{ host }}/account/activate?token={{ token }}&code={{ code }}&user={{ user.username }}"
-                                target="_blank">http://{{ host }}/account/activate?token={{ token }}&code={{ code }}&user={{ user.username }}</a>
+                                href="{{ host }}/account/activate?token={{ token }}&code={{ code }}&user={{ user.username }}"
+                                target="_blank">{{ host }}/account/activate?token={{ token }}&code={{ code }}&user={{ user.username }}</a>
                         </p>
                     </td>
                 </tr>

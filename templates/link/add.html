@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}
+    Добавление ссылки
+{% endblock title %}
+{% block content %}
+    <body>
+    {% include 'blocks/nav.html' %}
+    {% if messages %}
+        {% for message in messages %}
+            <div>
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    <form action="{% url 'link_add' %}" method="post">
+        {% csrf_token %}
+        <div>
+            {{ form.link.label }}
+            {{ form.link }}
+        </div>
+        <div>
+            {{ form.folder.label }}
+            {{ form.folder }}
+        </div>
+
+        <button type="submit">Создать ссылку</button>
+    </form>
+    </body>
+{% endblock content %}

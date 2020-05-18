@@ -4,69 +4,65 @@
 {% endblock %}
 {% block content %}
     <body>
-    <!-- Material form login -->
-    <div class="container col-sm-3 my-5">
-        <div class="card">
 
-            <h5 class="card-header success-color white-text text-center py-4">
+    {% include 'blocks/nav.html' %}
+    <div>
+        <div>
+
+            <h5>
                 <strong>Создание Аккаунта</strong>
             </h5>
+            {#            {% if messages %}#}
+            {#                {% for message in messages %}#}
+            {##}
+            {#                    {% get_bootstrap_alert_msg_css_name message.tags as alert_tag %}#}
+            {#                    <div {% if message.tags %}#}
+            {#                        class="alert fadeIn alert-{{ alert_tag }}"{% endif %}><a class="close" data-dismiss="alert"#}
+            {#                                                                                 aria-label="close">&times;</a>{{ message }}#}
+            {#                    </div>#}
+            {#                {% endfor %}#}
+            {#            {% endif %}#}
             {% if messages %}
                 {% for message in messages %}
-
-                    {% get_bootstrap_alert_msg_css_name message.tags as alert_tag %}
-                    <div {% if message.tags %}
-                        class="alert fadeIn alert-{{ alert_tag }}"{% endif %}><a class="close" data-dismiss="alert"
-                                                                                 aria-label="close">&times;</a>{{ message }}
+                    <div>
+                        {{ message }}
                     </div>
                 {% endfor %}
             {% endif %}
 
-
             <!--Card content-->
-            <div class="card-body px-lg-5 pt-0">
+            <div>
 
                 <!-- Form -->
-                <form class="text-center" style="color: #757575;" action="{% url 'account_signup' %}" method="post">
+                <form action="{% url 'account_signup' %}" method="post">
                     {% csrf_token %}
-                    <!-- Email -->
-                    <div class="md-form">
+                    <div>
+                        {{ form.username.label }}
                         {{ form.username }}
-                        <label for="username">Имя пользователя</label>
                     </div>
-                    <div class="md-form">
+                    <div>
+                        {{ form.email.label }}
                         {{ form.email }}
-                        <label for="email">Электронная почта</label>
                     </div>
-
-                    <!-- Password -->
-                    <div class="md-form">
+                    <div>
+                        {{ form.password1.label }}
                         {{ form.password1 }}
-                        <label for="password1">Пароль</label>
-
                     </div>
-
-                    <div class="md-form">
+                    <div>
+                        {{ form.password2.label }}
                         {{ form.password2 }}
-                        <label for="password2">Повторите пароль</label>
+                        <!-- Forgot password -->
                     </div>
-
-                    <div class="d-flex justify-content-around">
-                        <div>
-                            <!-- Forgot password -->
-                            <a href="{% url 'account_forgot' %}">Забыли пароль?</a>
-                        </div>
-                    </div>
+                    <a href="{% url 'account_forgot' %}">Забыли пароль?</a>
 
                     <!-- Sign in button -->
-                    <button class="btn btn-outline-success btn-rounded btn-block my-4 waves-effect z-depth-0"
-                            type="submit">
+                    <button type="submit">
                         Создать
                     </button>
-                    <p>Зарегистрироваться с помощью:</p>
-                    <a type="button" href="" class="btn-floating btn-tw btn-sm"> {# TODO social auth #}
-                        <i class="fab fa-google success-color"></i>
-                    </a>
+                    {#                    <p>Зарегистрироваться с помощью:</p>#}
+                    {#                    <a type="button" href="" class="btn-floating btn-tw btn-sm"> {# TODO social auth #}
+                    {#                        <i class="fab fa-google success-color"></i>#}
+                    {#                    </a>#}
                     <!-- Register -->
                     <p>Уже есть аккаунт?
                         <a href="{% url 'account_login' %}">Войти</a>

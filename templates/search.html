@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}
+    Поиск "{{ value }}"
+{% endblock title %}
+{% block content %}
+    <body>
+    <div id="messages"></div>
+    {% include 'blocks/nav.html' %}
+    <form action="{% url 'search' %}" method="GET">
+        <label>
+            Поиск
+            <input name="q" type="text" value="{{ value }}"
+                   placeholder="Введите Имя Пользователя/Эл.Почту/Ссылку/Подборку" style="width: 300px;">
+            <input id="search_value" type="hidden" value="{{ value }}">
+        </label>
+        <button type="submit">Поиск</button>
+    </form>
+    <div id="AjaxLoader"></div>
+    <div id="content">
+        {% include 'api/search.html' %}
+    </div>
+    </body>
+{% endblock content %}

@@ -1,0 +1,68 @@
+<h1>Топ Ссылок:</h1>
+{% for link in links %}
+    {% if not request.user.is_authenticated %}
+        <button class="redirect_login">
+            &#8657;
+        </button>
+        [ Рейтинг: {{ link.rating }} ] |
+        <button class="redirect_login">
+            &#8659;
+        </button>
+    {% elif link.folder.user != request.user %}
+        <button class="vote_btn" data-id="{{ link.id }}" data-type="index" data-data="" data-vote="1">
+            &#8657;
+        </button>
+        [ Рейтинг: {{ link.rating }} ] |
+        <button class="vote_btn" data-id="{{ link.id }}" data-type="index" data-data="" data-vote="-1">
+            &#8659;
+        </button>
+    {% else %}
+        [ Рейтинг: {{ link.rating }} ] |
+    {% endif %}
+    <a href="{{ link.link }}" target="_blank">{{ link.link }}</a>
+    {% if not request.user.is_authenticated %}
+        {% if link.link in saved_links_links %}
+            {% for saved_link in saved_links %}
+                {% if link.link == saved_link.link %}
+                    <button class="favourite_delete_btn" data-id="{{ saved_link.id }}" data-type="index" data-data="">
+                        Удалить из Сохранённых
+                    </button>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <button class="favourite_add_btn" data-id="{{ link.id }}" data-type="index" data-data="">
+                Добавить в Сохранённые
+            </button>
+        {% endif %}
+        <button>
+            <a href="{% url 'account_view_others' link.folder.user %}" class="button_link">К Источнику</a>
+        </button>
+    {% elif link.folder.user == request.user %}
+        <button class="delete_link_btn" data-id="{{ link.id }}" data-type="index" data-data="">
+            Удалить
+        </button>
+        <button>
+            <a href="{% url 'link_edit' link.id %}" class="button_link">
+                Редактировать
+            </a>
+        </button>
+    {% else %}
+        <button>
+            <a href="{% url 'account_view_others' link.folder.user %}" class="button_link">К Источнику</a>
+        </button>
+    {% endif %}
+    {% if link.link in saved_links_links %}
+        {% for saved_link in saved_links %}
+            {% if link.link == saved_link.link %}
+                <button class="favourite_delete_btn" data-id="{{ saved_link.id }}" data-type="index" data-data="">
+                    Удалить из Сохранённых
+                </button>
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <button class="favourite_add_btn" data-id="{{ link.id }}" data-type="index" data-data="">
+            Добавить в Сохранённые
+        </button>
+    {% endif %}
+    <br>
+{% endfor %}

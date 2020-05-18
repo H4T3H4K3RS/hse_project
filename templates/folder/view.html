@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}
+    Просмотр Подборки | {{ folder.name }}
+{% endblock %}
+{% block content %}
+    <body>
+    <div id="messages">
+
+    </div>
+    {% include 'blocks/nav.html' %}
+    <div id="AjaxLoader"></div>
+    <div id="content">
+        {% include 'api/folder.html' %}
+    </div>
+    </body>
+{% endblock content %}

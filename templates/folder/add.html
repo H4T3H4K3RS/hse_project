@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}
+    Добавление Подборки
+{% endblock title %}
+{% block content %}
+    <body>
+    {% include 'blocks/nav.html' %}
+    {% if messages %}
+        {% for message in messages %}
+            <div>
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    <form action="{% url 'folder_add' %}" method="post">
+        {% csrf_token %}
+        <div>
+            {{ form.name.label }}
+            {{ form.name }}
+        </div>
+        <button type="submit">Создать Подборку</button>
+    </form>
+    </body>
+{% endblock content %}

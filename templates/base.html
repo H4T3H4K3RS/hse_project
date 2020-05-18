@@ -1,12 +1,13 @@
-{# HTML5 declaration #}
+{% load static %}
 <!DOCTYPE html>
 <html lang="ru">
 {# Make modifiable head elements #}
 <head>
-    <title>{% block title %}Главная {% endblock title %} | CourRent</title>
+    <title>{% block title %}Главная {% endblock title %} | Links</title>
+    {% include 'blocks/metrics.html' %}
     {% block head_favicon %}
         <link rel="icon" type="image/png"
-              href="{{ STATIC_URL }}favicon.ico">
+              href="{% static 'favicon.ico' %}">
     {% endblock head_favicon %}
     {% block head_meta %}
         {% block head_meta_charset %}
@@ -23,10 +24,7 @@
     {% endblock head_meta %}
     {% block head_css %}
         {% block head_css_site %}
-            <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
-            <link href="{{ STATIC_URL }}css/app.css" rel="stylesheet" media="screen">
-            <link href="{{ STATIC_URL }}css/bootstrap.css" rel="stylesheet">
-            <link href="{{ STATIC_URL }}css/mdb.css" rel="stylesheet">
+            <link href="{% static 'css/app.css' %}" rel="stylesheet" media="screen">
         {% endblock head_css_site %}
         {% block head_css_section %}{% endblock head_css_section %}
         {% block head_css_page %}{% endblock head_css_page %}
@@ -34,7 +32,6 @@
     {% block extra_styles %}
     {% endblock extra_styles %}
 </head>
-
 {% block content %}
     <body>
     if you see this, something is wrong!
@@ -43,11 +40,9 @@
 {% endblock content %}
 {% block footer_javascript %}
     {% block footer_javascript_site %}
-        <script src="{{ STATIC_URL }}js/jquery-3.3.1.min.js"></script>
-        <script src="{{ STATIC_URL }}js/popper.min.js"></script>
-        <script src="{{ STATIC_URL }}js/bootstrap.js"></script>
-        <script src="{{ STATIC_URL }}js/app.js"></script>
-        <script src="{{ STATIC_URL }}js/mdb.min.js"></script>
+        <script src="{% url 'js_urls' %}" type="text/javascript"></script>
+        <script src="{% static 'js/jquery-3.5.1.min.js'%}"></script>
+        <script src="{% static 'js/app.js' %}"></script>
     {% endblock footer_javascript_site %}
     {% block footer_javascript_section %}{% endblock footer_javascript_section %}
     {% block footer_javascript_page %}{% endblock footer_javascript_page %}
