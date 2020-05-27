@@ -1,5 +1,4 @@
 from django.contrib.auth.decorators import login_required
-from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Q
 from django.shortcuts import render
 
@@ -18,7 +17,7 @@ import json
 
 from app import utils
 from app.forms import AccountSignupForm, AccountLoginForm, LinkAddForm, FolderAddForm
-from app.models import Code, Profile, Link, Folder, SavedLink
+from app.models import Code, Profile, Link, Folder, Vote, SavedLink
 
 
 def handler404(request, exception=None):
@@ -265,14 +264,14 @@ def account_view(request, username=None):
 
 
 @login_required
-def link_add(request, folder_id):
+def link_add(request):
     context = {}
     if request.method == "POST":
         link_form = LinkAddForm(request.user, request.POST)
         if link_form.is_valid():
             try:
                 try:
-                    folder = Folder.objects.get(id=folder_id, user=request.user)
+                    folder = Folder.objects.get(user=request.user, name=link_form.data.get("folder"))
                 except Folder.DoesNotExist:
                     messages.error(request, "Подборки не существует.")
                     context["form"] = LinkAddForm(request.user, request.POST)
@@ -315,12 +314,30 @@ def link_edit(request, link_id):
         link_form = LinkAddForm(request.user, request.POST)
         if link_form.is_valid():
             try:
+                try:
+                    folder = Folder.objects.get(user=request.user, name=link_form.data.get("folder"))
+                except Folder.DoesNotExist:
+                    messages.error(request, "Подборки не существует.")
+                    return redirect(reverse("folder_add"))
                 link = Link.objects.get(id=link_id)
-
-                return JsonResponse({"data": "Ссылка уже есть в вашей подборке."})
-                # messages.success(request, "Изменения сохранены")
-                # return redirect(reverse('folder_view', kwargs={"folder_id": link.folder.id}))
-                return JsonResponse({"data": "Ссылка сохранена."})
+                try:
+                    link_in_folder = Link.objects.get(link=link.link, folder=folder)
+                    messages.error(request, "Ссылка уже была добавлена в данную подборку.")
+                    return redirect(reverse('link_edit', kwargs={"link_id": link_in_folder.id}))
+                except Link.DoesNotExist:
+                    pass
+                link.folder = folder
+                if link.link != link_form.data.get("link"):
+                    link.link = link_form.data.get("link")
+                    link.folder.rating -= link.rating
+                    link.rating = 0
+                    link.save()
+                    link_votes = Vote.objects.filter(link=link)
+                    for vote in link_votes:
+                        vote.delete()
+                link.save()
+                messages.success(request, "Изменения сохранены")
+                return redirect(reverse('folder_view', kwargs={"folder_id": folder.id}))
             except Link.DoesNotExist:
                 messages.error(request, "Ссылка не существует или вы не являетесь её владельцем")
                 return redirect(reverse('link_add'))
@@ -424,7 +441,7 @@ def favourite_delete(request, link_id):
     return JsonResponse({"data": data})
 
 
-@staff_required
+@login_required
 def folder_add(request):
     context = {}
     if request.method == "POST":
