@@ -95,3 +95,17 @@ class Profile(models.Model):
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     rating = models.IntegerField(default=100)
     # description = models.CharField(default="Описание", max_length=500)
+
+
+class BotKey(models.Model):
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    key = models.CharField(max_length=64)
+
+
+class BotSetup(models.Model):
+    key = models.CharField(default="", max_length=128)
+
+
+class ChatMessages(models.Model):
+    message = models.CharField(default="", max_length=1024)
+    chat_id = models.CharField(default="", max_length=64)
