@@ -614,3 +614,8 @@ def api_search_view(request):
     context['saved_links'] = s_links
     context['saved_links_links'] = utils.get_saved_links(s_links)
     return render(request, 'api/search.html', context)
+
+
+@login_required()
+def account_api_key_get():
+    pass

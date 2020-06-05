@@ -99,13 +99,9 @@ class Profile(models.Model):
 
 class BotKey(models.Model):
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    chat_id = models.CharField(max_length=64, default="", null=True)
     key = models.CharField(max_length=64)
 
 
 class BotSetup(models.Model):
     key = models.CharField(default="", max_length=128)
-
-
-class ChatMessages(models.Model):
-    message = models.CharField(default="", max_length=1024)
-    chat_id = models.CharField(default="", max_length=64)
