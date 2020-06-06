@@ -125,7 +125,6 @@ def main():
     dp.add_handler(MessageHandler(Filters.text, add_link))
     dp.add_error_handler(error)
     updater.start_polling()
-    updater.start_webhook(port=int(os.environ.get('PORT', 5000)))
     updater.idle()
 
 
