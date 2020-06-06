@@ -108,7 +108,7 @@ def add_link(update, context):
                     update.message.reply_text(f"Здравствуйте, {bot_keys[i].user.username}\n" + help_msg,
                                               parse_mode=telegram.ParseMode.MARKDOWN_V2)
         else:
-            update.message.reply_text("Неправильный API-ключ.", parse_mode=telegram.ParseMode.MARKDOWN_V2)
+            update.message.reply_text("Неправильный API-ключ\.", parse_mode=telegram.ParseMode.MARKDOWN_V2)
 
 
 def error(update, context):
