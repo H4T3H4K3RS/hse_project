@@ -87,13 +87,13 @@ DATABASES = {
 
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
 
-        'NAME': 'br7meghqfn3shjecbjii',
+        'NAME': 'd4gvudgraqb03q',
 
-        'USER': 'ugznq9lay7nqostua92v',
+        'USER': 'cgxxklumgdrzpi',
 
-        'PASSWORD': 'XMszCVacUaF4Q9vcNZ43',
+        'PASSWORD': '3e7e110cba255391cf5a01eed7bf13788de4526664e8aa0365a0262a694badaa',
 
-        'HOST': 'br7meghqfn3shjecbjii-postgresql.services.clever-cloud.com',
+        'HOST': 'ec2-54-247-79-178.eu-west-1.compute.amazonaws.com',
 
         'PORT': '5432',
 
