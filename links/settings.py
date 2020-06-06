@@ -23,7 +23,7 @@ SECRET_KEY = '2i$oqu0zz2j4ih5*rb#4$du=ks0safg^!a$*(f7z_^%arfj$%m'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', True)
 
-ALLOWED_HOSTS = ["0.0.0.0", "localhost", "127.0.0.1", "links.cleverapps.io", "10.2.152.143"]
+ALLOWED_HOSTS = ["0.0.0.0", "localhost", "127.0.0.1", "links.cleverapps.io", "10.2.152.143", "hselyc.herokuapp.com"]
 HOST = os.getenv('HOST', "http://localhost:8000")
 # Application definition
 
