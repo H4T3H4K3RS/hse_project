@@ -101,7 +101,7 @@ def add_link(update, context):
                     bot_keys[i].chat_id = chat_id
                     flag = True
                     bot_keys[i].save()
-                if len(bot_keys) == i + 1:
+                elif len(bot_keys) == i + 1:
                     bot_key = BotKey(key=update.message.text, chat_id=chat_id, user=bot_keys[i].user)
                     flag = True
                     bot_key.save()
