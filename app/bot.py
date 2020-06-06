@@ -100,10 +100,11 @@ def add_link(update, context):
                 if bot_keys[i].chat_id == "":
                     bot_keys[i].chat_id = chat_id
                     flag = True
-                elif len(bot_keys) == i - 1:
-                    bot_keys[i] = BotKey(key=update.message.text, chat_id=chat_id, user=bot_keys[i].user)
+                    bot_keys[i].save()
+                if len(bot_keys) == i - 1:
+                    bot_key = BotKey(key=update.message.text, chat_id=chat_id, user=bot_keys[i].user)
                     flag = True
-                bot_keys[i].save()
+                    bot_key.save()
                 if flag:
                     update.message.reply_text(f"Здравствуйте, {bot_keys[i].user.username}\n" + help_msg,
                                               parse_mode=telegram.ParseMode.MARKDOWN_V2)
