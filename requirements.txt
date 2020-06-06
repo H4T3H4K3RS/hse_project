@@ -1,3 +1,4 @@
+appdirs==1.4.4
 asgiref==3.2.7
 certifi==2020.4.5.1
 cffi==1.14.0
@@ -8,6 +9,7 @@ django-extensions==2.2.9
 django-js-urls==0.1.1
 future==0.18.2
 graphviz==0.14
+idna==2.9
 psycopg2==2.8.5
 pycparser==2.20
 pydotplus==2.0.2
@@ -17,3 +19,5 @@ pytz==2019.3
 six==1.15.0
 sqlparse==0.3.1
 tornado==6.0.4
+uritools==3.0.0
+urlextract==0.14.0
