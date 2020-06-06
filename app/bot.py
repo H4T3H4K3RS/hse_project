@@ -27,7 +27,7 @@ help_msg = '1\. Просто пришлите текст, содержащий �
 
 
 def escape(text):
-    symbols = [".", "(", ")", "-"]
+    symbols = [".", "(", ")", "-", "_", ":", "/"]
     for symbol in symbols:
         text = text.replace(symbol, "\\" + symbol)
     return text
