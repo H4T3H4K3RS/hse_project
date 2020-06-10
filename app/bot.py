@@ -87,7 +87,7 @@ def add_link(update, context):
             if len(Folder.objects.filter(user=bot_key.user)) != 0:
                 answer = folder_msg.format(url[0])
             else:
-                answer = "Вы пока ещё не создали ни одной подборки\. Нажмите на кнопку ниже, чтобы перейти к странице создания подборки\."
+                answer = "Вы пока ещё не создали ни одной подборки. Нажмите на кнопку ниже, чтобы перейти к странице создания подборки."
             try:
                 unsaved_link = BotUnsavedLinks.objects.get(chat_id=chat_id)
                 unsaved_link.link = url[0]
@@ -178,9 +178,9 @@ def logout(update, context):
         bot_key = BotKey.objects.get(chat_id=chat_id)
         bot_key.chat_id = ""
         bot_key.save()
-        update.message.reply_text("Вы успешны вышли из аккаунта\!", parse_mode=telegram.ParseMode.MARKDOWN_V2)
+        update.message.reply_text("Вы успешны вышли из аккаунта!")
     except BotKey.DoesNotExist:
-        update.message.reply_text("Вы не авторизованы\.", parse_mode=telegram.ParseMode.MARKDOWN_V2)
+        update.message.reply_text("Вы не авторизованы.")
 
 
 def help(update, context):

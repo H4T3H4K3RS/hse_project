@@ -1,10 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.shortcuts import render
-
-# Create your views here.
-
-
+from django.http import HttpResponse
 import datetime
 from django.http import JsonResponse
 from django.contrib.auth import logout, authenticate, login
@@ -14,7 +10,6 @@ from django.template.defaulttags import register
 from django.urls import reverse
 from django.contrib import messages
 import json
-
 from app import utils
 from app.forms import AccountSignupForm, AccountLoginForm, LinkAddForm, FolderAddForm
 from app.models import Code, Profile, Link, Folder, Vote, SavedLink, BotKey
@@ -619,5 +614,6 @@ def api_search_view(request):
 
 
 @login_required()
-def account_api_key_get():
-    pass
+def account_api_key_get(request):
+    bot_key = BotKey.objects.filter(user=request.user)[0]
+    return HttpResponse(bot_key.key)
