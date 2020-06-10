@@ -18,7 +18,7 @@ from app.models import BotSetup, BotKey, Folder, Link, BotUnsavedLinks
 
 extractor = URLExtract()
 api_key = BotSetup.objects.all()[0].key
-help_msg = 'Просто пришлите\/перешлите текст, содержащий ссылку, в сообщении\.\n'
+help_msg = 'Просто пришлите/перешлите текст, содержащий ссылку, в сообщении.\n'
 folder_msg = "Выберите подборку, в которую вы хотите сохранить ссылку {}\n" \
                  'Нажмите на кнопку ">", чтобы увидеть следующие 3 подборки\n' \
                  'Нажмите на кнопку "<", чтобы увидеть предыдущие 3 подборки\n' \
@@ -109,10 +109,12 @@ def add_link(update, context):
                     flag = True
                     bot_key.save()
                 if flag:
-                    update.message.reply_text(f"Здравствуйте, {bot_keys[i].user.username}\n" + help_msg,
-                                              parse_mode=telegram.ParseMode.MARKDOWN_V2)
+                    update.message.reply_text(f"Здравствуйте, {bot_keys[i].user.username}\n" + help_msg)
         else:
-            update.message.reply_text("Неправильный API\-ключ\.", parse_mode=telegram.ParseMode.MARKDOWN_V2)
+            update.message.reply_text("Неправильный API-ключ.")
+            keyboard = [[InlineKeyboardButton("Получить", url=f'{settings.HOST}{reverse("api_account_key")}')]]
+            reply_markup = InlineKeyboardMarkup(keyboard)
+            update.message.reply_text('Отправьте боту полученный API-ключ', reply_markup=reply_markup)
 
 
 def escape(text):
