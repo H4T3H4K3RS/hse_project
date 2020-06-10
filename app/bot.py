@@ -17,7 +17,7 @@ from links import settings
 from app.models import BotSetup, BotKey, Folder, Link, BotUnsavedLinks
 
 extractor = URLExtract()
-api_key = BotSetup.objects.all()[0].key
+TOKEN = BotSetup.objects.all()[0].key
 help_msg = 'Просто пришлите/перешлите текст, содержащий ссылку, в сообщении.\n'
 folder_msg = "Выберите подборку, в которую вы хотите сохранить ссылку {}\n" \
                  'Нажмите на кнопку ">", чтобы увидеть следующие 3 подборки\n' \
@@ -200,7 +200,7 @@ def main():
     # Create the Updater and pass it your bot's token.
     # Make sure to set use_context=True to use the new context based callbacks
     # Post version 12 this will no longer be necessary
-    updater = Updater(api_key, use_context=True)
+    updater = Updater(TOKEN, use_context=True)
 
     updater.dispatcher.add_handler(CommandHandler('start', start))
     updater.dispatcher.add_handler(CallbackQueryHandler(callback_handler))
@@ -209,12 +209,11 @@ def main():
     updater.dispatcher.add_handler(CommandHandler('help', help))
     updater.dispatcher.add_handler(MessageHandler(Filters.text, add_link))
     updater.dispatcher.add_error_handler(error)
-
-    # Start the Bot
-    updater.start_polling()
-
-    # Run the bot until the user presses Ctrl-C or the process receives SIGINT,
-    # SIGTERM or SIGABRT
+    PORT = int(os.environ.get('PORT', '8443'))
+    updater.start_webhook(listen="0.0.0.0",
+                          port=PORT,
+                          url_path=TOKEN)
+    updater.bot.set_webhook(f"{settings.HOST}/" + TOKEN)
     updater.idle()
 
 

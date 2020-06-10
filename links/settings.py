@@ -24,7 +24,7 @@ SECRET_KEY = '2i$oqu0zz2j4ih5*rb#4$du=ks0safg^!a$*(f7z_^%arfj$%m'
 DEBUG = os.getenv('DEBUG', True)
 
 ALLOWED_HOSTS = ["0.0.0.0", "localhost", "127.0.0.1", "links.cleverapps.io", "10.2.152.143", "hselyc.herokuapp.com"]
-HOST = os.getenv('HOST', "http://hselyc.herokuapp.com")
+HOST = os.getenv('HOST', "https://hselyc.herokuapp.com")
 # Application definition
 
 INSTALLED_APPS = [
@@ -179,3 +179,8 @@ JS_URLS = (
     'account_login',
     'api_account_key'
 )
+
+RECAPTCHA_PRIVATE_KEY = '6LeoTqMUAAAAAFDpL8r5srOohu2CWyptZ0t0ir6W'
+RECAPTCHA_PUBLIC_KEY = '6LeoTqMUAAAAAPQk_33vvEyEqtc_4MiTDgsHJPJq'
+RECAPTCHA_DEFAULT_ACTION = 'generic'
+RECAPTCHA_SCORE_THRESHOLD = 0.5

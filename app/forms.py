@@ -1,7 +1,9 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from snowpenguin.django.recaptcha2.fields import ReCaptchaField
 from django.forms.widgets import PasswordInput, TextInput, EmailInput, URLInput, Textarea
+from snowpenguin.django.recaptcha2.widgets import ReCaptchaWidget
 
 from app.models import Folder
 
@@ -47,11 +49,11 @@ class LinkAddForm(forms.Form):
     folder = FolderChoiceField(label="Выберите подборку:", queryset=Folder.objects.none(), to_field_name='name',
                                required=True, empty_label=None)
     link = forms.URLField(label="Ссылка:", initial="https://", widget=forms.TextInput(
-            attrs={
-                'type': 'url',
-                'id': 'url'
-            }
-        ), required=True)
+        attrs={
+            'type': 'url',
+            'id': 'url'
+        }
+    ), required=True)
     # description = forms.CharField(widget=forms.TextInput(
     #     attrs={
     #         'id': 'description'
@@ -70,3 +72,29 @@ class FolderAddForm(forms.Form):
     #         'id': 'description'
     #     }
     # ), required=True)
+
+
+class AccountNewPasswordForm(forms.Form):
+    password = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={
+                'class': 'form-control',
+                'id': 'password1'
+            }
+        ))
+    password2 = forms.CharField(widget=forms.PasswordInput(
+        attrs={
+            'id': 'password2'
+        }
+    ), required=True)
+
+
+class RecoverForm(forms.Form):
+    email = forms.EmailField(
+        widget=forms.EmailInput(
+            attrs={
+                'id': 'email'
+            }
+        ), required=True
+    )
+    recaptcha = ReCaptchaField(widget=ReCaptchaWidget(), required=True)

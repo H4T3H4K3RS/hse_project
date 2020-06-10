@@ -21,3 +21,4 @@ sqlparse==0.3.1
 tornado==6.0.4
 uritools==3.0.0
 urlextract==0.14.0
+django-recaptcha2
