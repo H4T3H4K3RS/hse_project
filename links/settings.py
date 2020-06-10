@@ -176,5 +176,6 @@ JS_URLS = (
     'favourite_save_alt',
     'favourite_save',
     'folder_delete',
-    'account_login'
+    'account_login',
+    'api_account_key'
 )
