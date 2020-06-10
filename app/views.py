@@ -613,7 +613,7 @@ def api_search_view(request):
     return render(request, 'api/search.html', context)
 
 
-@login_required()
+@login_required
 def account_api_key_get(request):
     bot_key = BotKey.objects.filter(user=request.user)[0]
     return HttpResponse(bot_key.key)

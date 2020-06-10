@@ -54,7 +54,7 @@ urlpatterns = [
     path('api/folder/<int:folder_id>/', views.api_folder_view, name='api_folder_view'),
     path('api/index/', views.api_index_view, name='api_index_view'),
     path('api/search/', views.api_search_view, name='api_search_view'),
-    path('api/account/key/', views.account_api_key_get, name='api_account_key'),
+    path('api/settings/account/key/', views.account_api_key_get, name='api_account_key'),
     url(r'^get-urls/$', JsUrlsView.as_view(), name='js_urls'),
     url(r'^(?P<exception>.*)/$', views.handler404, name="page_404"),
 ]
