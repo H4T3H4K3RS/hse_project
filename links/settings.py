@@ -25,6 +25,7 @@ DEBUG = os.getenv('DEBUG', True)
 
 ALLOWED_HOSTS = ["0.0.0.0", "localhost", "127.0.0.1", "links.cleverapps.io", "10.2.152.143", "hselyc.herokuapp.com"]
 HOST = os.getenv('HOST', "https://hselyc.herokuapp.com")
+BOT_HOST = os.getenv('BOT_HOST', "https://hselycbot.herokuapp.com")
 # Application definition
 
 INSTALLED_APPS = [
@@ -158,7 +159,6 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
-SECURE_SSL_REDIRECT = os.getenv("SSL", False)
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'templates/static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
