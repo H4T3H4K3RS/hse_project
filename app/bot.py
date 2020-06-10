@@ -33,13 +33,13 @@ def links(update, context):
         answer = ""
         cnt = 1
         for link in all_links:
-            answer += f"{cnt}\. [{link.rating}] [{escape(link.link)}]({link.link})\n"
+            answer += f"{cnt}. [{link.rating}] {link.link}\n"
             cnt += 1
         if answer == "":
-            answer = "Вы ещё не добавили ни одну ссылку\.\n" + help_msg
-        update.message.reply_text(answer, parse_mode=telegram.ParseMode.MARKDOWN_V2)
+            answer = "Вы ещё не добавили ни одну ссылку.\n" + help_msg
+        update.message.reply_text(answer)
     except BotKey.DoesNotExist:
-        update.message.reply_text("Вы не авторизованы\.")
+        update.message.reply_text("Вы не авторизованы.")
 
 
 def get_keyboard(chat_id, start_num):
@@ -50,12 +50,13 @@ def get_keyboard(chat_id, start_num):
         prev = False
     elif start_num >= len(folders):
         return None
-    if start_num + 3 >= len(folders):
-        prev = True
-        folders = folders[start_num:len(folders)]
     else:
-        folders = folders[start_num:start_num+3]
-        next = True
+        if start_num + 3 >= len(folders):
+            prev = True
+            folders = folders[start_num:len(folders)]
+        else:
+            folders = folders[start_num:start_num+3]
+            next = True
     keyboard = []
     if len(folders) != 0:
         tmp = start_num
@@ -109,7 +110,8 @@ def add_link(update, context):
                     flag = True
                     bot_key.save()
                 if flag:
-                    update.message.reply_text(f"Здравствуйте, {bot_keys[i].user.username}\n" + help_msg)
+                    update.message.reply_text(f"Здравствуйте, [{bot_keys[i].user.username}]({settings.HOST}{reverse('account_view_my')})\n", parse_mode=telegram.ParseMode.MARKDOWN_V2)
+                    update.message.reply_text(help_msg)
         else:
             update.message.reply_text("Неправильный API-ключ.")
             keyboard = [[InlineKeyboardButton("Получить", url=f'{settings.HOST}{reverse("api_account_key")}')]]
@@ -177,16 +179,16 @@ def logout(update, context):
         bot_key = BotKey.objects.get(chat_id=chat_id)
         bot_key.chat_id = ""
         bot_key.save()
-        keyboard = [[InlineKeyboardButton("Получить", url=f'{settings.HOST}{reverse("api_account_key")}')]]
-        reply_markup = InlineKeyboardMarkup(keyboard)
         update.message.reply_text("Вы успешны вышли из аккаунта!")
-        update.message.reply_text('Для авторизации отправьте боту полученный API-ключ', reply_markup=reply_markup)
     except BotKey.DoesNotExist:
         update.message.reply_text("Вы не авторизованы.")
+    keyboard = [[InlineKeyboardButton("Получить", url=f'{settings.HOST}{reverse("api_account_key")}')]]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    update.message.reply_text('Для авторизации отправьте боту полученный API-ключ', reply_markup=reply_markup)
 
 
 def help(update, context):
-    update.message.reply_text(help_msg, parse_mode=telegram.ParseMode.MARKDOWN_V2)
+    update.message.reply_text(help_msg)
 
 
 def error(update, context):
