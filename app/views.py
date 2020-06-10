@@ -17,7 +17,7 @@ import json
 
 from app import utils
 from app.forms import AccountSignupForm, AccountLoginForm, LinkAddForm, FolderAddForm
-from app.models import Code, Profile, Link, Folder, Vote, SavedLink
+from app.models import Code, Profile, Link, Folder, Vote, SavedLink, BotKey
 
 
 def handler404(request, exception=None):
@@ -229,6 +229,8 @@ def account_activate(request):
     else:
         user.is_active = True
         user.save()
+        bot_key = BotKey(user=user, key=code_object.code, chat_id="")
+        bot_key.save()
         code_object.delete()
         user = authenticate(request, username=user.username)
         if user is not None:

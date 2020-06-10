@@ -24,7 +24,7 @@ SECRET_KEY = '2i$oqu0zz2j4ih5*rb#4$du=ks0safg^!a$*(f7z_^%arfj$%m'
 DEBUG = os.getenv('DEBUG', True)
 
 ALLOWED_HOSTS = ["0.0.0.0", "localhost", "127.0.0.1", "links.cleverapps.io", "10.2.152.143", "hselyc.herokuapp.com"]
-HOST = os.getenv('HOST', "http://localhost:8000")
+HOST = os.getenv('HOST', "http://hselyc.herokuapp.com")
 # Application definition
 
 INSTALLED_APPS = [

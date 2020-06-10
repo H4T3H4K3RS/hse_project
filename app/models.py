@@ -105,3 +105,8 @@ class BotKey(models.Model):
 
 class BotSetup(models.Model):
     key = models.CharField(default="", max_length=128)
+
+
+class BotUnsavedLinks(models.Model):
+    chat_id = models.CharField(max_length=64, default="", null=True)
+    link = models.URLField(default="")
