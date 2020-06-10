@@ -213,7 +213,7 @@ def main():
     updater.start_webhook(listen="0.0.0.0",
                           port=PORT,
                           url_path=TOKEN)
-    updater.bot.set_webhook(f"{settings.HOST}/" + TOKEN)
+    updater.bot.set_webhook(f"{settings.BOT_HOST}/" + TOKEN)
     updater.idle()
 
 

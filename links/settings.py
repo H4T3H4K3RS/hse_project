@@ -25,6 +25,7 @@ DEBUG = os.getenv('DEBUG', True)
 
 ALLOWED_HOSTS = ["0.0.0.0", "localhost", "127.0.0.1", "links.cleverapps.io", "10.2.152.143", "hselyc.herokuapp.com"]
 HOST = os.getenv('HOST', "https://hselyc.herokuapp.com")
+BOT_HOST = os.getenv('BOT_HOST', "https://hselycbot.herokuapp.com")
 # Application definition
 
 INSTALLED_APPS = [
