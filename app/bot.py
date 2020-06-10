@@ -81,7 +81,7 @@ def add_link(update, context):
         cnt = 1
         url = extractor.find_urls(update.message.text)
         if len(url) == 0:
-            answer = "В вашем сообщении не обнаружено ни одной ссылки\."
+            answer = "В вашем сообщении не обнаружено ни одной ссылки."
             folder_keyboard = None
         else:
             if len(Folder.objects.filter(user=bot_key.user)) != 0:
