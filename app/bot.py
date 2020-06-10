@@ -18,7 +18,6 @@ from app.models import BotSetup, BotKey, Folder, Link, BotUnsavedLinks
 
 extractor = URLExtract()
 api_key = BotSetup.objects.all()[0].key
-start_msg = f'Пришлите в сообщении API\-ключ, полученный по [ссылке]({settings.HOST}{reverse("api_account_key")})'
 help_msg = 'Просто пришлите\/перешлите текст, содержащий ссылку, в сообщении\.\n'
 folder_msg = "Выберите подборку, в которую вы хотите сохранить ссылку {}\n" \
                  'Нажмите на кнопку ">", чтобы увидеть следующие 3 подборки\n' \
@@ -129,10 +128,8 @@ logger = logging.getLogger(__name__)
 
 
 def start(update, context):
-    # print(f'{settings.HOST}{reverse("api_account_key")}')
     keyboard = [[InlineKeyboardButton("Получить", url=f'{settings.HOST}{reverse("api_account_key")}')]]
     reply_markup = InlineKeyboardMarkup(keyboard)
-
     update.message.reply_text('Отправьте боту полученный API-ключ', reply_markup=reply_markup)
 
 
@@ -178,7 +175,10 @@ def logout(update, context):
         bot_key = BotKey.objects.get(chat_id=chat_id)
         bot_key.chat_id = ""
         bot_key.save()
+        keyboard = [[InlineKeyboardButton("Получить", url=f'{settings.HOST}{reverse("api_account_key")}')]]
+        reply_markup = InlineKeyboardMarkup(keyboard)
         update.message.reply_text("Вы успешны вышли из аккаунта!")
+        update.message.reply_text('Для авторизации отправьте боту полученный API-ключ', reply_markup=reply_markup)
     except BotKey.DoesNotExist:
         update.message.reply_text("Вы не авторизованы.")
 
