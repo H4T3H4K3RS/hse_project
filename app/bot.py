@@ -201,7 +201,7 @@ def main():
     # Make sure to set use_context=True to use the new context based callbacks
     # Post version 12 this will no longer be necessary
     updater = Updater(TOKEN, use_context=True)
-
+    updater.dispatcher.add_handler(CallbackQueryHandler(callback_handler))
     updater.dispatcher.add_handler(CommandHandler('start', start))
     updater.dispatcher.add_handler(CallbackQueryHandler(callback_handler))
     updater.dispatcher.add_handler(CommandHandler("links", links))
