@@ -25,6 +25,13 @@
     {% block head_css %}
         {% block head_css_site %}
             <link href="{% static 'css/app.css' %}" rel="stylesheet" media="screen">
+            <link href="{% static 'theme/dist/css/style.min.css' %}" rel="stylesheet">
+            <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+            <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+            <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+            <![endif]-->
         {% endblock head_css_site %}
         {% block head_css_section %}{% endblock head_css_section %}
         {% block head_css_page %}{% endblock head_css_page %}
@@ -41,8 +48,10 @@
 {% block footer_javascript %}
     {% block footer_javascript_site %}
         <script src="{% url 'js_urls' %}" type="text/javascript"></script>
-        <script src="{% static 'js/jquery-3.5.1.min.js'%}"></script>
+        <script src="{% static 'theme/assets/libs/jquery/dist/jquery.min.js' %}"></script>
         <script src="{% static 'js/app.js' %}"></script>
+        <script src="{% static 'theme/assets/libs/popper.js/dist/umd/popper.min.js' %}"></script>
+        <script src="{% static 'theme/assets/libs/bootstrap/dist/js/bootstrap.min.js' %}"></script>
     {% endblock footer_javascript_site %}
     {% block footer_javascript_section %}{% endblock footer_javascript_section %}
     {% block footer_javascript_page %}{% endblock footer_javascript_page %}
