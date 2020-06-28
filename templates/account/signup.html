@@ -34,7 +34,7 @@
             <div>
 
                 <!-- Form -->
-                <form action="{% url 'account_signup' %}" method="post">
+                <form action="{% url 'account:signup' %}" method="post">
                     {% csrf_token %}
                     <div>
                         {{ form.username.label }}
@@ -53,7 +53,7 @@
                         {{ form.password2 }}
                         <!-- Forgot password -->
                     </div>
-                    <a href="{% url 'account_forgot' %}">Забыли пароль?</a>
+                    <a href="{% url 'account:forgot' %}">Забыли пароль?</a>
 
                     <!-- Sign in button -->
                     <button type="submit">
@@ -65,7 +65,7 @@
                     {#                    </a>#}
                     <!-- Register -->
                     <p>Уже есть аккаунт?
-                        <a href="{% url 'account_login' %}">Войти</a>
+                        <a href="{% url 'account:login' %}">Войти</a>
                     </p>
 
                     <!-- Social login -->

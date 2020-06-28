@@ -35,6 +35,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'account.apps.AccountConfig',
+    'api.apps.ApiConfig',
     'app.apps.AppConfig',
     'js_urls',
     'django_extensions'
@@ -118,16 +120,16 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
-        'NAME': 'app.validators.NumberValidator',
+        'NAME': 'account.validators.NumberValidator',
     },
     {
-        'NAME': 'app.validators.UppercaseValidator',
+        'NAME': 'account.validators.UppercaseValidator',
     },
     {
-        'NAME': 'app.validators.LowercaseValidator',
+        'NAME': 'account.validators.LowercaseValidator',
     },
     {
-        'NAME': 'app.validators.SymbolValidator',
+        'NAME': 'account.validators.SymbolValidator',
     }
 ]
 
@@ -140,7 +142,7 @@ DEFAULT_FROM_EMAIL = 'linkitservice@yandex.ru'
 EMAIL_USE_TLS = True
 
 AUTHENTICATION_BACKENDS = (
-    'app.utils.PasswordlessAuthBackend',
+    'account.utils.PasswordlessAuthBackend',
 )
 
 
@@ -165,22 +167,23 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 JS_URLS = (
-    'api_search_view',
-    'api_index_view',
-    'api_account_view',
-    'api_account_view_username',
-    'api_folder_view',
+    'api:search_view',
+    'api:index_view',
+    'api:account_view',
+    'api:account_view_username',
+    'api:folder_view',
+    'api:account_key'
     'link_delete',
     'link_vote',
     'favourite_delete',
     'favourite_save_alt',
     'favourite_save',
     'folder_delete',
-    'account_login',
-    'api_account_key'
+    'account:login',
 )
 
 RECAPTCHA_PRIVATE_KEY = '6Lfb0KIZAAAAADLS85en7FJNXjBATL0jgMtxVKcv'
 RECAPTCHA_PUBLIC_KEY = '6Lfb0KIZAAAAAIqf2J9UsWj4jzsxLkiQ5sFTrPeG'
 RECAPTCHA_DEFAULT_ACTION = 'generic'
 RECAPTCHA_SCORE_THRESHOLD = 0.5
+BOT_KEY = "1169232934:AAHFXUE6Fq02RUn0gi7hHrY0KDRm9kx8KDI"

@@ -51,7 +51,7 @@
             </button>
         {% endif %}
         <button>
-            <a href="{% url 'account_view_others' link.folder.user %}" class="button_link">К Источнику</a>
+            <a href="{% url 'account:view_others' link.folder.user %}" class="button_link">К Источнику</a>
         </button>
     {% endif %}
     <br>
@@ -84,7 +84,7 @@
                 Удалить из Сохранённых
             </button>
             <button>
-                <a href="{% url 'account_view_others' link.original %}" class="button_link">К Источнику</a>
+                <a href="{% url 'account:view_others' link.original %}" class="button_link">К Источнику</a>
             </button>
         {% else %}
             {% if link.link in saved_links_links %}

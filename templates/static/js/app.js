@@ -1,6 +1,6 @@
 function reload_account(username, id = "content") {
     $.ajax({
-        url: window.reverse('api_account_view_username', username),
+        url: window.reverse('api:account_view_username', username),
         type: 'GET',
         data: {},
         beforeSend: function () {
@@ -17,7 +17,7 @@ function reload_account(username, id = "content") {
 
 function reload_folder(folder_id, id = "content") {
     $.ajax({
-        url: window.reverse('api_folder_view', folder_id),
+        url: window.reverse('api:folder_view', folder_id),
         type: 'GET',
         data: {},
         beforeSend: function () {
@@ -35,7 +35,7 @@ function reload_folder(folder_id, id = "content") {
 
 function reload_index(id = "content") {
     $.ajax({
-        url: window.reverse('api_index_view'),
+        url: window.reverse('api:index_view'),
         type: 'GET',
         data: {},
         beforeSend: function () {
@@ -52,7 +52,7 @@ function reload_index(id = "content") {
 
 
 function reload_search(id = "content") {
-    let url = window.reverse('api_search_view') + '?q=' + $("#search_value").val().split(" ").join("+");
+    let url = window.reverse('api:search_view') + '?q=' + $("#search_value").val().split(" ").join("+");
     $.ajax({
         url: url,
         type: 'GET',
@@ -204,7 +204,7 @@ function set_listeners(){
         delete_folder($(this).data('id'), $(this).data('type'), $(this).data('data'));
     });
     $('.redirect_login').click(function () {
-        window.location.href = window.reverse('account_login');
+        window.location.href = window.reverse('account:login');
     });
 }
 set_listeners();

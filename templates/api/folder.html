@@ -1,5 +1,5 @@
 <h1>Подборка "{{ folder.name }}" пользователя <a
-        href="{% url 'account_view_others' folder.user %}">{{ folder.user }}</a> [ Рейтинг {{ folder.rating }} ]</h1>
+        href="{% url 'account:view_others' folder.user %}">{{ folder.user }}</a> [ Рейтинг {{ folder.rating }} ]</h1>
 Топ ссылок в данной подборке:
 <br>
 {% for link in links %}
@@ -35,7 +35,7 @@
         {% endif %}
     {% else %}
         <button>
-            <a href="{% url 'account_view_others' folder.user %}" class="button_link">К Источнику</a>
+            <a href="{% url 'account:view_others' folder.user %}" class="button_link">К Источнику</a>
         </button>
         {% if link.link in saved_links_links %}
             {% for saved_link in saved_links %}

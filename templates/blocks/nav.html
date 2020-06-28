@@ -3,11 +3,11 @@
         <a href="{% url 'search' %}">Поиск</a> |
         <a href="{% url 'folder_add' %}">Добавить Подборку</a> |
         <a href="{% url 'link_add' %}">Добавить Ссылку</a> |
-        <a href="{% url 'account_view_my' %}">Мой Аккаунт</a> |
-        <a href="{% url 'account_logout' %}">Выйти</a>
+        <a href="{% url 'account:view_my' %}">Мой Аккаунт</a> |
+        <a href="{% url 'account:logout' %}">Выйти</a>
     {% else %}
         <a href="{% url 'search' %}">Поиск</a> |
-        <a href="{% url 'account_signup' %}">Регистрация</a> |
-        <a href="{% url 'account_login' %}">Войти</a>
+        <a href="{% url 'account:signup' %}">Регистрация</a> |
+        <a href="{% url 'account:login' %}">Войти</a>
     {% endif %}
 </nav>

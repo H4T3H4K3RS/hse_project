@@ -32,7 +32,7 @@
             <div>
 
                 <!-- Form -->
-                <form action="{% url 'account_login' %}" method="post">
+                <form action="{% url 'account:login' %}" method="post">
                     {% csrf_token %}
                     <div>
                         {{ form.login }}
@@ -50,7 +50,7 @@
                     </div>
                     <div>
                         <!-- Forgot password -->
-                        <a href="{% url 'account_forgot' %}">Забыли пароль?</a>
+                        <a href="{% url 'account:forgot' %}">Забыли пароль?</a>
                     </div>
 
                     <!-- Sign in button -->
@@ -60,7 +60,7 @@
 
                     <!-- Register -->
                     <p>Нет аккаунта?
-                        <a href="{% url 'account_signup' %}">Создать</a>
+                        <a href="{% url 'account:signup' %}">Создать</a>
                     </p>
 
                     {#                    <!-- Social login -->#}

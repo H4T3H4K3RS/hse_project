@@ -1,7 +1,5 @@
 import logging
-import logging
 import os
-import re
 import django
 import telegram
 from urlextract import URLExtract
@@ -14,10 +12,10 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "links.settings")
 django.setup()
 
 from links import settings
-from app.models import BotSetup, BotKey, Folder, Link, BotUnsavedLinks
+from app.models import BotKey, Folder, Link, BotUnsavedLinks
 
 extractor = URLExtract()
-TOKEN = BotSetup.objects.all()[0].key
+TOKEN = settings.BOT_KEY
 help_msg = 'Просто пришлите/перешлите текст, содержащий ссылку, в сообщении.\n'
 folder_msg = "Выберите подборку, в которую вы хотите сохранить ссылку {}\n" \
                  'Нажмите на кнопку ">", чтобы увидеть следующие 3 подборки\n' \
@@ -201,7 +199,6 @@ def main():
     # Make sure to set use_context=True to use the new context based callbacks
     # Post version 12 this will no longer be necessary
     updater = Updater(TOKEN, use_context=True)
-
     updater.dispatcher.add_handler(CommandHandler('start', start))
     updater.dispatcher.add_handler(CallbackQueryHandler(callback_handler))
     updater.dispatcher.add_handler(CommandHandler("links", links))

@@ -15,7 +15,7 @@
     <a href="{{ link.link }}" target="_blank">{{ link.link }}</a>
     {% if link.folder.user != request.user %}
         <button>
-            <a href="{% url 'account_view_others' link.folder.user %}" class="button_link">К Источнику</a>
+            <a href="{% url 'account:view_others' link.folder.user %}" class="button_link">К Источнику</a>
         </button>
     {% else %}
         <button class="delete_link_btn" data-id="{{ link.id }}" data-type="search" data-data="">
@@ -56,6 +56,6 @@
 <strong>Найденные пользователи: {{ users|length }}</strong>
 <br>
 {% for user in users %}
-    <a href="{% url 'account_view_others' user.user %}" target="_blank">{{ user.user }}</a>
+    <a href="{% url 'account:view_others' user.user %}" target="_blank">{{ user.user }}</a>
     <br>
 {% endfor %}

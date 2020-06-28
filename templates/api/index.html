@@ -35,7 +35,7 @@
             </button>
         {% endif %}
         <button>
-            <a href="{% url 'account_view_others' link.folder.user %}" class="button_link">К Источнику</a>
+            <a href="{% url 'account:view_others' link.folder.user %}" class="button_link">К Источнику</a>
         </button>
     {% elif link.folder.user == request.user %}
         <button class="delete_link_btn" data-id="{{ link.id }}" data-type="index" data-data="">
@@ -48,7 +48,7 @@
         </button>
     {% else %}
         <button>
-            <a href="{% url 'account_view_others' link.folder.user %}" class="button_link">К Источнику</a>
+            <a href="{% url 'account:view_others' link.folder.user %}" class="button_link">К Источнику</a>
         </button>
     {% endif %}
     {% if link.link in saved_links_links %}
