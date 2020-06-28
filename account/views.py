@@ -2,7 +2,8 @@ import datetime
 import json
 
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, logout
+from django.contrib.auth import login as auth_login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
@@ -67,7 +68,7 @@ def login(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 if username.is_active:
-                    login(request, user)
+                    auth_login(request, user)
                     return redirect(reverse('link_add'))
                 else:
                     messages.error(request,
@@ -180,7 +181,7 @@ def activate(request):
         code_object.delete()
         user = authenticate(request, username=user.username)
         if user is not None:
-            login(request, user)
+            auth_login(request, user)
             return redirect(reverse('index'))
 
 
