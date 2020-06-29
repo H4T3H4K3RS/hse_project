@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'app.apps.AppConfig',
     'js_urls',
-    'django_extensions'
+    'django_extensions',
+    'widget_tweaks'
 ]
 
 MIDDLEWARE = [

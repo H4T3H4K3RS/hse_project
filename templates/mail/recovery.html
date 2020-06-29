@@ -11,25 +11,22 @@
             <tr>
                 <td style="border-bottom:1px solid #f6f6f6;">
                     <h1 style="font-size:14px; font-family:arial; margin:0px; font-weight:bold;">Здравствуйте.</h1>
-                    <p style="margin-top:0px; color:#bbbbbb;">Вы получили данное письмо, т.к. зарегистрировались на сайте {{ host }}.
-                            Если вы не регистрировались на сайте {{ host }}, можете просто удалить данное письмо.</p>
+                    <p style="margin-top:0px; color:#bbbbbb;">Вы получили данное письмо, т.к. запросили восстановление пароля на сайте {{ host }}.</p>
                 </td>
             </tr>
             <tr>
                 <td style="padding:10px 0 30px 0;">
-                    <p>Нажмите на кнопку ниже, чтобы подтвердить учётную запись. Если вы не
-                        создавали учётную запись на сайте, проигнорируйте данное сообщение.</p>
+                    <p>Нажмите на кнопку ниже, чтобы восстановить учётную запись. Если вы не
+                        запрашивали восстановление пароля, то срочно его смените.</p>
                     <center>
-                        <a href="{{ host }}/account/activate?token={{ token }}&code={{ code }}&user={{ user.username }}"
-                                                   target="_blank"style="display: inline-block; padding: 11px 30px; margin: 20px 0px 30px; font-size: 15px; color: #fff; background: #4fc3f7; border-radius: 60px; text-decoration:none;">Подтвердить</a>
+                        <a href="{{ host }}{% url 'account:recover' %}?token={{ token }}&code={{ code }}&user={{ user.username }}"
+                                                   target="_blank"style="display: inline-block; padding: 11px 30px; margin: 20px 0px 30px; font-size: 15px; color: #fff; background: #4fc3f7; border-radius: 60px; text-decoration:none;">Восстановить</a>
                     </center>
-                    <b>Если вы не создавали учётную запись на сайте, проигнорируйте данное
-                        сообщение</b></td>
             </tr>
             <tr>
                 <td style="border-top:1px solid #f6f6f6; padding-top:20px; color:#777">Если кнопка не работает, то скопируйте ссылку ниже.
-                <a href="{{ host }}/account/activate?token={{ token }}&code={{ code }}&user={{ user.username }}"
-                                target="_blank">{{ host }}/account/activate?token={{ token }}&code={{ code }}&user={{ user.username }}</a>
+                <a href="{{ host }}{% url 'account:recover' %}?token={{ token }}&code={{ code }}&user={{ user.username }}"
+                                target="_blank">{{ host }}{% url 'account:recover' %}?token={{ token }}&code={{ code }}&user={{ user.username }}</a>
                 </td>
             </tr>
             </tbody>

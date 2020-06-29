@@ -20,7 +20,7 @@
                     <p>Нажмите на кнопку ниже, чтобы подтвердить учётную запись. Если вы не
                         создавали учётную запись на сайте, проигнорируйте данное сообщение.</p>
                     <center>
-                        <a href="{{ host }}/account/activate?token={{ token }}&code={{ code }}&user={{ user.username }}"
+                        <a href="{{ host }}{% url 'account:activate' %}?token={{ token }}&code={{ code }}&user={{ user.username }}"
                                                    target="_blank"style="display: inline-block; padding: 11px 30px; margin: 20px 0px 30px; font-size: 15px; color: #fff; background: #4fc3f7; border-radius: 60px; text-decoration:none;">Подтвердить</a>
                     </center>
                     <b>Если вы не создавали учётную запись на сайте, проигнорируйте данное
@@ -28,8 +28,8 @@
             </tr>
             <tr>
                 <td style="border-top:1px solid #f6f6f6; padding-top:20px; color:#777">Если кнопка не работает, то скопируйте ссылку ниже.
-                <a href="{{ host }}/account/activate?token={{ token }}&code={{ code }}&user={{ user.username }}"
-                                target="_blank">{{ host }}/account/activate?token={{ token }}&code={{ code }}&user={{ user.username }}</a>
+                <a href="{{ host }}{% url 'account:activate' %}?token={{ token }}&code={{ code }}&user={{ user.username }}"
+                                target="_blank">{{ host }}{% url 'account:activate' %}?token={{ token }}&code={{ code }}&user={{ user.username }}</a>
                 </td>
             </tr>
             </tbody>
