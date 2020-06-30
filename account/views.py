@@ -66,9 +66,9 @@ def login(request):
                 except User.DoesNotExist:
                     messages.error(request, "Имя пользователя/Email неверный")
                     return redirect(reverse('account:login'))
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
+            if username.check_password(password):
                 if username.is_active:
+                    user = authenticate(request, username=username)
                     auth_login(request, user)
                     return redirect(reverse('link_add'))
                 else:

@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}
-    Поиск "{{ value }}"
+    Поиск {% if value != '' %}"{{ value }}"{% endif %}
 {% endblock title %}
 {% block content %}
     <body>

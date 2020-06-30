@@ -3,7 +3,7 @@
 <html lang="ru">
 {# Make modifiable head elements #}
 <head>
-    <title>{% block title %}Главная {% endblock title %} | Links</title>
+    <title>{% block title %}Главная {% endblock title %} | Link.IT</title>
     {% include 'blocks/metrics.html' %}
     {% block head_favicon %}
         <link rel="icon" type="image/png"
@@ -26,6 +26,7 @@
         {% block head_css_site %}
             <link href="{% static 'css/app.css' %}" rel="stylesheet" media="screen">
             <link href="{% static 'theme/dist/css/style.min.css' %}" rel="stylesheet">
+            <link href="{% static 'theme/assets/libs/toastr/build/toastr.min.css' %}" rel="stylesheet">
             <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
             <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
             <!--[if lt IE 9]>
@@ -49,35 +50,39 @@
     {% block footer_javascript_site %}
         <script src="{% url 'js_urls' %}" type="text/javascript"></script>
         <script src="{% static 'theme/assets/libs/jquery/dist/jquery.min.js' %}"></script>
-        <script src="{% static 'js/app.js' %}"></script>
         <script src="{% static 'theme/assets/libs/popper.js/dist/umd/popper.min.js' %}"></script>
         <script src="{% static 'theme/assets/libs/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'theme/dist/js/sidebarmenu.js' %}"></script>
+        <script src="{% static 'theme/assets/libs/toastr/build/toastr.min.js' %}"></script>
+        <script src="{% static 'theme/assets/extra-libs/toastr/toastr-init.js' %}"></script>
+        <script src="{% static 'js/app.js' %}"></script>
+        <script>
+            toastr.options.showMethod = 'slideDown';
+            toastr.options.hideMethod = 'slideUp';
+            toastr.options.closeMethod = 'slideUp';
+            toastr.options.progressBar = true;
+        </script>
     {% endblock footer_javascript_site %}
     {% block footer_javascript_section %}{% endblock footer_javascript_section %}
     {% block footer_javascript_page %}{% endblock footer_javascript_page %}
-    {% block footer_javascript_metrics %}
-        <!-- Yandex.Metrika counter -->
-        <script type="text/javascript">
-            (function (m, e, t, r, i, k, a) {
-                m[i] = m[i] || function () {
-                    (m[i].a = m[i].a || []).push(arguments)
-                };
-                m[i].l = 1 * new Date();
-                k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a)
-            })
-            (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
-
-            ym(62621917, "init", {
-                clickmap: true,
-                trackLinks: true,
-                accurateTrackBounce: true,
-                webvisor: true
-            });
-        </script>
-        <noscript>
-            <div><img src="https://mc.yandex.ru/watch/62621917" style="position:absolute; left:-9999px;" alt=""/></div>
-        </noscript>
-        <!-- /Yandex.Metrika counter -->
-    {% endblock footer_javascript_metrics %}
+    {% block messages %}
+        {% if messages %}
+            <script type=text/javascript>
+            setTimeout(function () {
+                {% for message in messages %}
+                    {% if message.tags == 'success' %}
+                        toastr.{{ message.tags }}('{{ message }}');
+                    {% elif message.tags == 'info' %}
+                        toastr.{{ message.tags }}('{{ message }}');
+                    {% elif message.tags == 'warning' %}
+                        toastr.{{ message.tags }}('{{ message }}');
+                    {% elif message.tags == 'error' %}
+                        toastr.{{ message.tags }}('{{ message }}');
+                    {% endif %}
+                {% endfor %}
+            }, 1000);
+            </script>
+        {% endif %}
+    {% endblock messages %}
 {% endblock footer_javascript %}
 </html>
