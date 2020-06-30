@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}
+    Создать Аккаунт
+{% endblock %}
+{% block content %}
+    <body>
+
+    {% include 'blocks/nav.html' %}
+    <div>
+        <div>
+
+            <h5>
+                <strong>Редактирование Аккаунта</strong>
+            </h5>
+            {#            {% if messages %}#}
+            {#                {% for message in messages %}#}
+            {##}
+            {#                    {% get_bootstrap_alert_msg_css_name message.tags as alert_tag %}#}
+            {#                    <div {% if message.tags %}#}
+            {#                        class="alert fadeIn alert-{{ alert_tag }}"{% endif %}><a class="close" data-dismiss="alert"#}
+            {#                                                                                 aria-label="close">&times;</a>{{ message }}#}
+            {#                    </div>#}
+            {#                {% endfor %}#}
+            {#            {% endif %}#}
+            {% if messages %}
+                {% for message in messages %}
+                    <div>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <!--Card content-->
+            <div>
+
+                <!-- Form -->
+                <form action="{% url 'account:edit' %}" method="post">
+                    {% csrf_token %}
+                    <div>
+                        {{ form.username.label }}
+                        {{ form.username }}
+                    </div>
+                    <div>
+                        {{ form.password1.label }}
+                        {{ form.password1 }}
+                    </div>
+                    <div>
+                        {{ form.password2.label }}
+                        {{ form.password2 }}
+                        <!-- Forgot password -->
+                    </div>
+                    <!-- Sign in button -->
+                    <button type="submit">
+                        Изменить
+                    </button>
+
+
+                </form>
+                <!-- Form -->
+
+            </div>
+
+        </div>
+    </div>
+    </body>
+{% endblock content %}

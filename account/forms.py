@@ -42,7 +42,7 @@ class NewPasswordForm(UserCreationForm):
             attrs={
                 'id': 'password1'
             }
-        ))
+        ), required=True)
     password2 = forms.CharField(widget=forms.PasswordInput(
         attrs={
             'id': 'password2'
@@ -53,22 +53,23 @@ class NewPasswordForm(UserCreationForm):
             attrs={
                 'id': 'user'
             }
-        )
+        ), required=True
     )
     token = forms.CharField(
         widget=forms.HiddenInput(
             attrs={
                 'id': 'token'
             }
-        )
+        ), required=True
     )
     code = forms.CharField(
         widget=forms.HiddenInput(
             attrs={
                 'id': 'code'
             }
-        )
+        ), required=True
     )
+
     class Meta:
         model = User
         fields = ('password1', 'password2')
@@ -84,3 +85,27 @@ class RecoverForm(forms.Form):
     )
     # recaptcha = ReCaptchaField(widget=ReCaptchaWidget(), required=True)
 
+
+class EditForm(UserCreationForm):
+    password1 = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={
+                'id': 'password1'
+            }
+        ), required=False)
+    password2 = forms.CharField(widget=forms.PasswordInput(
+        attrs={
+            'id': 'password2'
+        }
+    ), required=False)
+    username = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                'id': 'username'
+            }
+        ), required=True
+    )
+
+    class Meta:
+        model = User
+        fields = ('password1', 'password2')

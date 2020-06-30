@@ -9,7 +9,10 @@
     </div>
     {% include 'blocks/nav.html' %}
     <h1>{{ user.username }}</h1>
-
+    {% if request.user == user %}
+        <span id="api_key">{{ api_key }}</span>
+        <a href="{% url 'account:edit' %}">Изменить Аккаунт</a>
+    {% endif %}
     <div id="AjaxLoader"></div>
     <div id="content">
         {% include 'api/account.html' %}

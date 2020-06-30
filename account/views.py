@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from account.forms import LoginForm, SignupForm, RecoverForm, NewPasswordForm
+from account.forms import LoginForm, SignupForm, RecoverForm, NewPasswordForm, EditForm
 from account.models import Profile, Code
 from app import utils
 from app.models import SavedLink, Folder, Link, BotKey
@@ -301,7 +301,7 @@ def view(request, username=None):
                    'links': Link.objects.filter(folder__user=request.user).order_by("-rating"), 'owner': 1,
                    'user': request.user,
                    'saved_links': s_links,
-                   'saved_links_links': utils.get_saved_links(s_links)}
+                   'saved_links_links': utils.get_saved_links(s_links), 'api_key': BotKey.objects.get(user=request.user)}
         return render(request, 'account/view.html', context)
     else:
         context['owner'] = 0
@@ -316,3 +316,43 @@ def view(request, username=None):
     context['saved_links_links'] = utils.get_saved_links(s_links)
     context['saved_links'] = s_links
     return render(request, 'account/view.html', context)
+
+
+@login_required
+def edit(request):
+    context = {}
+    if request.method == "POST":
+        form = EditForm(request.POST)
+        if form.is_valid() or (form.data['password1'] == "" and form.data['password2'] == ""):
+            if form.data['username'] != request.user.username:
+                try:
+                    User.objects.get(username=form.data['username'])
+                    messages.error(request, "Пользователь с выбранным именем уже существует.")
+                    context["form"] = EditForm(initial={'username': form.data['username']})
+                    return render(request, "account/edit.html", context)
+                except User.DoesNotExist:
+                    messages.success(request, "Имя пользователя успешно изменено.")
+                    request.user.username = form.data['username']
+                    request.user.save()
+            if form.data['password1'] != "" and form.data['password2'] != "":
+                request.user.set_password(form.cleaned_data['password1'])
+                request.user.save()
+                messages.success(request, "Пароль был изменён.")
+        else:
+            errors = form.errors.as_json()
+            errors = json.loads(errors)
+            codes = []
+            for key, message in errors.items():
+                for error in message:
+                    codes.append(error['code'])
+            if 'password_too_similar' in codes:
+                messages.error(request, "Пароль и имя пользователя совпадают.")
+            if 'password_mismatch' in codes:
+                messages.error(request, "Пароли не совпадают.")
+            if ('password_no_symbol' in codes) or ('password_no_lower' in codes) or ('password_no_upper' in codes) or (
+                    'password_no_number' in codes) or ('password_too_short' in codes) or (
+                    'password_too_common' in codes):
+                messages.error(request, "Пароль не соответствует требованиям. (минимум: длина 8 символов, "
+                                        "1 спец.символ, 1 строчная буква, 1 прописная буква, 1 цифра)")
+    context["form"] = EditForm(initial={'username': request.user.username})
+    return render(request, "account/edit.html", context)
