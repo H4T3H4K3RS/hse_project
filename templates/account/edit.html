@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+{% block title %}
+    Создать Аккаунт
+{% endblock %}
 {% block content %}
     <body>
 
@@ -7,7 +10,7 @@
         <div>
 
             <h5>
-                <strong>Создание Аккаунта</strong>
+                <strong>Редактирование Аккаунта</strong>
             </h5>
             {#            {% if messages %}#}
             {#                {% for message in messages %}#}
@@ -31,34 +34,25 @@
             <div>
 
                 <!-- Form -->
-                <form action="{% url 'account:recover' %}" method="post">
+                <form action="{% url 'account:edit' %}" method="post">
                     {% csrf_token %}
+                    <div>
+                        {{ form.username.label }}
+                        {{ form.username }}
+                    </div>
                     <div>
                         {{ form.password1.label }}
                         {{ form.password1 }}
+                    </div>
+                    <div>
                         {{ form.password2.label }}
                         {{ form.password2 }}
-                        {{ form.code }}
-                        {{ form.token }}
-                        {{ form.user }}
+                        <!-- Forgot password -->
                     </div>
-
                     <!-- Sign in button -->
                     <button type="submit">
-                        Обновить пароль
+                        Изменить
                     </button>
-                    {#                    <p>Зарегистрироваться с помощью:</p>#}
-                    {#                    <a type="button" href="" class="btn-floating btn-tw btn-sm"> {# TODO social auth #}
-                    {#                        <i class="fab fa-google success-color"></i>#}
-                    {#                    </a>#}
-                    <!-- Register -->
-                    <p>Уже есть аккаунт?
-                        <a href="{% url 'account:login' %}">Войти</a>
-                    </p>
-                    <p>Создать аккаунт?
-                        <a href="{% url 'account:signup' %}">Зарегистрироваться</a>
-                    </p>
-                    <!-- Social login -->
 
 
                 </form>

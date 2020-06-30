@@ -4,14 +4,14 @@
 {% endblock title %}
 {% block content %}
     <body>
+    <div id="main-wrapper">
     {% include 'blocks/nav.html' %}
-    {% if messages %}
-        {% for message in messages %}
-            <div>
-                {{ message }}
+        <div class="preloader">
+            <div class="lds-ripple">
+                <div class="lds-pos"></div>
+                <div class="lds-pos"></div>
             </div>
-        {% endfor %}
-    {% endif %}
+        </div>
     <form action="{% url 'link_add' %}" method="post">
         {% csrf_token %}
         <div>
@@ -25,5 +25,6 @@
 
         <button type="submit">Создать ссылку</button>
     </form>
+    </div>
     </body>
 {% endblock content %}

@@ -1,79 +1,81 @@
 {% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
 {% block title %}
     Войти в Аккаунт
 {% endblock %}
 {% block content %}
     <body>
 
+    <div id="main-wrapper">
     {% include 'blocks/nav.html' %}
-    <div>
-        <div>
-
-            <h5>
-                <strong>Вход в Аккаунт</strong>
-            </h5>
-            {#            {% if messages %}#}
-            {#                {% for message in messages %}#}
-            {##}
-            {#                    {% get_bootstrap_alert_msg_css_name message.tags as alert_tag %}#}
-            {#                    <div {% if message.tags %}#}
-            {#                        class="alert fadeIn alert-{{ alert_tag }}"{% endif %}><a class="close" data-dismiss="alert"#}
-            {#                                                                                 aria-label="close">&times;</a>{{ message }}#}
-            {#                    </div>#}
-            {#                {% endfor %}#}
-            {#            {% endif %}#}
-            {% if messages %}
-                {% for message in messages %}
-                    <div>
-                        {{ message }}
+        <div class="preloader">
+            <div class="lds-ripple">
+                <div class="lds-pos"></div>
+                <div class="lds-pos"></div>
+            </div>
+        </div>
+        <div class="auth-wrapper d-flex no-block justify-content-center align-items-center"
+             style="background:url({% static 'img/auth_bg.jpg' %}) no-repeat center center;">
+            <div class="auth-box">
+                <div id="loginform">
+                    <div class="logo">
+                        <span class="db"><img height="30%" width="30%" src="{% static 'logo.png' %}" alt="logo"/></span>
+                        <h5 class="font-medium m-b-20">Вход в Link.IT</h5>
                     </div>
-                {% endfor %}
-            {% endif %}
-            <div>
-
-                <!-- Form -->
-                <form action="{% url 'account:login' %}" method="post">
-                    {% csrf_token %}
-                    <div>
-                        {{ form.login }}
-                        {{ form.login.label }}
-                    </div>
-                    <div>
-                        {{ form.password }}
-                        {{ form.password.label }}
-                    </div>
-                    <div>
-                        <div>
-                            <input type="checkbox" id="remember_me">
-                            <label for="remember_me">Запомнить меня</label>
+                    <!-- Form -->
+                    <div class="row">
+                        <div class="col-12">
+                            <form class="form-horizontal m-t-20" action="{% url 'account:login' %}" method="post">
+                                {% csrf_token %}
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon1"><i class="ti-user"></i></span>
+                                    </div>
+                                    {% render_field form.login class="form-control form-control-lg" placeholder="Имя пользователя/Email" aria-label="Имя пользователя/Email" aria-describedby="basic-addon1" %}
+                                </div>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon2"><i
+                                                class="ti-lock"></i></span>
+                                    </div>
+                                    {% render_field form.password class="form-control form-control-lg" placeholder="Пароль" aria-label="Пароль" aria-describedby="basic-addon1" %}
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-12">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" id="remember_me" class="custom-control-input">
+                                            <label class="custom-control-label" for="remember_me">Запомнить
+                                                меня</label>
+                                            <a href="{% url 'account:forgot' %}" class="text-dark float-right"><i
+                                                    class="fa fa-lock m-r-5"></i> Забыли пароль?</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group text-center">
+                                    <div class="col-xs-12 p-b-20">
+                                        <button class="btn btn-block btn-lg btn-info" type="submit">Войти</button>
+                                    </div>
+                                </div>
+                                {#                                <div class="row">#}
+                                {#                                    <div class="col-xs-12 col-sm-12 col-md-12 m-t-10 text-center">#}
+                                {#                                        <div class="social">#}
+                                {#                                            <a href="javascript:void(0)" class="btn  btn-facebook" data-toggle="tooltip" title="" data-original-title="Login with Facebook"> <i aria-hidden="true" class="fab  fa-facebook"></i> </a>#}
+                                {#                                            <a href="javascript:void(0)" class="btn btn-googleplus" data-toggle="tooltip" title="" data-original-title="Login with Google"> <i aria-hidden="true" class="fab  fa-google-plus"></i> </a>#}
+                                {#                                        </div>#}
+                                {#                                    </div>#}
+                                {#                                </div>#}
+                                <div class="form-group m-b-0 m-t-10">
+                                    <div class="col-sm-12 text-center">
+                                        Ещё нет аккаунта?<a href="{% url 'account:signup' %}"
+                                                            class="text-info m-l-5"><b> Регистрация</b></a>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
-                    <div>
-                        <!-- Forgot password -->
-                        <a href="{% url 'account:forgot' %}">Забыли пароль?</a>
-                    </div>
-
-                    <!-- Sign in button -->
-                    <button type="submit">
-                        Войти
-                    </button>
-
-                    <!-- Register -->
-                    <p>Нет аккаунта?
-                        <a href="{% url 'account:signup' %}">Создать</a>
-                    </p>
-
-                    {#                    <!-- Social login -->#}
-                    {#                    <p>Войти с помощью:</p>#}
-                    {#                    <a type="button" href="" class="btn-floating btn-tw btn-sm"> {# TODO social auth #}
-                    {#                        <i class="fab fa-google"></i>#}
-                    {#                    </a>#}
-
-                </form>
-                <!-- Form -->
-
+                </div>
             </div>
-
         </div>
     </div>
     </body>

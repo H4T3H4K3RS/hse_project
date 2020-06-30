@@ -89,7 +89,7 @@ def link_add(request):
         context["form"] = LinkAddForm(request.user)
         folders = Folder.objects.filter(user=request.user)
         if len(folders) == 0:
-            messages.error(request, "Для начала, создайте подборку.")
+            messages.warning(request, "Для начала, создайте подборку.")
             return redirect(reverse('folder_add'))
     return render(request, "link/add.html", context)
 

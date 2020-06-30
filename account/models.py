@@ -7,7 +7,7 @@ class Code(models.Model):
     token = models.CharField(max_length=64)
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     code = models.CharField(max_length=64)
-    activate = models.BooleanField(default=0)  # 0 - activate, 1 - recover
+    status = models.BooleanField(default=0)  # T - activate, 1 - recover
 
 
 class Profile(models.Model):

@@ -2,13 +2,14 @@ import datetime
 import json
 
 from django.contrib import messages
-from django.contrib.auth import authenticate, logout
+from django.contrib.auth import authenticate
+from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import login as auth_login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from account.forms import AccountLoginForm, AccountSignupForm
+from account.forms import LoginForm, SignupForm, RecoverForm, NewPasswordForm, EditForm
 from account.models import Profile, Code
 from app import utils
 from app.models import SavedLink, Folder, Link, BotKey
@@ -52,27 +53,33 @@ def login(request):
     if request.method == "POST":
         if not request.POST.get("remember_me", None):
             request.session.set_expiry(0)
-        form = AccountLoginForm(request.POST)
+        form = LoginForm(request.POST)
         if form.is_valid():
             context["form"] = form
             username = form.data["login"]
             password = form.data["password"]
             try:
-                username = User.objects.get(username=username)
+                user = User.objects.get(username=username)
             except User.DoesNotExist:
                 try:
-                    username = User.objects.get(email=username)
+                    user = User.objects.get(email=username)
                 except User.DoesNotExist:
                     messages.error(request, "Имя пользователя/Email неверный")
                     return redirect(reverse('account:login'))
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                if username.is_active:
-                    auth_login(request, user)
+            if user.check_password(password):
+                if user.is_active:
+                    user_auth = authenticate(request, username=username)
+                    auth_login(request, user_auth)
+                    messages.success(request, f'Здравствуйте, {user.username}')
                     return redirect(reverse('link_add'))
                 else:
-                    messages.error(request,
-                                   'На электронную почту, указанную при регистрации было выслано письмо с кодом подтверждения.')
+                    try:
+                        code_object = Code.objects.get(user=user, status=True)
+                        messages.warning(request,
+                                       'Был получен запрос на восстановление пароля. Учётная запись деактивирована. Следуйте инструкциями отправленным на электронную почту, указанную при регистрации.')
+                    except Code.DoesNotExist:
+                        messages.error(request,
+                                       'На электронную почту, указанную при регистрации было выслано письмо с кодом подтверждения.')
                     return redirect(reverse('account:login'))
             else:
                 try:
@@ -82,26 +89,27 @@ def login(request):
                     messages.error(request, "Имя пользователя/Email неверный")
         else:
             messages.error(request, "Неправильный формат данных.")
-            context["form"] = AccountLoginForm()
+            context["form"] = LoginForm()
     else:
-        context["form"] = AccountLoginForm()
+        context["form"] = LoginForm()
     return render(request, "account/login.html", context)
 
 
 def logout(request):
-    logout(request)
+    messages.success(request, f"До скорых встреч, {request.user.username}")
+    auth_logout(request)
     return redirect(reverse('index'))
 
 
 def signup(request):
     context = {}
     if request.method == "POST":
-        user_form = AccountSignupForm(request.POST)
+        user_form = SignupForm(request.POST)
         if user_form.is_valid():
             users_email = User.objects.filter(email=user_form.data["email"])
             if len(users_email) != 0:
                 messages.error(request, "Пользователь с таким email уже существует.")
-                context["form"] = AccountSignupForm(request.POST)
+                context["form"] = SignupForm(request.POST)
                 return render(request, "account/signup.html", context)
             else:
                 new_user = user_form.save(commit=True)
@@ -136,18 +144,129 @@ def signup(request):
                     'password_too_common' in codes):
                 messages.error(request, "Пароль не соответствует требованиям. (минимум: длина 8 символов, "
                                         "1 спец.символ, 1 строчная буква, 1 прописная буква, 1 цифра)")
-            context["form"] = AccountSignupForm(request.POST)
+            context["form"] = SignupForm(request.POST)
     else:
-        context["form"] = AccountSignupForm()
+        context["form"] = SignupForm()
     return render(request, "account/signup.html", context)
 
 
 def forgot(request):
-    return None
+    context = {}
+    if request.method == "POST":
+        form = RecoverForm(request.POST)
+        if form.is_valid():
+            try:
+                user = User.objects.get(email=form.data["email"])
+                if user.is_active:
+                    try:
+                        code_object = Code.objects.get(user=user)
+                    except Code.DoesNotExist:
+                        code_object = Code()
+                    code_object.user = user
+                    code_object.code, code_object.token = utils.generate_codes(user, datetime.datetime.now())
+                    code_object.status = True
+                    code_object.save()
+                    code_object.user.is_active = False
+                    code_object.user.save()
+                    mail_context = {'token': code_object.token, 'code': code_object.code, 'user': user}
+                    utils.send_mail(user.email, 'Восстановление Пароля', 'mail/recovery.html', mail_context)
+                    messages.success(request, "Инструкция по восстановлению пароля отправлена на почту.")
+                    return redirect(reverse('account:login'))
+                else:
+                    try:
+                        code_object = Code.objects.get(user=user)
+                        code_object.delete()
+                    except Code.DoesNotExist:
+                        pass
+                    code_object = Code()
+                    code_object.user = user
+                    code_object.code, code_object.token = utils.generate_codes(user, datetime.datetime.now())
+                    code_object.save()
+                    mail_context = {'token': code_object.token, 'code': code_object.code, 'user': user}
+                    utils.send_mail(user.email, 'Подтверждение Регистрации', 'mail/confirmation.html', mail_context)
+                    messages.warning(request, "Аккаунт не был активирован, поэтому письмо для подтверждения регистрации было повторно отправлено на почту.")
+            except User.DoesNotExist:
+                messages.error(request, 'Пользователя с таким email не существует')
+        else:
+            messages.error("Проблемы с ReCaptcha")
+        context["form"] = RecoverForm(request.POST)
+    else:
+        context["form"] = RecoverForm()
+    return render(request, "account/forgot.html", context)
 
 
 def recover(request):
-    return None
+    context = {}
+    if request.method == "POST":
+        form = NewPasswordForm(request.POST)
+        if form.is_valid():
+            token = form.data['token']
+            code = form.data['code']
+            user = form.data['user']
+            if token == '0' or code == '0' or user == '0':
+                return handler403(request)
+            try:
+                user = User.objects.get(username=user)
+            except User.DoesNotExist:
+                return handler404(request)
+            try:
+                code_object = Code.objects.get(token=token, code=code, user=user, status=True)
+            except Code.DoesNotExist:
+                return handler404(request)
+            if datetime.datetime.now(datetime.timezone.utc) - code_object.generated > datetime.timedelta(days=1):
+                messages.error(request, 'Истёк срок действия ссылки. Отправьте запрос на восстановление повторно.')
+                code_object.delete()
+                return redirect(reverse('account:forgot'))
+            else:
+                user.is_active = True
+                user.set_password(form.cleaned_data["password1"])
+                user.save()
+                code_object.delete()
+                user = authenticate(request, username=user.username)
+                if user is not None:
+                    auth_login(request, user)
+                return redirect(reverse('index'))
+        else:
+            errors = form.errors.as_json()
+            errors = json.loads(errors)
+            codes = []
+            for key, message in errors.items():
+                for error in message:
+                    codes.append(error['code'])
+            if 'unique' in codes:
+                messages.error(request, "Пользователь с таким именем уже существует.")
+            if 'password_too_similar' in codes:
+                messages.error(request, "Пароль и имя пользователя совпадают.")
+            if 'password_mismatch' in codes:
+                messages.error(request, "Пароли не совпадают.")
+            if ('password_no_symbol' in codes) or ('password_no_lower' in codes) or ('password_no_upper' in codes) or (
+                    'password_no_number' in codes) or ('password_too_short' in codes) or (
+                    'password_too_common' in codes):
+                messages.error(request, "Пароль не соответствует требованиям. (минимум: длина 8 символов, "
+                                        "1 спец.символ, 1 строчная буква, 1 прописная буква, 1 цифра)")
+            context["form"] = NewPasswordForm(request.POST)
+    else:
+        token = request.GET.get('token', '0')
+        code = request.GET.get('code', '0')
+        user = request.GET.get('user', '0')
+        if token == '0' or code == '0' or user == '0':
+            return handler403(request)
+        try:
+            user = User.objects.get(username=user)
+        except User.DoesNotExist:
+            return handler404(request)
+        try:
+            code_object = Code.objects.get(token=token, code=code, user=user, status=True)
+        except Code.DoesNotExist:
+            return handler404(request)
+        if datetime.datetime.now(datetime.timezone.utc) - code_object.generated > datetime.timedelta(days=1):
+            messages.error(request, 'Истёк срок действия ссылки. Отправьте запрос на восстановление повторно.')
+            code_object.delete()
+            return redirect(reverse('account:forgot'))
+        else:
+            form = NewPasswordForm(initial={'user': user.username, 'token': code_object.token, 'code': code_object.code})
+            context['form'] = form
+    return render(request, "account/restore.html", context=context)
 
 
 def activate(request):
@@ -195,7 +314,7 @@ def view(request, username=None):
                    'links': Link.objects.filter(folder__user=request.user).order_by("-rating"), 'owner': 1,
                    'user': request.user,
                    'saved_links': s_links,
-                   'saved_links_links': utils.get_saved_links(s_links)}
+                   'saved_links_links': utils.get_saved_links(s_links), 'api_key': BotKey.objects.get(user=request.user)}
         return render(request, 'account/view.html', context)
     else:
         context['owner'] = 0
@@ -210,3 +329,43 @@ def view(request, username=None):
     context['saved_links_links'] = utils.get_saved_links(s_links)
     context['saved_links'] = s_links
     return render(request, 'account/view.html', context)
+
+
+@login_required
+def edit(request):
+    context = {}
+    if request.method == "POST":
+        form = EditForm(request.POST)
+        if form.is_valid() or (form.data['password1'] == "" and form.data['password2'] == ""):
+            if form.data['username'] != request.user.username:
+                try:
+                    User.objects.get(username=form.data['username'])
+                    messages.error(request, "Пользователь с выбранным именем уже существует.")
+                    context["form"] = EditForm(initial={'username': form.data['username']})
+                    return render(request, "account/edit.html", context)
+                except User.DoesNotExist:
+                    messages.success(request, "Имя пользователя успешно изменено.")
+                    request.user.username = form.data['username']
+                    request.user.save()
+            if form.data['password1'] != "" and form.data['password2'] != "":
+                request.user.set_password(form.cleaned_data['password1'])
+                request.user.save()
+                messages.success(request, "Пароль был изменён.")
+        else:
+            errors = form.errors.as_json()
+            errors = json.loads(errors)
+            codes = []
+            for key, message in errors.items():
+                for error in message:
+                    codes.append(error['code'])
+            if 'password_too_similar' in codes:
+                messages.error(request, "Пароль и имя пользователя совпадают.")
+            if 'password_mismatch' in codes:
+                messages.error(request, "Пароли не совпадают.")
+            if ('password_no_symbol' in codes) or ('password_no_lower' in codes) or ('password_no_upper' in codes) or (
+                    'password_no_number' in codes) or ('password_too_short' in codes) or (
+                    'password_too_common' in codes):
+                messages.error(request, "Пароль не соответствует требованиям. (минимум: длина 8 символов, "
+                                        "1 спец.символ, 1 строчная буква, 1 прописная буква, 1 цифра)")
+    context["form"] = EditForm(initial={'username': request.user.username})
+    return render(request, "account/edit.html", context)
