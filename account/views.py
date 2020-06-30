@@ -59,21 +59,27 @@ def login(request):
             username = form.data["login"]
             password = form.data["password"]
             try:
-                username = User.objects.get(username=username)
+                user = User.objects.get(username=username)
             except User.DoesNotExist:
                 try:
-                    username = User.objects.get(email=username)
+                    user = User.objects.get(email=username)
                 except User.DoesNotExist:
                     messages.error(request, "Имя пользователя/Email неверный")
                     return redirect(reverse('account:login'))
-            if username.check_password(password):
-                if username.is_active:
-                    user = authenticate(request, username=username)
-                    auth_login(request, user)
+            if user.check_password(password):
+                if user.is_active:
+                    user_auth = authenticate(request, username=username)
+                    auth_login(request, user_auth)
+                    messages.success(request, f'Здравствуйте, {user.username}')
                     return redirect(reverse('link_add'))
                 else:
-                    messages.error(request,
-                                   'На электронную почту, указанную при регистрации было выслано письмо с кодом подтверждения.')
+                    try:
+                        code_object = Code.objects.get(user=user, status=True)
+                        messages.warning(request,
+                                       'Был получен запрос на восстановление пароля. Учётная запись деактивирована. Следуйте инструкциями отправленным на электронную почту, указанную при регистрации.')
+                    except Code.DoesNotExist:
+                        messages.error(request,
+                                       'На электронную почту, указанную при регистрации было выслано письмо с кодом подтверждения.')
                     return redirect(reverse('account:login'))
             else:
                 try:
@@ -90,6 +96,7 @@ def login(request):
 
 
 def logout(request):
+    messages.success(request, f"До скорых встреч, {request.user.username}")
     auth_logout(request)
     return redirect(reverse('index'))
 
@@ -151,14 +158,20 @@ def forgot(request):
             try:
                 user = User.objects.get(email=form.data["email"])
                 if user.is_active:
-                    code_object = Code()
+                    try:
+                        code_object = Code.objects.get(user=user)
+                    except Code.DoesNotExist:
+                        code_object = Code()
                     code_object.user = user
                     code_object.code, code_object.token = utils.generate_codes(user, datetime.datetime.now())
-                    code_object.activate = True
+                    code_object.status = True
                     code_object.save()
+                    code_object.user.is_active = False
+                    code_object.user.save()
                     mail_context = {'token': code_object.token, 'code': code_object.code, 'user': user}
                     utils.send_mail(user.email, 'Восстановление Пароля', 'mail/recovery.html', mail_context)
                     messages.success(request, "Инструкция по восстановлению пароля отправлена на почту.")
+                    return redirect(reverse('account:login'))
                 else:
                     try:
                         code_object = Code.objects.get(user=user)
@@ -197,7 +210,7 @@ def recover(request):
             except User.DoesNotExist:
                 return handler404(request)
             try:
-                code_object = Code.objects.get(token=token, code=code, user=user, activate=True)
+                code_object = Code.objects.get(token=token, code=code, user=user, status=True)
             except Code.DoesNotExist:
                 return handler404(request)
             if datetime.datetime.now(datetime.timezone.utc) - code_object.generated > datetime.timedelta(days=1):
@@ -243,7 +256,7 @@ def recover(request):
         except User.DoesNotExist:
             return handler404(request)
         try:
-            code_object = Code.objects.get(token=token, code=code, user=user, activate=True)
+            code_object = Code.objects.get(token=token, code=code, user=user, status=True)
         except Code.DoesNotExist:
             return handler404(request)
         if datetime.datetime.now(datetime.timezone.utc) - code_object.generated > datetime.timedelta(days=1):

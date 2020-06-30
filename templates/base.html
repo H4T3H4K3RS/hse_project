@@ -24,9 +24,8 @@
     {% endblock head_meta %}
     {% block head_css %}
         {% block head_css_site %}
-            <link href="{% static 'css/app.css' %}" rel="stylesheet" media="screen">
-            <link href="{% static 'theme/dist/css/style.min.css' %}" rel="stylesheet">
             <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
+            <link href="{% static 'theme/dist/css/style.min.css' %}" rel="stylesheet">
             <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
             <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
             <!--[if lt IE 9]>
@@ -42,45 +41,91 @@
 </head>
 {% block content %}
     <body>
-    if you see this, something is wrong!
 
     </body>
 {% endblock content %}
 {% block footer_javascript %}
     {% block footer_javascript_site %}
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
         <script src="{% url 'js_urls' %}" type="text/javascript"></script>
         <script src="{% static 'theme/assets/libs/jquery/dist/jquery.min.js' %}"></script>
+        <script src="{% static 'theme/assets/libs/jquery/dist/jquery.min.js' %}"></script>
+        <!-- Bootstrap tether Core JavaScript -->
         <script src="{% static 'theme/assets/libs/popper.js/dist/umd/popper.min.js' %}"></script>
         <script src="{% static 'theme/assets/libs/bootstrap/dist/js/bootstrap.min.js' %}"></script>
-        <script src="{% static 'theme/dist/js/sidebarmenu.js' %}"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-        <script src="{% static 'theme/assets/extra-libs/toastr/toastr-init.js' %}"></script>
-        <script src="{% static 'js/app.js' %}"></script>
+        <!-- apps -->
+        <script src="{% static 'theme/dist/js/app.min.js' %}"></script>
+        <!-- full sidebar -->
         <script>
+            $(function () {
+                "use strict";
+                $("#main-wrapper").AdminSettings({
+                    Theme: false, // this can be true or false ( true means dark and false means light ),
+                    Layout: 'vertical',
+                    LogoBg: 'skin6', // You can change the Value to be skin1/skin2/skin3/skin4/skin5/skin6
+                    NavbarBg: 'skin6', // You can change the Value to be skin1/skin2/skin3/skin4/skin5/skin6
+                    SidebarType: 'full', // You can change it full / mini-sidebar / iconbar / overlay
+                    SidebarColor: 'skin6', // You can change the Value to be skin1/skin2/skin3/skin4/skin5/skin6
+                    SidebarPosition: false, // it can be true / false ( true means Fixed and false means absolute )
+                    HeaderPosition: false, // it can be true / false ( true means Fixed and false means absolute )
+                    BoxedLayout: false, // it can be true / false ( true means Boxed and false means Fluid )
+                });
+            });
+            $(document).on('click', '#searchtoggle', function (e) {
+                $("#searchbox").css({display: 'block'});
+                $("#navbar").addClass("show");
+            });
+            $(document).on('click', '.srh-btn', function (e) {
+                $("#navbar").removeClass("show");
+            });
+        </script>
+
+        <script>
+            toastr.options.closeButton = true;
             toastr.options.showMethod = 'slideDown';
             toastr.options.hideMethod = 'slideUp';
             toastr.options.closeMethod = 'slideUp';
             toastr.options.progressBar = true;
         </script>
+        <script src="{% static 'theme/dist/js/app-style-switcher.js' %}"></script>
+        <!-- slimscrollbar scrollbar JavaScript -->
+        <script src="{% static 'theme/assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js' %}"></script>
+        <script src="{% static 'theme/assets/extra-libs/sparkline/sparkline.js' %}"></script>
+        <!--Wave Effects -->
+        <script src="{% static 'theme/dist/js/waves.js' %}"></script>
+        <!--Menu sidebar -->
+        <script src="{% static 'theme/dist/js/sidebarmenu.js' %}"></script>
+        <!--Custom JavaScript -->
+        <script src="{% static 'theme/dist/js/custom.min.js' %}"></script>
+        <!--This page JavaScript -->
+        <!--chartis chart-->
+        <script src="{% static 'theme/assets/libs/chartist/dist/chartist.min.js' %}"></script>
+        <script src="{% static 'theme/assets/libs/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.min.js' %}"></script>
+        <!--c3 charts -->
+        <script src="{% static 'theme/assets/extra-libs/c3/d3.min.js' %}"></script>
+        <script src="{% static 'theme/assets/extra-libs/c3/c3.min.js' %}"></script>
+        <!--chartjs -->
+        <script src="{% static 'theme/assets/libs/chart.js/dist/Chart.min.js' %}"></script>
+        <script src="{% static 'theme/dist/js/pages/dashboards/dashboard1.js' %}"></script>
     {% endblock footer_javascript_site %}
     {% block footer_javascript_section %}{% endblock footer_javascript_section %}
     {% block footer_javascript_page %}{% endblock footer_javascript_page %}
     {% block messages %}
         {% if messages %}
             <script type=text/javascript>
-            setTimeout(function () {
-                {% for message in messages %}
-                    {% if message.tags == 'success' %}
-                        toastr.{{ message.tags }}('{{ message }}');
-                    {% elif message.tags == 'info' %}
-                        toastr.{{ message.tags }}('{{ message }}');
-                    {% elif message.tags == 'warning' %}
-                        toastr.{{ message.tags }}('{{ message }}');
-                    {% elif message.tags == 'error' %}
-                        toastr.{{ message.tags }}('{{ message }}');
-                    {% endif %}
-                {% endfor %}
-            }, 1000);
+                setTimeout(function () {
+                    {% for message in messages %}
+                        {% if message.tags == 'success' %}
+                            toastr.{{ message.tags }}('{{ message }}', "", {timeout: {{ message|length }}* 40});
+                        {% elif message.tags == 'info' %}
+                            toastr.{{ message.tags }}('{{ message }}', "", {timeout: {{ message|length }}* 40});
+                        {% elif message.tags == 'warning' %}
+                            toastr.{{ message.tags }}('{{ message }}', "", {timeout: {{ message|length }}* 40});
+                        {% elif message.tags == 'error' %}
+                            toastr.{{ message.tags }}('{{ message }}', "", {timeout: {{ message|length }}* 40});
+                        {% endif %}
+                    {% endfor %}
+                }, 1000);
             </script>
         {% endif %}
     {% endblock messages %}

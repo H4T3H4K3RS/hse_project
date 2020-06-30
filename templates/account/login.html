@@ -7,14 +7,14 @@
 {% block content %}
     <body>
 
-{#    {% include 'blocks/nav.html' %}#}
-    <div class="main-wrapper">
-{#        <div class="preloader">#}
-{#            <div class="lds-ripple">#}
-{#                <div class="lds-pos"></div>#}
-{#                <div class="lds-pos"></div>#}
-{#            </div>#}
-{#        </div>#}
+    <div id="main-wrapper">
+    {% include 'blocks/nav.html' %}
+        <div class="preloader">
+            <div class="lds-ripple">
+                <div class="lds-pos"></div>
+                <div class="lds-pos"></div>
+            </div>
+        </div>
         <div class="auth-wrapper d-flex no-block justify-content-center align-items-center"
              style="background:url({% static 'img/auth_bg.jpg' %}) no-repeat center center;">
             <div class="auth-box">
@@ -37,7 +37,7 @@
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend">
                                         <span class="input-group-text" id="basic-addon2"><i
-                                                class="ti-pencil"></i></span>
+                                                class="ti-lock"></i></span>
                                     </div>
                                     {% render_field form.password class="form-control form-control-lg" placeholder="Пароль" aria-label="Пароль" aria-describedby="basic-addon1" %}
                                 </div>
