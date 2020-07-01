@@ -112,7 +112,7 @@ def add_link(update, context):
                     update.message.reply_text(help_msg)
         else:
             update.message.reply_text("Неправильный API-ключ.")
-            keyboard = [[InlineKeyboardButton("Получить", url=f'{settings.HOST}{reverse("api_account_key")}')]]
+            keyboard = [[InlineKeyboardButton("Получить", url=f'{settings.HOST}{reverse("api:account_key")}')]]
             reply_markup = InlineKeyboardMarkup(keyboard)
             update.message.reply_text('Отправьте боту полученный API-ключ', reply_markup=reply_markup)
 
@@ -130,7 +130,7 @@ logger = logging.getLogger(__name__)
 
 
 def start(update, context):
-    keyboard = [[InlineKeyboardButton("Получить", url=f'{settings.HOST}{reverse("api_account_key")}')]]
+    keyboard = [[InlineKeyboardButton("Получить", url=f'{settings.HOST}{reverse("api:account_key")}')]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     update.message.reply_text('Отправьте боту полученный API-ключ', reply_markup=reply_markup)
 
@@ -180,7 +180,7 @@ def logout(update, context):
         update.message.reply_text("Вы успешны вышли из аккаунта!")
     except BotKey.DoesNotExist:
         update.message.reply_text("Вы не авторизованы.")
-    keyboard = [[InlineKeyboardButton("Получить", url=f'{settings.HOST}{reverse("api_account_key")}')]]
+    keyboard = [[InlineKeyboardButton("Получить", url=f'{settings.HOST}{reverse("api:account_key")}')]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     update.message.reply_text('Для авторизации отправьте боту полученный API-ключ', reply_markup=reply_markup)
 
