@@ -24,8 +24,8 @@
     {% endblock head_meta %}
     {% block head_css %}
         {% block head_css_site %}
-            <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
             <link href="{% static 'theme/dist/css/style.min.css' %}" rel="stylesheet">
+            <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
             <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
             <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
             <!--[if lt IE 9]>
@@ -46,10 +46,9 @@
 {% endblock content %}
 {% block footer_javascript %}
     {% block footer_javascript_site %}
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
         <script src="{% url 'js_urls' %}" type="text/javascript"></script>
         <script src="{% static 'theme/assets/libs/jquery/dist/jquery.min.js' %}"></script>
-        <script src="{% static 'theme/assets/libs/jquery/dist/jquery.min.js' %}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
         <!-- Bootstrap tether Core JavaScript -->
         <script src="{% static 'theme/assets/libs/popper.js/dist/umd/popper.min.js' %}"></script>
         <script src="{% static 'theme/assets/libs/bootstrap/dist/js/bootstrap.min.js' %}"></script>
@@ -115,15 +114,30 @@
             <script type=text/javascript>
                 setTimeout(function () {
                     {% for message in messages %}
-                        {% if message.tags == 'success' %}
-                            toastr.{{ message.tags }}('{{ message }}', "", {timeout: {{ message|length }}* 40});
-                        {% elif message.tags == 'info' %}
-                            toastr.{{ message.tags }}('{{ message }}', "", {timeout: {{ message|length }}* 40});
-                        {% elif message.tags == 'warning' %}
-                            toastr.{{ message.tags }}('{{ message }}', "", {timeout: {{ message|length }}* 40});
-                        {% elif message.tags == 'error' %}
-                            toastr.{{ message.tags }}('{{ message }}', "", {timeout: {{ message|length }}* 40});
+                        console.log('{{ message.tags }}');
+                        var params = {timeout: {{ message|length }} * 40};
+                        {% if 'link' in message.tags %}
+                            params.onHidden = function () {
+                                var win = window.open('{{ message.message.submessages.0 }}', '_blank');
+                                if (win) {
+                                    //Browser has allowed it to be opened
+                                    win.focus();
+                                } else {
+                                    //Browser has blocked it
+                                    alert('Сайту требуется разрешение на открытие всплывающих окон, для открытия почты.');
+                                }
+                            };
                         {% endif %}
+                        {% if 'success' in message.tags %}
+                            toastr.success('{{ message.message.title }}', "", params);
+                        {% elif 'info' in message.tags %}
+                            toastr.info('{{ message.message.title }}', "", params);
+                        {% elif 'warning' in message.tags %}
+                            toastr.warning('{{ message.message.title }}', "", params);
+                        {% elif 'error' in message.tags %}
+                            toastr.error('{{ message.message.title }}', "", params);
+                        {% endif %}
+                        console.log('{{message.title}}');
                     {% endfor %}
                 }, 1000);
             </script>

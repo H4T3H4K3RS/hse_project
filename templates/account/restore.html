@@ -1,71 +1,60 @@
 {% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}
+    Изменение Пароля
+{% endblock %}
 {% block content %}
     <body>
 
+    <div id="main-wrapper">
     {% include 'blocks/nav.html' %}
-    <div>
-        <div>
-
-            <h5>
-                <strong>Создание Аккаунта</strong>
-            </h5>
-            {#            {% if messages %}#}
-            {#                {% for message in messages %}#}
-            {##}
-            {#                    {% get_bootstrap_alert_msg_css_name message.tags as alert_tag %}#}
-            {#                    <div {% if message.tags %}#}
-            {#                        class="alert fadeIn alert-{{ alert_tag }}"{% endif %}><a class="close" data-dismiss="alert"#}
-            {#                                                                                 aria-label="close">&times;</a>{{ message }}#}
-            {#                    </div>#}
-            {#                {% endfor %}#}
-            {#            {% endif %}#}
-            {% if messages %}
-                {% for message in messages %}
-                    <div>
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
-
-            <!--Card content-->
-            <div>
-
-                <!-- Form -->
-                <form action="{% url 'account:recover' %}" method="post">
-                    {% csrf_token %}
-                    <div>
-                        {{ form.password1.label }}
-                        {{ form.password1 }}
-                        {{ form.password2.label }}
-                        {{ form.password2 }}
-                        {{ form.code }}
-                        {{ form.token }}
-                        {{ form.user }}
-                    </div>
-
-                    <!-- Sign in button -->
-                    <button type="submit">
-                        Обновить пароль
-                    </button>
-                    {#                    <p>Зарегистрироваться с помощью:</p>#}
-                    {#                    <a type="button" href="" class="btn-floating btn-tw btn-sm"> {# TODO social auth #}
-                    {#                        <i class="fab fa-google success-color"></i>#}
-                    {#                    </a>#}
-                    <!-- Register -->
-                    <p>Уже есть аккаунт?
-                        <a href="{% url 'account:login' %}">Войти</a>
-                    </p>
-                    <p>Создать аккаунт?
-                        <a href="{% url 'account:signup' %}">Зарегистрироваться</a>
-                    </p>
-                    <!-- Social login -->
-
-
-                </form>
-                <!-- Form -->
-
+        <div class="preloader">
+            <div class="lds-ripple">
+                <div class="lds-pos"></div>
+                <div class="lds-pos"></div>
             </div>
-
+        </div>
+        <div class="page-wrapper auth-wrapper d-flex no-block justify-content-center align-items-center"
+             style="background:url({% static 'img/auth_bg.jpg' %}) no-repeat center center;">
+            <div class="auth-box">
+                <div id="loginform">
+                    <div class="logo">
+                        <span class="db"><img height="30%" width="30%" src="{% static 'logo.png' %}" alt="logo"/></span>
+                        <h5 class="font-medium m-b-20">Изменение Пароля в Link.IT</h5>
+                    </div>
+                    <!-- Form -->
+                    <div class="row">
+                        <div class="col-12">
+                            <form class="form-horizontal m-t-20" action="{% url 'account:recover' %}" method="post">
+                                {% csrf_token %}
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon2"><i
+                                                class="ti-lock"></i></span>
+                                    </div>
+                                    {% render_field form.password1 class="form-control form-control-lg" placeholder="Пароль" aria-label="Новый Пароль" aria-describedby="basic-addon1" %}
+                                </div>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon2"><i
+                                                class="ti-lock"></i></span>
+                                    </div>
+                                    {% render_field form.password2 class="form-control form-control-lg" placeholder="Повторите Пароль" aria-label="Повторите Пароль" aria-describedby="basic-addon1" %}
+                                </div>
+                                {{ form.user }}
+                                {{ form.code }}
+                                {{ form.token }}
+                                <div class="form-group text-center">
+                                    <div class="col-xs-12 p-b-20">
+                                        <button class="btn btn-block btn-lg btn-info" type="submit">Обновить пароль</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     </body>
