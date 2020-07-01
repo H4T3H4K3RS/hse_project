@@ -108,7 +108,7 @@ def add_link(update, context):
                     flag = True
                     bot_key.save()
                 if flag:
-                    update.message.reply_text(f"Здравствуйте, [{bot_keys[i].user.username}]({settings.HOST}{reverse('account_view_my')})\n", parse_mode=telegram.ParseMode.MARKDOWN_V2)
+                    update.message.reply_text(f"Здравствуйте, [{bot_keys[i].user.username}]({settings.HOST}{reverse('account:view_my')})\n", parse_mode=telegram.ParseMode.MARKDOWN_V2)
                     update.message.reply_text(help_msg)
         else:
             update.message.reply_text("Неправильный API-ключ.")
