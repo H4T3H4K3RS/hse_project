@@ -124,6 +124,10 @@ def link_edit(request, link_id):
                     pass
                 link.folder = folder
                 if link.link != link_form.data.get("link"):
+                    saved_links = SavedLink.objects.filter(original=request.user, link=link.link)
+                    for saved_link in saved_links:
+                        saved_link.original = saved_link.user
+                        saved_link.save()
                     link.link = link_form.data.get("link")
                     link.folder.rating -= link.rating
                     link.rating = 0
@@ -242,7 +246,7 @@ def folder_add(request):
         if folder_form.is_valid():
             try:
                 folder = Folder.objects.get(name=folder_form.data['name'], user=request.user)
-                messages.error(request, f"Вы уже создали подборку \"{folder_form.data['name']}\".")
+                messages.error(request, f"Вы уже создали подборку \"{folder_form.data['name']}\". Выберите другое название.")
                 context["form"] = FolderAddForm(request.POST)
                 return render(request, "folder/add.html", context)
             except Folder.DoesNotExist:

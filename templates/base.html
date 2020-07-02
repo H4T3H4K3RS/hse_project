@@ -63,7 +63,11 @@
                     Layout: 'vertical',
                     LogoBg: 'skin6', // You can change the Value to be skin1/skin2/skin3/skin4/skin5/skin6
                     NavbarBg: 'skin6', // You can change the Value to be skin1/skin2/skin3/skin4/skin5/skin6
+                {% if sidebar_type %}
+                    SidebarType: '{{ sidebar_type }}', // You can change it full / mini-sidebar / iconbar / overlay
+                {% else %}
                     SidebarType: 'full', // You can change it full / mini-sidebar / iconbar / overlay
+                {% endif %}
                     SidebarColor: 'skin6', // You can change the Value to be skin1/skin2/skin3/skin4/skin5/skin6
                     SidebarPosition: false, // it can be true / false ( true means Fixed and false means absolute )
                     HeaderPosition: false, // it can be true / false ( true means Fixed and false means absolute )
@@ -115,8 +119,8 @@
                 setTimeout(function () {
                     {% for message in messages %}
                         console.log('{{ message.tags }}');
-                        var params = {timeout: {{ message.message.title|length }} * 40};
                         {% if 'link' in message.tags %}
+                            var params = {timeout: {{ message.message.title|length }} * 40};
                             params.onHidden = function () {
                                 var win = window.open('{{ message.message.submessages.0 }}', '_blank');
                                 if (win) {
@@ -138,6 +142,7 @@
                             {% endif %}
                             console.log('{{ message.message.title }}');
                         {% else %}
+                            var params = {timeout: {{ message|length }} * 40};
                             {% if 'success' in message.tags %}
                                 toastr.success('{{ message }}', "", params);
                             {% elif 'info' in message.tags %}

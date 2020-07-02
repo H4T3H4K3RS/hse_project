@@ -4,12 +4,12 @@ function reload_account(username, id = "content") {
         type: 'GET',
         data: {},
         beforeSend: function () {
-            $("#AjaxLoader").text("Обновление данных профиля...");
-            $("#AjaxLoader").show();
+            toastr.warning("Обновление данных профиля...");
+            
         },
         success: function (data, status) {
             document.getElementById(id).innerHTML = data;
-            $("#AjaxLoader").hide();
+            toastr.success("Обновлено");
             set_listeners();
         }
     });
@@ -21,12 +21,12 @@ function reload_folder(folder_id, id = "content") {
         type: 'GET',
         data: {},
         beforeSend: function () {
-            $("#AjaxLoader").text("Обновление данных подборки...");
-            $("#AjaxLoader").show();
+            toastr.warning("Обновление данных подборки...");
+            
         },
         success: function (data, status) {
             document.getElementById(id).innerHTML = data;
-            $("#AjaxLoader").hide();
+            toastr.success("Обновлено");
             set_listeners();
         }
     });
@@ -39,12 +39,12 @@ function reload_index(id = "content") {
         type: 'GET',
         data: {},
         beforeSend: function () {
-            $("#AjaxLoader").text("Обновление данных...");
-            $("#AjaxLoader").show();
+            toastr.warning("Обновление данных...");
+            
         },
         success: function (data, status) {
             document.getElementById(id).innerHTML = data;
-            $("#AjaxLoader").hide();
+            toastr.success("Обновлено");
             set_listeners();
         }
     });
@@ -58,12 +58,12 @@ function reload_search(id = "content") {
         type: 'GET',
         data: {},
         beforeSend: function () {
-            $("#AjaxLoader").text("Обновление данных поиска...");
-            $("#AjaxLoader").show();
+            toastr.warning("Обновление данных поиска...");
+            
         },
         success: function (data, status) {
             document.getElementById(id).innerHTML = data;
-            $("#AjaxLoader").hide();
+            toastr.success("Обновлено");
             set_listeners();
         }
     });
@@ -88,11 +88,11 @@ function delete_link(link_id, type, reloader, id = 'messages') {
         url: window.reverse('link_delete', link_id),
         type: 'GET',
         beforeSend: function () {
-            $("#AjaxLoader").text("Удаление ссылки...");
-            $("#AjaxLoader").show();
+            toastr.warning("Удаление ссылки...");
+            
         },
         success: function (data, status) {
-            document.getElementById(id).innerHTML = data.data;
+            toastr.success(data.data);
             reload(type, reloader);
         }
     });
@@ -104,11 +104,11 @@ function favourite_save(link_id, type, reloader, id = 'messages') {
         url: window.reverse('favourite_save', link_id),
         type: 'GET',
         beforeSend: function () {
-            $("#AjaxLoader").text("Добавление ссылки в сохранённое...");
-            $("#AjaxLoader").show();
+            toastr.warning("Добавление ссылки в сохранённое...");
+            
         },
         success: function (data, status) {
-            document.getElementById(id).innerHTML = data.data;
+            toastr.success(data.data);
             reload(type, reloader);
         }
     });
@@ -120,11 +120,11 @@ function favourite_save_alt(link_id, type, reloader, id = 'messages') {
         url: window.reverse('favourite_save_alt', link_id),
         type: 'GET',
         beforeSend: function () {
-            $("#AjaxLoader").text("Добавление ссылки в сохранённое...");
-            $("#AjaxLoader").show();
+            toastr.warning("Добавление ссылки в сохранённое...");
+            
         },
         success: function (data, status) {
-            document.getElementById(id).innerHTML = data.data;
+            toastr.success(data.data);
             reload(type, reloader);
         }
     });
@@ -136,11 +136,11 @@ function vote(link_id, vote, type, reloader, id = 'messages') {
         url: window.reverse('link_vote', link_id, vote),
         type: 'GET',
         beforeSend: function () {
-            $("#AjaxLoader").text("Отправка голоса...");
-            $("#AjaxLoader").show();
+            toastr.warning("Отправка голоса...");
+            
         },
         success: function (data, status) {
-            document.getElementById(id).innerHTML = data.data;
+            toastr.success(data.data);
             reload(type, reloader);
         }
     });
@@ -152,11 +152,10 @@ function delete_favourite(link_id, type, reloader, id = 'messages') {
         url: window.reverse('favourite_delete', link_id),
         type: 'GET',
         beforeSend: function () {
-            $("#AjaxLoader").text("Удаление из сохранённого...");
-            $("#AjaxLoader").show();
+            toastr.warning("Удаление из сохранённого");
         },
         success: function (data, status) {
-            document.getElementById(id).innerHTML = data.data;
+            toastr.success(data.data);
             reload(type, reloader);
         }
     });
@@ -168,11 +167,11 @@ function delete_folder(folder_id, type, reloader, id = 'messages') {
         url: window.reverse('folder_delete', folder_id),
         type: 'GET',
         beforeSend: function () {
-            $("#AjaxLoader").text("Удаление подборки...");
-            $("#AjaxLoader").show();
+            toastr.warning("Удаление подборки");
+            
         },
         success: function (data, status) {
-            document.getElementById(id).innerHTML = data.data;
+            toastr.success(data.data);
             reload(type, reloader);
         }
     });
