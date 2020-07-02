@@ -1,6 +1,7 @@
 import datetime
 import json
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import authenticate
 from django.contrib.auth import logout as auth_logout
@@ -297,11 +298,6 @@ def activate(request):
         return handler404(request)
     if datetime.datetime.now(datetime.timezone.utc) - code_object.generated > datetime.timedelta(days=1):
         messages.error(request, 'Истёк срок действия ссылки. Зарегистрируйтесь повторно.')
-        code_object.delete()
-        Profile.objects.get(user=user).delete()
-        links = Link.objects.filter(folder__user=user)
-        for i in links:
-            i.delete()
         user.delete()
         return redirect(reverse('account:signup'))
     else:
@@ -327,7 +323,7 @@ def view(request, username=None):
                    'user': request.user,
                    'saved_links': s_links,
                    'saved_links_links': utils.get_saved_links(s_links),
-                   'api_key': BotKey.objects.get(user=request.user)}
+                   'api_key': BotKey.objects.filter(user=request.user)[0]}
         return render(request, 'account/view.html', context)
     else:
         context['owner'] = 0
@@ -382,3 +378,20 @@ def edit(request):
                                         "1 спец.символ, 1 строчная буква, 1 прописная буква, 1 цифра)")
     context["form"] = EditForm(initial={'username': request.user.username})
     return render(request, "account/edit.html", context)
+
+
+def agreement(request):
+    context = {}
+    context['host'] = settings.HOST
+    return render(request, "account/agreement.html", context)
+
+
+@login_required
+def delete(request):
+    context = {}
+    if request.method == "POST":
+        messages.success(request, f"Аккаунт {request.user} успешно удалён. До скорых встреч 👋")
+        request.user.delete()
+        return redirect(reverse("index"))
+    else:
+        return render(request, "account/delete.html", context)

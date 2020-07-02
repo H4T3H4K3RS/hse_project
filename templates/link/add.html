@@ -1,30 +1,60 @@
 {% extends 'base.html' %}
+{% load widget_tweaks %}
+{% load static %}
 {% block title %}
-    Добавление ссылки
+    Добавление Ссылки
 {% endblock title %}
 {% block content %}
     <body>
     <div id="main-wrapper">
-    {% include 'blocks/nav.html' %}
+        {% include 'blocks/nav.html' %}
         <div class="preloader">
             <div class="lds-ripple">
                 <div class="lds-pos"></div>
                 <div class="lds-pos"></div>
             </div>
         </div>
-    <form action="{% url 'link_add' %}" method="post">
-        {% csrf_token %}
-        <div>
-            {{ form.link.label }}
-            {{ form.link }}
+        <div class="auth-wrapper d-flex no-block justify-content-center align-items-center"
+             style="background:url({% static 'img/folder_bg.jpg' %}) no-repeat center center;">
+            <div class="auth-box">
+                <div id="addfolder">
+                    <div class="logo mb-1">
+                        <span class="db"><i class="ti-link" style="font-size: 150%"></i></span>
+                        <h5 class="font-medium m-b-20">Добавление Ссылки </h5>
+                    </div>
+                    <!-- Form -->
+                    <div class="row">
+                        <div class="col-12">
+                            <form class="form-horizontal m-t-20" action="{% url 'link_add' %}" method="post">
+                                {% csrf_token %}
+                                <div class="input-group mb-3">
+                                    <div class="col-sm-12 text-center mb-2">
+                                        Вставьте саму ссылку и выберите подборку, в которую вы хотите её сохранить.
+                                    </div>
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon1"><i
+                                                class="ti-info-alt"></i></span>
+                                    </div>
+                                    {% render_field form.link class="form-control form-control-lg" placeholder="URL" aria-label="url" aria-describedby="basic-addon1" %}
+                                </div>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon1"><i
+                                                class="ti-folder"></i></span>
+                                    </div>
+                                    {% render_field form.folder class="select2 custom-select form-control-lg" placeholder="Подборка" aria-label="folder" aria-describedby="basic-addon1" %}
+                                </div>
+                                <div class="form-group text-center">
+                                    <div class="col-xs-12 p-b-20">
+                                        <button class="btn btn-block btn-lg btn-info" type="submit">Добавить</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div>
-            {{ form.folder.label }}
-            {{ form.folder }}
-        </div>
-
-        <button type="submit">Создать ссылку</button>
-    </form>
     </div>
     </body>
 {% endblock content %}

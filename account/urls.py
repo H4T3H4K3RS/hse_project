@@ -27,4 +27,6 @@ urlpatterns = [
     path('view/', views.view, name='view_my'),
     path('view/<str:username>/', views.view, name='view_others'),
     path('edit/', views.edit, name='edit'),
+    path('agreement/', views.agreement, name='agreement'),
+    path('delete/', views.delete, name='delete'),
 ]

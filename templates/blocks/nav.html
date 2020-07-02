@@ -57,7 +57,7 @@
                     <div class="user-profile d-flex no-block dropdown mt-3">
 
                         {% if request.user.is_authenticated %}
-                            <div class="user-pic"><img src="{% static 'theme/assets/images/users/1.jpg' %}" alt="users"
+                            <div class="user-pic"><img src="{% static 'img/avatars/1.jpg' %}" alt="users"
                                                        class="rounded-circle" width="40"/></div>
                             <div class="user-content hide-menu ml-2">
                                 <a href="{% url 'account:view_my' %}" class="" id="Userdd" role="button"
@@ -110,7 +110,7 @@
                         class="sidebar-link waves-effect waves-dark {% if request.resolver_match.url_name == "folder_add" %}active{% endif %}"
                         href="{% url 'folder_add' %}"
                         aria-expanded="false"><i class="mdi mdi-folder"></i><span
-                        class="hide-menu">Добавить Подборку </span></a></li>
+                        class="hide-menu">Создать Подборку </span></a></li>
                 <li class="sidebar-item"><a
                         class="sidebar-link waves-effect waves-dark{% if request.resolver_match.url_name == "link_add" %}active{% endif %}"
                         href="{% url 'link_add' %}"

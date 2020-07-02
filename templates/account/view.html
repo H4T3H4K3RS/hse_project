@@ -4,19 +4,26 @@
 {% endblock %}
 {% block content %}
     <body>
-    <div id="messages">
-
-    </div>
-    {% include 'blocks/nav.html' %}
-    <h1>{{ user.username }}</h1>
-    {% if request.user == user %}
-        <span id="api_key">{{ api_key.key }}</span>
-        <br>
-        <a href="{% url 'account:edit' %}">Изменить Аккаунт</a>
-    {% endif %}
-    <div id="AjaxLoader"></div>
-    <div id="content">
-        {% include 'api/account.html' %}
+    <div id="main-wrapper">
+        {% include 'blocks/nav.html' %}
+        <div class="preloader">
+            <div class="lds-ripple">
+                <div class="lds-pos"></div>
+                <div class="lds-pos"></div>
+            </div>
+        </div>
+        <div class="page-wrapper">
+            <h1>{{ user.username }}</h1>
+            {% if request.user == user %}
+                <span id="api_key">{{ api_key.key }}</span>
+                <br>
+                <a href="{% url 'account:edit' %}">Изменить Аккаунт</a>
+            {% endif %}
+            <div id="AjaxLoader"></div>
+            <div id="content">
+                {% include 'api/account.html' %}
+            </div>
+        </div>
     </div>
     </body>
 {% endblock content %}

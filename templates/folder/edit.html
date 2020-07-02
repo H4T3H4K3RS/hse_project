@@ -1,24 +1,53 @@
 {% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
 {% block title %}
     Изменение Подборки
 {% endblock title %}
 {% block content %}
     <body>
-    {% include 'blocks/nav.html' %}
-    {% if messages %}
-        {% for message in messages %}
-            <div>
-                {{ message }}
+    <div id="main-wrapper">
+        {% include 'blocks/nav.html' %}
+        <div class="preloader">
+            <div class="lds-ripple">
+                <div class="lds-pos"></div>
+                <div class="lds-pos"></div>
             </div>
-        {% endfor %}
-    {% endif %}
-    <form action="{% url 'folder_edit' folder.id %}" method="post">
-        {% csrf_token %}
-        <div>
-            {{ form.name.label }}
-            {{ form.name }}
         </div>
-        <button type="submit">Сохранить Изменения</button>
-    </form>
+        <div class="auth-wrapper d-flex no-block justify-content-center align-items-center"
+             style="background:url({% static 'img/folder_bg.jpg' %}) no-repeat center center;">
+            <div class="auth-box">
+                <div id="addfolder">
+                    <div class="logo mb-1">
+                        <span class="db"><i class="ti-folder" style="font-size: 150%"></i></span>
+                        <h5 class="font-medium m-b-20">Изменение Подборки </h5>
+                    </div>
+                    <!-- Form -->
+                    <div class="row">
+                        <div class="col-12">
+                            <form class="form-horizontal m-t-20" action="{% url 'folder_edit' folder.id %}" method="post">
+                                {% csrf_token %}
+                                <div class="input-group mb-3">
+                                    <div class="col-sm-12 text-center mb-2">
+                                        Выберите новое название для вашей подборки
+                                    </div>
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon1"><i
+                                                class="ti-pencil"></i></span>
+                                    </div>
+                                    {% render_field form.name class="form-control form-control-lg" placeholder="Название" aria-label="Название" aria-describedby="basic-addon1" %}
+                                </div>
+                                <div class="form-group text-center">
+                                    <div class="col-xs-12 p-b-20">
+                                        <button class="btn btn-block btn-lg btn-info" type="submit">Изменить</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     </body>
 {% endblock content %}

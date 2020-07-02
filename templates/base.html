@@ -115,7 +115,7 @@
                 setTimeout(function () {
                     {% for message in messages %}
                         console.log('{{ message.tags }}');
-                        var params = {timeout: {{ message|length }} * 40};
+                        var params = {timeout: {{ message.message.title|length }} * 40};
                         {% if 'link' in message.tags %}
                             params.onHidden = function () {
                                 var win = window.open('{{ message.message.submessages.0 }}', '_blank');
@@ -127,21 +127,33 @@
                                     alert('Сайту требуется разрешение на открытие всплывающих окон, для открытия почты.');
                                 }
                             };
+                            {% if 'success' in message.tags %}
+                                toastr.success('{{ message.message.title }}', "", params);
+                            {% elif 'info' in message.tags %}
+                                toastr.info('{{ message.message.title }}', "", params);
+                            {% elif 'warning' in message.tags %}
+                                toastr.warning('{{ message.message.title }}', "", params);
+                            {% elif 'error' in message.tags %}
+                                toastr.error('{{ message.message.title }}', "", params);
+                            {% endif %}
+                            console.log('{{ message.message.title }}');
+                        {% else %}
+                            {% if 'success' in message.tags %}
+                                toastr.success('{{ message }}', "", params);
+                            {% elif 'info' in message.tags %}
+                                toastr.info('{{ message }}', "", params);
+                            {% elif 'warning' in message.tags %}
+                                toastr.warning('{{ message }}', "", params);
+                            {% elif 'error' in message.tags %}
+                                toastr.error('{{ message }}', "", params);
+                            {% endif %}
+                            console.log('{{ message }}');
                         {% endif %}
-                        {% if 'success' in message.tags %}
-                            toastr.success('{{ message.message.title }}', "", params);
-                        {% elif 'info' in message.tags %}
-                            toastr.info('{{ message.message.title }}', "", params);
-                        {% elif 'warning' in message.tags %}
-                            toastr.warning('{{ message.message.title }}', "", params);
-                        {% elif 'error' in message.tags %}
-                            toastr.error('{{ message.message.title }}', "", params);
-                        {% endif %}
-                        console.log('{{message.title}}');
                     {% endfor %}
                 }, 1000);
             </script>
         {% endif %}
     {% endblock messages %}
+    <script src="{% static 'js/app.js' %}"></script>
 {% endblock footer_javascript %}
 </html>
