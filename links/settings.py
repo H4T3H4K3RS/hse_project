@@ -88,21 +88,13 @@ LOGIN_URL = '/account/login/'
 DATABASES = {
 
     'default': {
-
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-
-        'NAME': 'd60vniq01soj1u',
-
-        'USER': 'qfaybrqlnzxuww',
-
-        'PASSWORD': 'eaf668048b1b63454492639fe042ff7f76aa771775bcfe5f4db8f282e036cee0',
-
-        'HOST': 'ec2-46-137-156-205.eu-west-1.compute.amazonaws.com',
-
+        'NAME': 'dea1sfd7vdq6ci',
+        'USER': 'dvtimbsbwrgxgz',
+        'PASSWORD': '2491e909cf55fb6e184f45a9045739bc294a5a66847fe7743e7f23be1a4712d7',
+        'HOST': 'ec2-54-247-79-178.eu-west-1.compute.amazonaws.com',
         'PORT': '5432',
-
-
-
+        'OPTIONS': {'sslmode': 'require'},
     }
 
 }
