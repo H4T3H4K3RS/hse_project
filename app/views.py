@@ -130,6 +130,9 @@ def link_edit(request, link_id):
                         saved_link.save()
                     link.link = link_form.data.get("link")
                     link.folder.rating -= link.rating
+                    profile = Profile.objects.get(user=saved_link.original)
+                    profile.rating -= link.rating
+                    profile.save()
                     link.rating = 0
                     link.save()
                     link_votes = Vote.objects.filter(link=link)
@@ -162,15 +165,18 @@ def link_edit(request, link_id):
 def link_delete(request, link_id):
     try:
         link = Link.objects.get(id=link_id)
-        folder = link.folder
-        folder.rating -= link.rating
-        folder.save()
         if link.folder.user != request.user:
             return JsonResponse({"data": "Ссылка вам не принадлежитп."})
+        folder = link.folder
+        folder.rating -= link.rating
+        profile = Profile.objects.get(user=request.user)
+        profile.rating -= link.rating
+        profile.save()
+        folder.save()
         link.delete()
         return JsonResponse({"data": "Ссылка удалена."})
     except Link.DoesNotExist or Folder.DoesNotExist:
-        return JsonResponse({"data": "Ссылка или подборка не существуют."})
+        return JsonResponse({"data": "Ссылка уже не существует."})
 
 
 @login_required
@@ -185,6 +191,9 @@ def favourite_save_saved(request, link_id):
             saved_link.save()
             try:
                 original_link = Link.objects.get(folder__user=saved_link.original, link=link.link)
+                profile = Profile.objects.get(user=saved_link.original)
+                profile.rating += 1
+                profile.save()
                 original_link.rating += 1
                 original_link.folder.rating += 1
                 original_link.folder.save()
@@ -207,6 +216,9 @@ def favourite_save(request, link_id):
         except SavedLink.DoesNotExist:
             saved_link = SavedLink(link=link.link, user=request.user, original=link.folder.user)
             if saved_link.original != request.user:
+                profile = Profile.objects.get(user=saved_link.original)
+                profile.rating += 1
+                profile.save()
                 link.rating += 1
                 link.folder.rating += 1
                 link.folder.save()
@@ -225,6 +237,9 @@ def favourite_delete(request, link_id):
         if saved_link.original != request.user:
             try:
                 link = Link.objects.get(folder__user=saved_link.original, link=saved_link.link)
+                profile = Profile.objects.get(user=saved_link.original)
+                profile.rating -= 1
+                profile.save()
                 link.rating -= 1
                 link.folder.rating -= 1
                 link.folder.save()

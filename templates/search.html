@@ -13,7 +13,7 @@
                 <div class="lds-pos"></div>
             </div>
         </div>
-        <div class="page-wrapper d-flex no-block justify-content-center align-items-center"
+        <div class="page-wrapper"
              style="background:url({% static 'img/auth_bg.jpg' %}) no-repeat center center;">
             <form action="{% url 'search' %}" method="GET">
                 <label>
@@ -23,7 +23,6 @@
                 </label>
                 <button type="submit">Поиск</button>
             </form>
-            <div id="AjaxLoader"></div>
             <div id="content">
                 {% include 'api/search.html' %}
             </div>

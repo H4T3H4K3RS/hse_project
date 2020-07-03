@@ -324,7 +324,8 @@ def view(request, username=None):
                    'links': Link.objects.filter(folder__user=request.user).order_by("-rating"), 'owner': 1,
                    'user': request.user, 'saved_links': s_links, 'saved_links_links': utils.get_saved_links(s_links),
                    'api_key': BotKey.objects.filter(user=request.user)[0],
-                   'form': EditForm(initial={'username': request.user.username})}
+                   'form': EditForm(initial={'username': request.user.username}),
+                   'profile': Profile.objects.get(user=request.user)}
         if request.method == "POST":
             form = EditForm(request.POST)
             if form.is_valid() or (form.data['password1'] == "" and form.data['password2'] == ""):
@@ -372,6 +373,7 @@ def view(request, username=None):
     context['links'] = Link.objects.filter(folder__user__username=username).order_by("-rating")
     context['saved_links_links'] = utils.get_saved_links(s_links)
     context['saved_links'] = s_links
+    context['profile'] = Profile.objects.get(user=user)
     return render(request, 'account/view.html', context)
 
 
@@ -385,6 +387,10 @@ def agreement(request):
 def delete(request):
     context = {}
     if request.method == "POST":
+        saved_links = SavedLink.objects.filter(original=request.user)
+        for saved_link in saved_links:
+            saved_link.original = saved_link.user
+            saved_link.save()
         messages.success(request, f"Аккаунт {request.user} успешно удалён. До скорых встреч 👋")
         request.user.delete()
         return redirect(reverse("index"))

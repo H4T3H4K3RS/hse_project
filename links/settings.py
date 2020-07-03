@@ -173,7 +173,7 @@ JS_URLS = (
     'api:account_view',
     'api:account_view_username',
     'api:folder_view',
-    'api:account_key'
+    'api:account_key',
     'link_delete',
     'link_vote',
     'favourite_delete',
@@ -188,3 +188,6 @@ RECAPTCHA_PUBLIC_KEY = '6Lfb0KIZAAAAAIqf2J9UsWj4jzsxLkiQ5sFTrPeG'
 RECAPTCHA_DEFAULT_ACTION = 'generic'
 RECAPTCHA_SCORE_THRESHOLD = 0.5
 BOT_KEY = "1169232934:AAHFXUE6Fq02RUn0gi7hHrY0KDRm9kx8KDI"
+SECURE_SSL_REDIRECT = os.getenv('SSL', False)
+if SECURE_SSL_REDIRECT:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

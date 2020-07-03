@@ -3,13 +3,8 @@ function reload_account(username, id = "content") {
         url: window.reverse('api:account_view_username', username),
         type: 'GET',
         data: {},
-        beforeSend: function () {
-            toastr.warning("Обновление данных профиля...");
-            
-        },
         success: function (data, status) {
             document.getElementById(id).innerHTML = data;
-            toastr.success("Обновлено");
             set_listeners();
         }
     });
@@ -20,13 +15,8 @@ function reload_folder(folder_id, id = "content") {
         url: window.reverse('api:folder_view', folder_id),
         type: 'GET',
         data: {},
-        beforeSend: function () {
-            toastr.warning("Обновление данных подборки...");
-            
-        },
         success: function (data, status) {
             document.getElementById(id).innerHTML = data;
-            toastr.success("Обновлено");
             set_listeners();
         }
     });
@@ -38,13 +28,8 @@ function reload_index(id = "content") {
         url: window.reverse('api:index_view'),
         type: 'GET',
         data: {},
-        beforeSend: function () {
-            toastr.warning("Обновление данных...");
-            
-        },
         success: function (data, status) {
             document.getElementById(id).innerHTML = data;
-            toastr.success("Обновлено");
             set_listeners();
         }
     });
@@ -57,13 +42,8 @@ function reload_search(id = "content") {
         url: url,
         type: 'GET',
         data: {},
-        beforeSend: function () {
-            toastr.warning("Обновление данных поиска...");
-            
-        },
         success: function (data, status) {
             document.getElementById(id).innerHTML = data;
-            toastr.success("Обновлено");
             set_listeners();
         }
     });
@@ -71,6 +51,7 @@ function reload_search(id = "content") {
 
 
 function reload(type, reloader, id = "content") {
+    $(".preloader").fadeIn();
     if (type === 'account')
         reload_account(reloader, id);
     else if (type === 'folder') {
@@ -80,6 +61,7 @@ function reload(type, reloader, id = "content") {
     } else if (type === 'search') {
         reload_search();
     }
+    $(".preloader").delay(1000).fadeOut();
 }
 
 
@@ -89,7 +71,7 @@ function delete_link(link_id, type, reloader, id = 'messages') {
         type: 'GET',
         beforeSend: function () {
             toastr.warning("Удаление ссылки...");
-            
+
         },
         success: function (data, status) {
             toastr.success(data.data);
@@ -105,7 +87,7 @@ function favourite_save(link_id, type, reloader, id = 'messages') {
         type: 'GET',
         beforeSend: function () {
             toastr.warning("Добавление ссылки в сохранённое...");
-            
+
         },
         success: function (data, status) {
             toastr.success(data.data);
@@ -121,7 +103,7 @@ function favourite_save_alt(link_id, type, reloader, id = 'messages') {
         type: 'GET',
         beforeSend: function () {
             toastr.warning("Добавление ссылки в сохранённое...");
-            
+
         },
         success: function (data, status) {
             toastr.success(data.data);
@@ -137,7 +119,7 @@ function vote(link_id, vote, type, reloader, id = 'messages') {
         type: 'GET',
         beforeSend: function () {
             toastr.warning("Отправка голоса...");
-            
+
         },
         success: function (data, status) {
             toastr.success(data.data);
@@ -168,7 +150,7 @@ function delete_folder(folder_id, type, reloader, id = 'messages') {
         type: 'GET',
         beforeSend: function () {
             toastr.warning("Удаление подборки");
-            
+
         },
         success: function (data, status) {
             toastr.success(data.data);
@@ -177,7 +159,7 @@ function delete_folder(folder_id, type, reloader, id = 'messages') {
     });
 }
 
-function set_listeners(){
+function set_listeners() {
     $('.delete_link_btn').click(function () {
         // console.log($(this).data('id'), $(this).data('type'), $(this).data('data'));
         delete_link($(this).data('id'), $(this).data('type'), $(this).data('data'));
@@ -206,4 +188,32 @@ function set_listeners(){
         window.location.href = window.reverse('account:login');
     });
 }
+
 set_listeners();
+$(document).ready(function () {
+    $(".btn-hide a").on('click', function (event) {
+        event.preventDefault();
+        if ($('.closed .input-hide').attr("type") == "text") {
+            $('.closed .input-hide').attr('type', 'password');
+            $('.closed .btn-hide i').addClass("fa-eye-slash");
+            $('.closed .btn-hide i').removeClass("fa-eye");
+        } else if ($('.closed .input-hide').attr("type") == "password") {
+            $('.closed .input-hide').attr('type', 'text');
+            $('.closed .btn-hide i').removeClass("fa-eye-slash");
+            $('.closed .btn-hide i').addClass("fa-eye");
+        }
+    });
+    $(".btn-copy a").on('click', function (event) {
+        event.preventDefault();
+        $('.copied .btn-copy').addClass("btn-success");
+        var dummy = document.createElement("textarea");
+        var copyText = $(".input-copy").val();
+        document.body.appendChild(dummy);
+        dummy.value = copyText;
+        dummy.select();
+        const successful = document.execCommand("copy");
+        document.body.removeChild(dummy);
+        document.execCommand("copy");
+        toastr.success("API-ключ скопирован.")
+    });
+});
