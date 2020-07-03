@@ -129,7 +129,6 @@ def signup(request):
                 messages.warning(request, {
                     'title': 'На вашу электронную почту было отправлено письмо, для подтверждения.',
                     "submessages": [f'https://{new_user.email[new_user.email.find("@"):]}']}, extra_tags='link')
-                print(messages.get_messages(request)[0])
                 return redirect(reverse('account:login'))
         else:
             errors = user_form.errors.as_json()
