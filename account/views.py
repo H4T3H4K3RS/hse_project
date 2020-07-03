@@ -386,13 +386,10 @@ def agreement(request):
 @login_required
 def delete(request):
     context = {}
-    if request.method == "POST":
-        saved_links = SavedLink.objects.filter(original=request.user)
-        for saved_link in saved_links:
-            saved_link.original = saved_link.user
-            saved_link.save()
-        messages.success(request, f"Аккаунт {request.user} успешно удалён. До скорых встреч 👋")
-        request.user.delete()
-        return redirect(reverse("index"))
-    else:
-        return render(request, "account/delete.html", context)
+    saved_links = SavedLink.objects.filter(original=request.user)
+    for saved_link in saved_links:
+        saved_link.original = saved_link.user
+        saved_link.save()
+    messages.success(request, f"Аккаунт {request.user} успешно удалён. До скорых встреч 👋")
+    request.user.delete()
+    return redirect(reverse("index"))

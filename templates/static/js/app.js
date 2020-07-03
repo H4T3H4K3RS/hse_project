@@ -217,3 +217,25 @@ $(document).ready(function () {
         toastr.success("API-ключ скопирован.")
     });
 });
+toastr.options.closeButton = true;
+toastr.options.showMethod = 'slideDown';
+toastr.options.hideMethod = 'slideUp';
+toastr.options.closeMethod = 'slideUp';
+toastr.options.progressBar = true;
+$("#delete_account_button").click(function () {
+    Swal.fire({
+        title: 'Вы уверены, что хотите удалить аккаунт?',
+        text: "Вы не сможете восстановить его данные после удаления.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#f62d51',
+        cancelButtonColor: '#7460ee',
+        confirmButtonText: 'Удалить',
+        cancelButtonText: 'Отмена'
+    }).then((result) => {
+        if (result.value) {
+            toastr.success("Аккаунт был успешно удалён.");
+            window.location.href = window.reverse('account:delete');
+        }
+    })
+})

@@ -181,6 +181,7 @@ JS_URLS = (
     'favourite_save',
     'folder_delete',
     'account:login',
+    "account:delete",
 )
 
 RECAPTCHA_PRIVATE_KEY = '6Lfb0KIZAAAAADLS85en7FJNXjBATL0jgMtxVKcv'

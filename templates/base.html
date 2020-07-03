@@ -106,31 +106,7 @@
         <script src="{% static 'theme/assets/libs/sweetalert2/dist/sweetalert2.all.min.js' %}"></script>
         <script src="{% static 'theme/assets/libs/sweetalert2/sweet-alert.init.js' %}"></script>
         <script>
-            toastr.options.closeButton = true;
-            toastr.options.showMethod = 'slideDown';
-            toastr.options.hideMethod = 'slideUp';
-            toastr.options.closeMethod = 'slideUp';
-            toastr.options.progressBar = true;
-            $("#delete_account_button").click(function () {
-                Swal.fire({
-                    title: 'Вы уверены, что хотите удалить аккаунт?',
-                    text: "Вы не сможете восстановить его данные после удаления.",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Удалить',
-                    cancelButtonText: 'Отмена'
-                }).then((result) => {
-                    if (result.value) {
-                        Swal.fire(
-                            '!',
-                            'Your file has been deleted.',
-                            'success'
-                        )
-                    }
-                })
-            })
+
         </script>
     {% endblock footer_javascript_site %}
     {% block footer_javascript_section %}{% endblock footer_javascript_section %}
