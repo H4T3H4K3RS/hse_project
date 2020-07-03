@@ -1,1 +1,1 @@
-web python app/bot.py
+web python manage.py runserver
