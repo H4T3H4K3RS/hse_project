@@ -108,11 +108,11 @@ def add_link(update, context):
                     flag = True
                     bot_key.save()
                 if flag:
-                    update.message.reply_text(f"Здравствуйте, [{bot_keys[i].user.username}]({settings.HOST}{reverse('account_view_my')})\n", parse_mode=telegram.ParseMode.MARKDOWN_V2)
+                    update.message.reply_text(f"Здравствуйте, [{bot_keys[i].user.username}]({settings.HOST}{reverse('account:view_my')})\n", parse_mode=telegram.ParseMode.MARKDOWN_V2)
                     update.message.reply_text(help_msg)
         else:
             update.message.reply_text("Неправильный API-ключ.")
-            keyboard = [[InlineKeyboardButton("Получить", url=f'{settings.HOST}{reverse("api_account_key")}')]]
+            keyboard = [[InlineKeyboardButton("Получить", url=f'{settings.HOST}{reverse("api:account_key")}')]]
             reply_markup = InlineKeyboardMarkup(keyboard)
             update.message.reply_text('Отправьте боту полученный API-ключ', reply_markup=reply_markup)
 
@@ -130,7 +130,7 @@ logger = logging.getLogger(__name__)
 
 
 def start(update, context):
-    keyboard = [[InlineKeyboardButton("Получить", url=f'{settings.HOST}{reverse("api_account_key")}')]]
+    keyboard = [[InlineKeyboardButton("Получить", url=f'{settings.HOST}{reverse("api:account_key")}')]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     update.message.reply_text('Отправьте боту полученный API-ключ', reply_markup=reply_markup)
 
@@ -180,7 +180,7 @@ def logout(update, context):
         update.message.reply_text("Вы успешны вышли из аккаунта!")
     except BotKey.DoesNotExist:
         update.message.reply_text("Вы не авторизованы.")
-    keyboard = [[InlineKeyboardButton("Получить", url=f'{settings.HOST}{reverse("api_account_key")}')]]
+    keyboard = [[InlineKeyboardButton("Получить", url=f'{settings.HOST}{reverse("api:account_key")}')]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     update.message.reply_text('Для авторизации отправьте боту полученный API-ключ', reply_markup=reply_markup)
 
