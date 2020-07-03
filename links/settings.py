@@ -24,7 +24,7 @@ SECRET_KEY = '2i$oqu0zz2j4ih5*rb#4$du=ks0safg^!a$*(f7z_^%arfj$%m'
 DEBUG = os.getenv('DEBUG', True)
 
 ALLOWED_HOSTS = ["0.0.0.0", "localhost", "127.0.0.1", "links.cleverapps.io", "10.2.152.143", "hselyc.herokuapp.com"]
-HOST = os.getenv('HOST', "https://hselyc.herokuapp.com")
+HOST = os.getenv('HOST', "http://127.0.0.1:8000")
 BOT_HOST = os.getenv('BOT_HOST', "https://hselycbot.herokuapp.com")
 # Application definition
 
@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'app.apps.AppConfig',
     'js_urls',
-    'django_extensions'
+    'django_extensions',
+    'widget_tweaks'
 ]
 
 MIDDLEWARE = [
@@ -90,13 +91,13 @@ DATABASES = {
 
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
 
-        'NAME': 'd4gvudgraqb03q',
+        'NAME': 'd60vniq01soj1u',
 
-        'USER': 'cgxxklumgdrzpi',
+        'USER': 'qfaybrqlnzxuww',
 
-        'PASSWORD': '3e7e110cba255391cf5a01eed7bf13788de4526664e8aa0365a0262a694badaa',
+        'PASSWORD': 'eaf668048b1b63454492639fe042ff7f76aa771775bcfe5f4db8f282e036cee0',
 
-        'HOST': 'ec2-54-247-79-178.eu-west-1.compute.amazonaws.com',
+        'HOST': 'ec2-46-137-156-205.eu-west-1.compute.amazonaws.com',
 
         'PORT': '5432',
 
@@ -172,7 +173,7 @@ JS_URLS = (
     'api:account_view',
     'api:account_view_username',
     'api:folder_view',
-    'api:account_key'
+    'api:account_key',
     'link_delete',
     'link_vote',
     'favourite_delete',
@@ -180,6 +181,7 @@ JS_URLS = (
     'favourite_save',
     'folder_delete',
     'account:login',
+    "account:delete",
 )
 
 RECAPTCHA_PRIVATE_KEY = '6Lfb0KIZAAAAADLS85en7FJNXjBATL0jgMtxVKcv'
@@ -187,3 +189,6 @@ RECAPTCHA_PUBLIC_KEY = '6Lfb0KIZAAAAAIqf2J9UsWj4jzsxLkiQ5sFTrPeG'
 RECAPTCHA_DEFAULT_ACTION = 'generic'
 RECAPTCHA_SCORE_THRESHOLD = 0.5
 BOT_KEY = "1169232934:AAHFXUE6Fq02RUn0gi7hHrY0KDRm9kx8KDI"
+SECURE_SSL_REDIRECT = os.getenv('SSL', False)
+if SECURE_SSL_REDIRECT:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

@@ -3,13 +3,8 @@ function reload_account(username, id = "content") {
         url: window.reverse('api:account_view_username', username),
         type: 'GET',
         data: {},
-        beforeSend: function () {
-            $("#AjaxLoader").text("Обновление данных профиля...");
-            $("#AjaxLoader").show();
-        },
         success: function (data, status) {
             document.getElementById(id).innerHTML = data;
-            $("#AjaxLoader").hide();
             set_listeners();
         }
     });
@@ -20,13 +15,8 @@ function reload_folder(folder_id, id = "content") {
         url: window.reverse('api:folder_view', folder_id),
         type: 'GET',
         data: {},
-        beforeSend: function () {
-            $("#AjaxLoader").text("Обновление данных подборки...");
-            $("#AjaxLoader").show();
-        },
         success: function (data, status) {
             document.getElementById(id).innerHTML = data;
-            $("#AjaxLoader").hide();
             set_listeners();
         }
     });
@@ -38,13 +28,8 @@ function reload_index(id = "content") {
         url: window.reverse('api:index_view'),
         type: 'GET',
         data: {},
-        beforeSend: function () {
-            $("#AjaxLoader").text("Обновление данных...");
-            $("#AjaxLoader").show();
-        },
         success: function (data, status) {
             document.getElementById(id).innerHTML = data;
-            $("#AjaxLoader").hide();
             set_listeners();
         }
     });
@@ -57,13 +42,8 @@ function reload_search(id = "content") {
         url: url,
         type: 'GET',
         data: {},
-        beforeSend: function () {
-            $("#AjaxLoader").text("Обновление данных поиска...");
-            $("#AjaxLoader").show();
-        },
         success: function (data, status) {
             document.getElementById(id).innerHTML = data;
-            $("#AjaxLoader").hide();
             set_listeners();
         }
     });
@@ -71,6 +51,7 @@ function reload_search(id = "content") {
 
 
 function reload(type, reloader, id = "content") {
+    $(".preloader").fadeIn();
     if (type === 'account')
         reload_account(reloader, id);
     else if (type === 'folder') {
@@ -80,6 +61,7 @@ function reload(type, reloader, id = "content") {
     } else if (type === 'search') {
         reload_search();
     }
+    $(".preloader").delay(1000).fadeOut();
 }
 
 
@@ -88,11 +70,11 @@ function delete_link(link_id, type, reloader, id = 'messages') {
         url: window.reverse('link_delete', link_id),
         type: 'GET',
         beforeSend: function () {
-            $("#AjaxLoader").text("Удаление ссылки...");
-            $("#AjaxLoader").show();
+            toastr.warning("Удаление ссылки...");
+
         },
         success: function (data, status) {
-            document.getElementById(id).innerHTML = data.data;
+            toastr.success(data.data);
             reload(type, reloader);
         }
     });
@@ -104,11 +86,11 @@ function favourite_save(link_id, type, reloader, id = 'messages') {
         url: window.reverse('favourite_save', link_id),
         type: 'GET',
         beforeSend: function () {
-            $("#AjaxLoader").text("Добавление ссылки в сохранённое...");
-            $("#AjaxLoader").show();
+            toastr.warning("Добавление ссылки в сохранённое...");
+
         },
         success: function (data, status) {
-            document.getElementById(id).innerHTML = data.data;
+            toastr.success(data.data);
             reload(type, reloader);
         }
     });
@@ -120,11 +102,11 @@ function favourite_save_alt(link_id, type, reloader, id = 'messages') {
         url: window.reverse('favourite_save_alt', link_id),
         type: 'GET',
         beforeSend: function () {
-            $("#AjaxLoader").text("Добавление ссылки в сохранённое...");
-            $("#AjaxLoader").show();
+            toastr.warning("Добавление ссылки в сохранённое...");
+
         },
         success: function (data, status) {
-            document.getElementById(id).innerHTML = data.data;
+            toastr.success(data.data);
             reload(type, reloader);
         }
     });
@@ -136,11 +118,11 @@ function vote(link_id, vote, type, reloader, id = 'messages') {
         url: window.reverse('link_vote', link_id, vote),
         type: 'GET',
         beforeSend: function () {
-            $("#AjaxLoader").text("Отправка голоса...");
-            $("#AjaxLoader").show();
+            toastr.warning("Отправка голоса...");
+
         },
         success: function (data, status) {
-            document.getElementById(id).innerHTML = data.data;
+            toastr.success(data.data);
             reload(type, reloader);
         }
     });
@@ -152,11 +134,10 @@ function delete_favourite(link_id, type, reloader, id = 'messages') {
         url: window.reverse('favourite_delete', link_id),
         type: 'GET',
         beforeSend: function () {
-            $("#AjaxLoader").text("Удаление из сохранённого...");
-            $("#AjaxLoader").show();
+            toastr.warning("Удаление из сохранённого");
         },
         success: function (data, status) {
-            document.getElementById(id).innerHTML = data.data;
+            toastr.success(data.data);
             reload(type, reloader);
         }
     });
@@ -168,17 +149,17 @@ function delete_folder(folder_id, type, reloader, id = 'messages') {
         url: window.reverse('folder_delete', folder_id),
         type: 'GET',
         beforeSend: function () {
-            $("#AjaxLoader").text("Удаление подборки...");
-            $("#AjaxLoader").show();
+            toastr.warning("Удаление подборки");
+
         },
         success: function (data, status) {
-            document.getElementById(id).innerHTML = data.data;
+            toastr.success(data.data);
             reload(type, reloader);
         }
     });
 }
 
-function set_listeners(){
+function set_listeners() {
     $('.delete_link_btn').click(function () {
         // console.log($(this).data('id'), $(this).data('type'), $(this).data('data'));
         delete_link($(this).data('id'), $(this).data('type'), $(this).data('data'));
@@ -207,4 +188,55 @@ function set_listeners(){
         window.location.href = window.reverse('account:login');
     });
 }
+
 set_listeners();
+$(document).ready(function () {
+    $(".btn-hide a").on('click', function (event) {
+        event.preventDefault();
+        if ($('.closed .input-hide').attr("type") == "text") {
+            $('.closed .input-hide').attr('type', 'password');
+            $('.closed .btn-hide i').addClass("fa-eye-slash");
+            $('.closed .btn-hide i').removeClass("fa-eye");
+        } else if ($('.closed .input-hide').attr("type") == "password") {
+            $('.closed .input-hide').attr('type', 'text');
+            $('.closed .btn-hide i').removeClass("fa-eye-slash");
+            $('.closed .btn-hide i').addClass("fa-eye");
+        }
+    });
+    $(".btn-copy a").on('click', function (event) {
+        event.preventDefault();
+        $('.copied .btn-copy').addClass("btn-success");
+        var dummy = document.createElement("textarea");
+        var copyText = $(".input-copy").val();
+        document.body.appendChild(dummy);
+        dummy.value = copyText;
+        dummy.select();
+        const successful = document.execCommand("copy");
+        document.body.removeChild(dummy);
+        document.execCommand("copy");
+        toastr.success("API-ключ скопирован.")
+    });
+});
+toastr.options.closeButton = true;
+toastr.options.showMethod = 'slideDown';
+toastr.options.hideMethod = 'slideUp';
+toastr.options.closeMethod = 'slideUp';
+toastr.options.progressBar = true;
+$("#delete_account_button").click(function () {
+    Swal.fire({
+        title: 'Вы уверены, что хотите удалить аккаунт?',
+        text: "Вы не сможете восстановить его данные после удаления.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#f62d51',
+        cancelButtonColor: '#7460ee',
+        confirmButtonText: 'Удалить',
+        cancelButtonText: 'Отмена'
+    }).then((result) => {
+        if (result.value) {
+            toastr.success("Аккаунт был успешно удалён.");
+            window.location.href = window.reverse('account:delete');
+        }
+    })
+});
+$('#links').DataTable({});

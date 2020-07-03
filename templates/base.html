@@ -3,7 +3,7 @@
 <html lang="ru">
 {# Make modifiable head elements #}
 <head>
-    <title>{% block title %}Главная {% endblock title %} | Links</title>
+    <title>{% block title %}Главная {% endblock title %} | Link.IT</title>
     {% include 'blocks/metrics.html' %}
     {% block head_favicon %}
         <link rel="icon" type="image/png"
@@ -24,8 +24,9 @@
     {% endblock head_meta %}
     {% block head_css %}
         {% block head_css_site %}
-            <link href="{% static 'css/app.css' %}" rel="stylesheet" media="screen">
             <link href="{% static 'theme/dist/css/style.min.css' %}" rel="stylesheet">
+            <link href="{% static 'theme/assets/libs/sweetalert2/dist/sweetalert2.min.css' %}" rel="stylesheet">
+            <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
             <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
             <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
             <!--[if lt IE 9]>
@@ -41,7 +42,6 @@
 </head>
 {% block content %}
     <body>
-    if you see this, something is wrong!
 
     </body>
 {% endblock content %}
@@ -49,35 +49,116 @@
     {% block footer_javascript_site %}
         <script src="{% url 'js_urls' %}" type="text/javascript"></script>
         <script src="{% static 'theme/assets/libs/jquery/dist/jquery.min.js' %}"></script>
-        <script src="{% static 'js/app.js' %}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+        <!-- Bootstrap tether Core JavaScript -->
         <script src="{% static 'theme/assets/libs/popper.js/dist/umd/popper.min.js' %}"></script>
         <script src="{% static 'theme/assets/libs/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+        <!-- apps -->
+        <script src="{% static 'theme/dist/js/app.min.js' %}"></script>
+        <!-- full sidebar -->
+        <script>
+            $(function () {
+                "use strict";
+                $("#main-wrapper").AdminSettings({
+                    Theme: false, // this can be true or false ( true means dark and false means light ),
+                    Layout: 'vertical',
+                    LogoBg: 'skin6', // You can change the Value to be skin1/skin2/skin3/skin4/skin5/skin6
+                    NavbarBg: 'skin6', // You can change the Value to be skin1/skin2/skin3/skin4/skin5/skin6
+                    {% if sidebar_type %}
+                        SidebarType: '{{ sidebar_type }}', // You can change it full / mini-sidebar / iconbar / overlay
+                    {% else %}
+                        SidebarType: 'full', // You can change it full / mini-sidebar / iconbar / overlay
+                    {% endif %}
+                    SidebarColor: 'skin6', // You can change the Value to be skin1/skin2/skin3/skin4/skin5/skin6
+                    SidebarPosition: false, // it can be true / false ( true means Fixed and false means absolute )
+                    HeaderPosition: false, // it can be true / false ( true means Fixed and false means absolute )
+                    BoxedLayout: false, // it can be true / false ( true means Boxed and false means Fluid )
+                });
+            });
+            $(document).on('click', '#searchtoggle', function (e) {
+                $("#searchbox").css({display: 'block'});
+                $("#navbar").addClass("show");
+            });
+            $(document).on('click', '.srh-btn', function (e) {
+                $("#navbar").removeClass("show");
+            });
+        </script>
+        <script src="{% static 'theme/dist/js/app-style-switcher.js' %}"></script>
+        <!-- slimscrollbar scrollbar JavaScript -->
+        <script src="{% static 'theme/assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js' %}"></script>
+        <script src="{% static 'theme/assets/extra-libs/sparkline/sparkline.js' %}"></script>
+        <!--Wave Effects -->
+        <script src="{% static 'theme/dist/js/waves.js' %}"></script>
+        <!--Menu sidebar -->
+        <script src="{% static 'theme/dist/js/sidebarmenu.js' %}"></script>
+        <!--Custom JavaScript -->
+        <script src="{% static 'theme/assets/extra-libs/jquery-datatables-editable/jquery.dataTables.js' %}"></script>
+        <script src="{% static 'theme/assets/extra-libs/jquery-datatables-editable/dataTables.bootstrap.js' %}"></script>
+        <script src="{% static 'theme/dist/js/custom.min.js' %}"></script>
+        <!--This page JavaScript -->
+        <!--chartis chart-->
+        <script src="{% static 'theme/assets/libs/chartist/dist/chartist.min.js' %}"></script>
+        <script src="{% static 'theme/assets/libs/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.min.js' %}"></script>
+        <!--c3 charts -->
+        <script src="{% static 'theme/assets/extra-libs/c3/d3.min.js' %}"></script>
+        <script src="{% static 'theme/assets/extra-libs/c3/c3.min.js' %}"></script>
+        <!--chartjs -->
+        <script src="{% static 'theme/assets/libs/chart.js/dist/Chart.min.js' %}"></script>
+        <script src="{% static 'theme/dist/js/pages/dashboards/dashboard1.js' %}"></script>
+        <script src="{% static 'theme/assets/libs/sweetalert2/dist/sweetalert2.all.min.js' %}"></script>
+        <script src="{% static 'theme/assets/libs/sweetalert2/sweet-alert.init.js' %}"></script>
+        <script>
+
+        </script>
     {% endblock footer_javascript_site %}
     {% block footer_javascript_section %}{% endblock footer_javascript_section %}
     {% block footer_javascript_page %}{% endblock footer_javascript_page %}
-    {% block footer_javascript_metrics %}
-        <!-- Yandex.Metrika counter -->
-        <script type="text/javascript">
-            (function (m, e, t, r, i, k, a) {
-                m[i] = m[i] || function () {
-                    (m[i].a = m[i].a || []).push(arguments)
-                };
-                m[i].l = 1 * new Date();
-                k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a)
-            })
-            (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
-
-            ym(62621917, "init", {
-                clickmap: true,
-                trackLinks: true,
-                accurateTrackBounce: true,
-                webvisor: true
-            });
-        </script>
-        <noscript>
-            <div><img src="https://mc.yandex.ru/watch/62621917" style="position:absolute; left:-9999px;" alt=""/></div>
-        </noscript>
-        <!-- /Yandex.Metrika counter -->
-    {% endblock footer_javascript_metrics %}
+    {% block messages %}
+        {% if messages %}
+            <script type=text/javascript>
+                setTimeout(function () {
+                    {% for message in messages %}
+                        console.log('{{ message.tags }}');
+                        {% if 'link' in message.tags %}
+                            var params = {timeout: {{ message.message.title|length }} * 40};
+                            params.onHidden = function () {
+                                var win = window.open('{{ message.message.submessages.0 }}', '_blank');
+                                if (win) {
+                                    //Browser has allowed it to be opened
+                                    win.focus();
+                                } else {
+                                    //Browser has blocked it
+                                    alert('Сайту требуется разрешение на открытие всплывающих окон, для открытия почты.');
+                                }
+                            };
+                            {% if 'success' in message.tags %}
+                                toastr.success('{{ message.message.title }}', "", params);
+                            {% elif 'info' in message.tags %}
+                                toastr.info('{{ message.message.title }}', "", params);
+                            {% elif 'warning' in message.tags %}
+                                toastr.warning('{{ message.message.title }}', "", params);
+                            {% elif 'error' in message.tags %}
+                                toastr.error('{{ message.message.title }}', "", params);
+                            {% endif %}
+                            console.log('{{ message.message.title }}');
+                        {% else %}
+                            var params = {timeout: {{ message|length }} * 40};
+                            {% if 'success' in message.tags %}
+                                toastr.success('{{ message }}', "", params);
+                            {% elif 'info' in message.tags %}
+                                toastr.info('{{ message }}', "", params);
+                            {% elif 'warning' in message.tags %}
+                                toastr.warning('{{ message }}', "", params);
+                            {% elif 'error' in message.tags %}
+                                toastr.error('{{ message }}', "", params);
+                            {% endif %}
+                            console.log('{{ message }}');
+                        {% endif %}
+                    {% endfor %}
+                }, 1000);
+            </script>
+        {% endif %}
+    {% endblock messages %}
+    <script src="{% static 'js/app.js' %}"></script>
 {% endblock footer_javascript %}
 </html>

@@ -8,7 +8,7 @@ from snowpenguin.django.recaptcha2.widgets import ReCaptchaWidget
 from app.models import Folder
 
 
-class AccountSignupForm(UserCreationForm):
+class SignupForm(UserCreationForm):
     username = forms.CharField(label="Имя пользователя",
                                widget=TextInput(attrs={'id': 'username'}))
     email = forms.CharField(label="Электронная Почта",
@@ -23,7 +23,7 @@ class AccountSignupForm(UserCreationForm):
         fields = ('username', 'email', 'password1', 'password2',)
 
 
-class AccountLoginForm(forms.Form):
+class LoginForm(forms.Form):
     login = forms.CharField(label="Имя пользователя/Электронная Почта", widget=forms.TextInput(
         attrs={
             'id': 'login'
@@ -36,19 +36,43 @@ class AccountLoginForm(forms.Form):
     ))
 
 
-class AccountNewPasswordForm(forms.Form):
-    password = forms.CharField(
+class NewPasswordForm(UserCreationForm):
+    password1 = forms.CharField(
         widget=forms.PasswordInput(
             attrs={
-                'class': 'form-control',
                 'id': 'password1'
             }
-        ))
+        ), required=True)
     password2 = forms.CharField(widget=forms.PasswordInput(
         attrs={
             'id': 'password2'
         }
     ), required=True)
+    user = forms.CharField(
+        widget=forms.HiddenInput(
+            attrs={
+                'id': 'user'
+            }
+        ), required=True
+    )
+    token = forms.CharField(
+        widget=forms.HiddenInput(
+            attrs={
+                'id': 'token'
+            }
+        ), required=True
+    )
+    code = forms.CharField(
+        widget=forms.HiddenInput(
+            attrs={
+                'id': 'code'
+            }
+        ), required=True
+    )
+
+    class Meta:
+        model = User
+        fields = ('password1', 'password2')
 
 
 class RecoverForm(forms.Form):
@@ -59,4 +83,29 @@ class RecoverForm(forms.Form):
             }
         ), required=True
     )
-    recaptcha = ReCaptchaField(widget=ReCaptchaWidget(), required=True)
+    # recaptcha = ReCaptchaField(widget=ReCaptchaWidget(), required=True)
+
+
+class EditForm(UserCreationForm):
+    password1 = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={
+                'id': 'password1'
+            }
+        ), required=False)
+    password2 = forms.CharField(widget=forms.PasswordInput(
+        attrs={
+            'id': 'password2'
+        }
+    ), required=False)
+    username = forms.CharField(
+        widget=forms.TextInput(
+            attrs={
+                'id': 'username'
+            }
+        ), required=True
+    )
+
+    class Meta:
+        model = User
+        fields = ('password1', 'password2')

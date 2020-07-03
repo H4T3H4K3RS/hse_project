@@ -4,11 +4,19 @@
 {% endblock title %}
 {% block content %}
     <body>
-    <div id="messages"></div>
-    {% include 'blocks/nav.html' %}
-    <div id="AjaxLoader"></div>
-    <div id="content">
-        {% include 'api/index.html' %}
+    <div id="main-wrapper">
+        {% include 'blocks/nav.html' %}
+        <div class="preloader">
+            <div class="lds-ripple">
+                <div class="lds-pos"></div>
+                <div class="lds-pos"></div>
+            </div>
+        </div>
+        <div class="page-wrapper">
+            <div id="content">
+                {% include 'api/index.html' %}
+            </div>
+        </div>
     </div>
     </body>
 {% endblock content %}

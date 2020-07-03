@@ -1,13 +1,117 @@
-<nav>
-    {% if request.user.is_authenticated %}
-        <a href="{% url 'search' %}">Поиск</a> |
-        <a href="{% url 'folder_add' %}">Добавить Подборку</a> |
-        <a href="{% url 'link_add' %}">Добавить Ссылку</a> |
-        <a href="{% url 'account:view_my' %}">Мой Аккаунт</a> |
-        <a href="{% url 'account:logout' %}">Выйти</a>
-    {% else %}
-        <a href="{% url 'search' %}">Поиск</a> |
-        <a href="{% url 'account:signup' %}">Регистрация</a> |
-        <a href="{% url 'account:login' %}">Войти</a>
-    {% endif %}
-</nav>
+{% load static %}
+<header class="topbar" data-navbarbg="skin6">
+    <nav class="navbar top-navbar navbar-expand-md navbar-light">
+        <div class="navbar-header" data-logobg="skin6">
+            <!-- This is for the sidebar toggle which is visible on mobile only -->
+            <a class="nav-toggler waves-effect waves-light d-block d-md-none" href="javascript:void(0)"><i
+                    class="ti-close ti-menu"></i></a>
+            <a class="navbar-brand" href="{% url 'index' %}">
+                <b class="logo-icon">
+                    <img src="{% static 'img/logo_empty.png' %}" width="40px" height="45px" alt="homepage">
+                </b>
+                <span class="logo-text">
+                                             <img src="{% static 'img/brand.png' %}" height="40px" alt="homepage">
+                                        </span>
+            </a>
+            <a id="searchtoggle" class="topbartoggler d-block d-md-none waves-effect waves-light collapsed"
+               href="javascript:void(0)"><i class="ti-search"></i></a>
+            {#            <ul class="navbar-nav float-right mr-1 d-md-none waves-effect waves-light">#}
+            {#                <li class="nav-item search-box"><a class="nav-link waves-effect waves-dark" href="javascript:void(0)"><i#}
+            {#                        class="ti-search"></i></a>#}
+            {#                    <form class="app-search position-absolute" style="display: none;">#}
+            {#                        <input type="text" class="form-control" placeholder="Search &amp; enter"> <a class="srh-btn"><i#}
+            {#                            class="ti-close"></i></a>#}
+            {#                    </form>#}
+            {#                </li>#}
+            {#            </ul>#}
+        </div>
+        <div class="navbar-collapse collapse" id="navbar" data-navbarbg="skin6" style="">
+            <ul class="navbar-nav float-left mr-auto">
+                <li class="nav-item d-none d-md-block"><a class="nav-link sidebartoggler waves-effect waves-light"
+                                                          href="javascript:void(0)" data-sidebartype="mini-sidebar"><i
+                        class="mdi mdi-menu font-24"></i></a></li>
+            </ul>
+            <ul class="navbar-nav float-right mr-1">
+                <li class="nav-item search-box"><a class="nav-link waves-effect waves-dark" href="javascript:void(0)"><i
+                        class="ti-search d-sm-none d-lg-inline "></i></a>
+                    <form id="searchbox" class="app-search position-absolute" action="{% url 'search' %}"
+                          style="display: none;">
+                        <input name="q" type="text" class="form-control" value="{% if value %}{{ value }}{% endif %}"
+                               placeholder="Введите Имя Пользователя/Эл.Почту/Ссылку/Подборку"> <a class="srh-btn"><i
+                            class="ti-close"></i></a>
+
+                        <input id="search_value" type="hidden" value="{% if value %}{{ value }}{% endif %}">
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+<aside class="left-sidebar" data-sidebarbg="skin6">
+    <!-- Sidebar scroll-->
+    <div class="scroll-sidebar">
+        <!-- Sidebar navigation-->
+        <nav class="sidebar-nav">
+            <ul id="sidebarnav" class="in">
+                <li>
+                    <div class="user-profile d-flex no-block dropdown mt-3">
+
+                        {% if request.user.is_authenticated %}
+                            <div class="user-pic"><img src="{% static 'img/avatars/1.jpg' %}" alt="users"
+                                                       class="rounded-circle" width="40"/></div>
+                            <div class="user-content hide-menu ml-2">
+                                <a href="{% url 'account:view_my' %}">
+                                    <h5 class="mb-0 user-name font-medium">{{ request.user.username }} </h5>
+                                    <span class="op-5 user-email">{{ request.user.email }}</span>
+                                </a>
+                            </div>
+                        {% else %}
+                            <div class="user-pic"><img src="{% static 'img/incognito.png' %}" alt="users"
+                                                       class="rounded-circle" width="40"/></div>
+                            <div class="user-content ml-2">
+                                <a href="{% url 'account:login' %}">
+                                    <h5 class="user-name font-medium">Инкогнито </h5>
+                                    <span class="op-5 user-email">Войдите</span>
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </li>
+                {% if not request.user.is_authenticated %}
+                    <li class="sidebar-item"><a
+                            class="sidebar-link waves-effect waves-dark{% if request.resolver_match.url_name == "account:login" %}active{% endif %}"
+                            href="{% url 'account:login' %}"
+                            aria-expanded="false"><i class="ti-key"></i><span class="hide-menu">Вход </span></a></li>
+                    <li class="sidebar-item"><a
+                            class="bold sidebar-link waves-effect waves-dark{% if request.resolver_match.url_name == "account:signup" %}active{% endif %}"
+                            href="{% url 'account:signup' %}"
+                            aria-expanded="false"><i class="ti-user"></i><span class="hide-menu">Регистрация </span></a>
+                    </li>
+                {% endif %}
+                <li class="sidebar-item"><a
+                        class="sidebar-link waves-effect waves-dark{% if request.resolver_match.url_name == "search" %}active{% endif %}"
+                        href="{% url 'search' %}"
+                        aria-expanded="false"><i class="mdi mdi-search-web"></i><span
+                        class="hide-menu">Поиск </span></a></li>
+                <li class="sidebar-item"><a
+                        class="sidebar-link waves-effect waves-dark {% if request.resolver_match.url_name == "folder_add" %}active{% endif %}"
+                        href="{% url 'folder_add' %}"
+                        aria-expanded="false"><i class="mdi mdi-folder"></i><span
+                        class="hide-menu">Создать Подборку </span></a></li>
+                <li class="sidebar-item"><a
+                        class="sidebar-link waves-effect waves-dark{% if request.resolver_match.url_name == "link_add" %}active{% endif %}"
+                        href="{% url 'link_add' %}"
+                        aria-expanded="false"><i class="mdi mdi-link"></i><span
+                        class="hide-menu">Добавить Ссылку </span></a></li>
+            {% if request.user.is_authenticated %}
+                <li class="sidebar-item"><a
+                        class="sidebar-link waves-effect waves-dark{% if request.resolver_match.url_name == "account:logout" %}active{% endif %}"
+                        href="{% url 'account:logout' %}"
+                        aria-expanded="false"><i class="mdi mdi-account-off"></i><span
+                        class="hide-menu">Выйти </span></a></li>
+            {% endif %}
+
+            </ul>
+        </nav>
+    </div>
+</aside>

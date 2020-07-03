@@ -1,23 +1,32 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}
-    Поиск "{{ value }}"
+    Поиск {% if value != '' %}"{{ value }}"{% endif %}
 {% endblock title %}
 {% block content %}
     <body>
-    <div id="messages"></div>
-    {% include 'blocks/nav.html' %}
-    <form action="{% url 'search' %}" method="GET">
-        <label>
-            Поиск
-            <input name="q" type="text" value="{{ value }}"
-                   placeholder="Введите Имя Пользователя/Эл.Почту/Ссылку/Подборку" style="width: 300px;">
-            <input id="search_value" type="hidden" value="{{ value }}">
-        </label>
-        <button type="submit">Поиск</button>
-    </form>
-    <div id="AjaxLoader"></div>
-    <div id="content">
-        {% include 'api/search.html' %}
+    <div id="main-wrapper">
+        {% include 'blocks/nav.html' %}
+        <div class="preloader">
+            <div class="lds-ripple">
+                <div class="lds-pos"></div>
+                <div class="lds-pos"></div>
+            </div>
+        </div>
+        <div class="page-wrapper"
+             style="background:url({% static 'img/auth_bg.jpg' %}) no-repeat center center;">
+            <form action="{% url 'search' %}" method="GET">
+                <label>
+                    Поиск
+                    <input name="q" type="text" value="{% if value %}{{ value }}{% endif %}"
+                           placeholder="Введите Имя Пользователя/Эл.Почту/Ссылку/Подборку" style="width: 300px;">
+                </label>
+                <button type="submit">Поиск</button>
+            </form>
+            <div id="content">
+                {% include 'api/search.html' %}
+            </div>
+        </div>
     </div>
     </body>
 {% endblock content %}

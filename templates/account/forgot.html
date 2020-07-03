@@ -1,54 +1,68 @@
 {% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block title %}
+    Восстановление Пароля
+{% endblock %}
 {% block content %}
-    <body class="bg-gradient-primary">
+    <body>
 
-    <div class="container">
-
-        <!-- Outer Row -->
-        <div class="row justify-content-center">
-
-            <div class="col-xl-10 col-lg-12 col-md-9">
-
-                <div class="card o-hidden border-0 shadow-lg my-5">
-                    <div class="card-body p-0">
-                        <!-- Nested Row within Card Body -->
-                        <div class="row">
-                            <div class="col-lg-6 d-none d-lg-block bg-password-image"></div>
-                            <div class="col-lg-6">
-                                <div class="p-5">
-                                    <div class="text-center">
-                                        <h1 class="h4 text-gray-900 mb-2">Forgot Your Password?</h1>
-                                        <p class="mb-4">We get it, stuff happens. Just enter your email address below
-                                            and we'll send you a link to reset your password!</p>
+    <div id="main-wrapper">
+    {% include 'blocks/nav.html' %}
+        <div class="preloader">
+            <div class="lds-ripple">
+                <div class="lds-pos"></div>
+                <div class="lds-pos"></div>
+            </div>
+        </div>
+        <div class="auth-wrapper d-flex no-block justify-content-center align-items-center"
+             style="background:url({% static 'img/auth_bg.jpg' %}) no-repeat center center;">
+            <div class="auth-box">
+                <div id="loginform">
+                    <div class="logo">
+                        <span class="db"><img height="30%" width="30%" src="{% static 'logo.png' %}" alt="logo"/></span>
+                        <h5 class="font-medium m-b-20">Восстановление Пароля в Link.IT</h5>
+                    </div>
+                    <!-- Form -->
+                    <div class="row">
+                        <div class="col-12">
+                            <form class="form-horizontal m-t-20" action="{% url 'account:forgot' %}" method="post">
+                                {% csrf_token %}
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon1"><i class="ti-email"></i></span>
                                     </div>
-                                    <form class="user">
-                                        <div class="form-group">
-                                            <input type="email" class="form-control form-control-user"
-                                                   id="exampleInputEmail" aria-describedby="emailHelp"
-                                                   placeholder="Enter Email Address...">
-                                        </div>
-                                        <a href="login.html" class="btn btn-primary btn-user btn-block">
-                                            Reset Password
-                                        </a>
-                                    </form>
-                                    <hr>
-                                    <div class="text-center">
-                                        <a class="small" href="register.html">Create an Account!</a>
-                                    </div>
-                                    <div class="text-center">
-                                        <a class="small" href="login.html">Already have an account? Login!</a>
+                                    {% render_field form.email class="form-control form-control-lg" placeholder="Email" aria-label="Имя пользователя/Email" aria-describedby="basic-addon1" %}
+                                </div>
+                                <div class="form-group text-center">
+                                    <div class="col-xs-12 p-b-20">
+                                        <button class="btn btn-block btn-lg btn-info" type="submit">Восстановить</button>
                                     </div>
                                 </div>
-                            </div>
+                                {#                                <div class="row">#}
+                                {#                                    <div class="col-xs-12 col-sm-12 col-md-12 m-t-10 text-center">#}
+                                {#                                        <div class="social">#}
+                                {#                                            <a href="javascript:void(0)" class="btn  btn-facebook" data-toggle="tooltip" title="" data-original-title="Login with Facebook"> <i aria-hidden="true" class="fab  fa-facebook"></i> </a>#}
+                                {#                                            <a href="javascript:void(0)" class="btn btn-googleplus" data-toggle="tooltip" title="" data-original-title="Login with Google"> <i aria-hidden="true" class="fab  fa-google-plus"></i> </a>#}
+                                {#                                        </div>#}
+                                {#                                    </div>#}
+                                {#                                </div>#}
+                                <div class="form-group m-b-0 m-t-10">
+                                    <div class="col-sm-12 text-center">
+                                        Ещё нет аккаунта?<a href="{% url 'account:signup' %}"
+                                                            class="text-info m-l-5"><b> Регистрация</b></a>
+                                    </div>
+                                    <div class="col-sm-12 text-center">
+                                        Уже есть аккаунт?<a href="{% url 'account:login' %}"
+                                                            class="text-info m-l-5"><b> Войти</b></a>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
-
             </div>
-
         </div>
-
     </div>
-
     </body>
 {% endblock content %}

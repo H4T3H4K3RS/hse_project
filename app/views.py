@@ -89,7 +89,7 @@ def link_add(request):
         context["form"] = LinkAddForm(request.user)
         folders = Folder.objects.filter(user=request.user)
         if len(folders) == 0:
-            messages.error(request, "Для начала, создайте подборку.")
+            messages.warning(request, "Для начала, создайте подборку.")
             return redirect(reverse('folder_add'))
     return render(request, "link/add.html", context)
 
@@ -124,8 +124,15 @@ def link_edit(request, link_id):
                     pass
                 link.folder = folder
                 if link.link != link_form.data.get("link"):
+                    saved_links = SavedLink.objects.filter(original=request.user, link=link.link)
+                    for saved_link in saved_links:
+                        saved_link.original = saved_link.user
+                        saved_link.save()
                     link.link = link_form.data.get("link")
                     link.folder.rating -= link.rating
+                    profile = Profile.objects.get(user=saved_link.original)
+                    profile.rating -= link.rating
+                    profile.save()
                     link.rating = 0
                     link.save()
                     link_votes = Vote.objects.filter(link=link)
@@ -158,18 +165,12 @@ def link_edit(request, link_id):
 def link_delete(request, link_id):
     try:
         link = Link.objects.get(id=link_id)
-        folder = link.folder
-        folder.rating -= link.rating
-        folder.save()
         if link.folder.user != request.user:
             return JsonResponse({"data": "Ссылка вам не принадлежитп."})
-        link_votes = Vote.objects.filter(link=link)
-        for vote in link_votes:
-            vote.delete()
         link.delete()
         return JsonResponse({"data": "Ссылка удалена."})
     except Link.DoesNotExist or Folder.DoesNotExist:
-        return JsonResponse({"data": "Ссылка или подборка не существуют."})
+        return JsonResponse({"data": "Ссылка уже не существует."})
 
 
 @login_required
@@ -184,6 +185,9 @@ def favourite_save_saved(request, link_id):
             saved_link.save()
             try:
                 original_link = Link.objects.get(folder__user=saved_link.original, link=link.link)
+                profile = Profile.objects.get(user=saved_link.original)
+                profile.rating += 1
+                profile.save()
                 original_link.rating += 1
                 original_link.folder.rating += 1
                 original_link.folder.save()
@@ -206,6 +210,9 @@ def favourite_save(request, link_id):
         except SavedLink.DoesNotExist:
             saved_link = SavedLink(link=link.link, user=request.user, original=link.folder.user)
             if saved_link.original != request.user:
+                profile = Profile.objects.get(user=saved_link.original)
+                profile.rating += 1
+                profile.save()
                 link.rating += 1
                 link.folder.rating += 1
                 link.folder.save()
@@ -224,6 +231,9 @@ def favourite_delete(request, link_id):
         if saved_link.original != request.user:
             try:
                 link = Link.objects.get(folder__user=saved_link.original, link=saved_link.link)
+                profile = Profile.objects.get(user=saved_link.original)
+                profile.rating -= 1
+                profile.save()
                 link.rating -= 1
                 link.folder.rating -= 1
                 link.folder.save()
@@ -245,13 +255,13 @@ def folder_add(request):
         if folder_form.is_valid():
             try:
                 folder = Folder.objects.get(name=folder_form.data['name'], user=request.user)
-                messages.error(request, "Вы уже создали данную подборку.")
+                messages.error(request, f"Вы уже создали подборку \"{folder_form.data['name']}\". Выберите другое название.")
                 context["form"] = FolderAddForm(request.POST)
                 return render(request, "folder/add.html", context)
             except Folder.DoesNotExist:
                 folder = Folder(name=folder_form.data['name'], user=request.user)
                 folder.save()
-                messages.success(request, "Подборка создана")
+                messages.success(request, f"Подборка \"{folder_form.data['name']}\" создана")
                 return redirect(reverse('link_add'))
         else:
             messages.error(request, f"Неправильные данные")
@@ -287,11 +297,10 @@ def folder_edit(request, folder_id):
         if folder_form.is_valid():
             try:
                 context['folder'] = folder = Folder.objects.get(id=folder_id, user=request.user)
+                messages.success(request, f"Название подборки \"{folder.name}\"изменено на \"{folder_form.data.get('name')}\"")
                 folder.name = folder_form.data.get("name")
                 folder.save()
-                messages.success(request, "Подборка изменена")
-                context["form"] = FolderAddForm(request.POST)
-                return render(request, "folder/edit.html", context)
+                return redirect(reverse("folder_view", kwargs={"folder_id": folder.id}))
             except Folder.DoesNotExist:
                 return handler403(request)
         else:
@@ -314,11 +323,6 @@ def folder_edit(request, folder_id):
 def folder_delete(request, folder_id):
     try:
         folder = Folder.objects.get(id=folder_id)
-        for link in Link.objects.filter(folder=folder):
-            link_votes = Vote.objects.filter(link=link)
-            for vote in link_votes:
-                vote.delete()
-            link.delete()
         folder.delete()
         return JsonResponse({'data': 'Подборка удалена.'})
     except Folder.DoesNotExist:
