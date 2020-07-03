@@ -103,11 +103,13 @@
                         href="{% url 'link_add' %}"
                         aria-expanded="false"><i class="mdi mdi-link"></i><span
                         class="hide-menu">Добавить Ссылку </span></a></li>
+            {% if request.user.is_authenticated %}
                 <li class="sidebar-item"><a
                         class="sidebar-link waves-effect waves-dark{% if request.resolver_match.url_name == "account:logout" %}active{% endif %}"
                         href="{% url 'account:logout' %}"
                         aria-expanded="false"><i class="mdi mdi-account-off"></i><span
                         class="hide-menu">Выйти </span></a></li>
+            {% endif %}
 
             </ul>
         </nav>

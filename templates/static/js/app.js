@@ -238,4 +238,5 @@ $("#delete_account_button").click(function () {
             window.location.href = window.reverse('account:delete');
         }
     })
-})
+});
+$('#links').DataTable({});

@@ -79,10 +79,9 @@ def login(request):
                         messages.warning(request, {
                             'title': 'Был получен запрос на восстановление пароля. Учётная запись деактивирована. Следуйте инструкциями отправленным на электронную почту, указанную при регистрации.',
                             "submessages": [f'https://{user.email[user.email.find("@"):]}']}, extra_tags='link')
-                        context['toastr_link'] = f'https://{user.email[user.email.find("@"):]}'
                     except Code.DoesNotExist:
                         messages.error(request, {
-                            'title': "На электронную почту, указанную при регистрации было выслано письмо с кодом подтверждения.",
+                            'title': "На электронную почту, указанную при регистрации было выслано письмо с инструкцией для подтверждения аккаунта.",
                             "submessages": [f'https://{user.email[user.email.find("@"):]}']}, extra_tags='link')
             else:
                 try:
@@ -127,9 +126,10 @@ def signup(request):
                 code_object.save()
                 mail_context = {'token': code_object.token, 'code': code_object.code, 'user': new_user}
                 utils.send_mail(new_user.email, 'Подтверждение Регистрации', 'mail/confirmation.html', mail_context)
-                messages.success(request, {
+                messages.warning(request, {
                     'title': 'На вашу электронную почту было отправлено письмо, для подтверждения.',
                     "submessages": [f'https://{new_user.email[new_user.email.find("@"):]}']}, extra_tags='link')
+                print(messages.get_messages(request)[0])
                 return redirect(reverse('account:login'))
         else:
             errors = user_form.errors.as_json()
@@ -138,6 +138,7 @@ def signup(request):
             for key, message in errors.items():
                 for error in message:
                     codes.append(error['code'])
+            print(codes)
             if 'unique' in codes:
                 messages.error(request, "Пользователь с таким именем уже существует.")
             if 'password_too_similar' in codes:
@@ -178,7 +179,7 @@ def forgot(request):
                     code_object.user.save()
                     mail_context = {'token': code_object.token, 'code': code_object.code, 'user': user}
                     utils.send_mail(user.email, 'Восстановление Пароля', 'mail/recovery.html', mail_context)
-                    messages.success(request, {
+                    messages.warning(request, {
                         'title': 'Инструкция по восстановлению пароля отправлена на почту.',
                         "submessages": [f'https://{user.email[user.email.find("@"):]}']}, extra_tags='link')
                     return redirect(reverse('account:login'))

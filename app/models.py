@@ -2,17 +2,41 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.http import JsonResponse
 
+from account.models import Profile
+
 
 class Folder(models.Model):
     name = models.CharField(max_length=128)
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     rating = models.IntegerField(default=0)
 
+    # def delete(self, using=None, keep_parents=False):
+    #     profile = Profile.objects.get(user=self.folder.user)
+    #     profile.rating -= self.rating
+    #     saved_links
+    #     for saved_link in saved_links:
+    #         saved_link.original = saved_link.user
+    #         saved_link.save()
+    #     profile.save()
+    #     super().delete(using, keep_parents)
+
 
 class Link(models.Model):
     link = models.URLField(default="https://google.com")
     folder = models.ForeignKey(to=Folder, on_delete=models.CASCADE)
     rating = models.IntegerField(default=0)
+
+    def delete(self, using=None, keep_parents=False):
+        self.folder.rating -= self.rating
+        profile = Profile.objects.get(user=self.folder.user)
+        profile.rating -= self.rating
+        saved_links = SavedLink.objects.filter(original=self.folder.user, link=self.link)
+        for saved_link in saved_links:
+            saved_link.original = saved_link.user
+            saved_link.save()
+        profile.save()
+        self.folder.save()
+        super().delete(using, keep_parents)
 
     def vote(self, user, state):
         if self.folder.user == user:

@@ -167,12 +167,6 @@ def link_delete(request, link_id):
         link = Link.objects.get(id=link_id)
         if link.folder.user != request.user:
             return JsonResponse({"data": "Ссылка вам не принадлежитп."})
-        folder = link.folder
-        folder.rating -= link.rating
-        profile = Profile.objects.get(user=request.user)
-        profile.rating -= link.rating
-        profile.save()
-        folder.save()
         link.delete()
         return JsonResponse({"data": "Ссылка удалена."})
     except Link.DoesNotExist or Folder.DoesNotExist:
