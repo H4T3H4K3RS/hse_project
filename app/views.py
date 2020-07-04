@@ -166,7 +166,7 @@ def link_delete(request, link_id):
     try:
         link = Link.objects.get(id=link_id)
         if link.folder.user != request.user:
-            return JsonResponse({"data": "Ссылка вам не принадлежитп."})
+            return JsonResponse({"data": "Ссылка вам не принадлежит."})
         link.delete()
         return JsonResponse({"data": "Ссылка удалена."})
     except Link.DoesNotExist or Folder.DoesNotExist:
@@ -228,22 +228,25 @@ def favourite_save(request, link_id):
 def favourite_delete(request, link_id):
     try:
         saved_link = SavedLink.objects.get(id=link_id)
-        if saved_link.original != request.user:
-            try:
-                link = Link.objects.get(folder__user=saved_link.original, link=saved_link.link)
-                profile = Profile.objects.get(user=saved_link.original)
-                profile.rating -= 1
-                profile.save()
-                link.rating -= 1
-                link.folder.rating -= 1
-                link.folder.save()
-                link.save()
-            except Link.DoesNotExist:
-                pass
-        saved_link.delete()
-        data = "Ссылка удалена."
+        if saved_link.user != request.user:
+            data = "Ссылка вам не принадлежит"
+        else:
+            if saved_link.original != request.user:
+                try:
+                    link = Link.objects.get(folder__user=saved_link.original, link=saved_link.link)
+                    profile = Profile.objects.get(user=saved_link.original)
+                    profile.rating -= 1
+                    profile.save()
+                    link.rating -= 1
+                    link.folder.rating -= 1
+                    link.folder.save()
+                    link.save()
+                except Link.DoesNotExist:
+                    pass
+            saved_link.delete()
+            data = "Ссылка удалена."
     except SavedLink.DoesNotExist:
-        data = "Ссылка не существует или вам не принадлежит"
+        data = "Ссылка не существует"
     return JsonResponse({"data": data})
 
 
@@ -279,10 +282,6 @@ def folder_view(request, folder_id):
         context['folder'] = Folder.objects.get(id=folder_id)
     except Folder.DoesNotExist:
         return handler403(request)
-    if context['folder'].user == request.user:
-        context['owner'] = 1
-    else:
-        context['owner'] = 0
     context['links'] = Link.objects.filter(folder_id=folder_id).order_by("-rating")
     context['saved_links_links'] = utils.get_saved_links(s_links)
     context['saved_links'] = s_links

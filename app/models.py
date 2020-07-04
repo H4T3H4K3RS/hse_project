@@ -10,16 +10,6 @@ class Folder(models.Model):
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     rating = models.IntegerField(default=0)
 
-    # def delete(self, using=None, keep_parents=False):
-    #     profile = Profile.objects.get(user=self.folder.user)
-    #     profile.rating -= self.rating
-    #     saved_links
-    #     for saved_link in saved_links:
-    #         saved_link.original = saved_link.user
-    #         saved_link.save()
-    #     profile.save()
-    #     super().delete(using, keep_parents)
-
 
 class Link(models.Model):
     link = models.URLField(default="https://google.com")
@@ -40,12 +30,12 @@ class Link(models.Model):
 
     def vote(self, user, state):
         if self.folder.user == user:
-            return JsonResponse({'data': "Вы являетесь владельцем данной ссылки."})
+            return JsonResponse({'data': "Вы являетесь владельцем данной ссылки."}, status=202)
         try:
             vote = Vote.objects.get(link=self, user=user)
             if vote.state == 1:
                 if state == 1:
-                    return JsonResponse({'data': "Вы уже проголосовали за повышение рейтинга ссылки."})
+                    return JsonResponse({'data': "Вы уже проголосовали за повышение рейтинга ссылки."}, status=208)
                 else:
                     self.rating -= 1
                     self.save()
@@ -53,7 +43,7 @@ class Link(models.Model):
                     vote.save()
                     self.folder.rating -= 1
                     self.folder.save()
-                    return JsonResponse({'data': "Вы удалили свой голос."})
+                    return JsonResponse({'data': "Вы удалили свой голос."}, status=202)
             elif vote.state == 0:
                 if state == 1:
                     self.rating += 1
@@ -62,7 +52,7 @@ class Link(models.Model):
                     vote.save()
                     self.folder.rating += 1
                     self.folder.save()
-                    return JsonResponse({'data': "Вы повысили рейтинг ссылки на 1."})
+                    return JsonResponse({'data': "Вы повысили рейтинг ссылки на 1."}, status=200)
                 else:
                     self.rating -= 1
                     self.save()
@@ -70,7 +60,7 @@ class Link(models.Model):
                     vote.save()
                     self.folder.rating -= 1
                     self.folder.save()
-                    return JsonResponse({'data': "Вы понизили рейтинг ссылки на 1."})
+                    return JsonResponse({'data': "Вы понизили рейтинг ссылки на 1."}, status=200)
             else:
                 if state == 1:
                     self.rating += 1
@@ -79,9 +69,9 @@ class Link(models.Model):
                     vote.save()
                     self.folder.rating += 1
                     self.folder.save()
-                    return JsonResponse({'data': "Вы удалили свой голос."})
+                    return JsonResponse({'data': "Вы удалили свой голос."}, status=202)
                 else:
-                    return JsonResponse({'data': "Вы уже проголосовали за понижение рейтинга ссылки."})
+                    return JsonResponse({'data': "Вы уже проголосовали за понижение рейтинга ссылки."}, status=208)
         except Vote.DoesNotExist:
             vote = Vote(link=self, user=user, state=state)
             self.rating += state
@@ -90,7 +80,7 @@ class Link(models.Model):
             self.folder.save()
             vote.save()
             return JsonResponse(
-                {'data': "Вы повысили рейтинг ссылки на 1." if state == 1 else "Вы понизили рейтинг ссылки на 1."})
+                {'data': "Вы повысили рейтинг ссылки на 1." if state == 1 else "Вы понизили рейтинг ссылки на 1."}, status=200)
 
 
 class SavedLink(models.Model):

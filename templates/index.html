@@ -13,8 +13,20 @@
             </div>
         </div>
         <div class="page-wrapper">
-            <div id="content">
-                {% include 'api/index.html' %}
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-8 col-xlg-9 col-md-7">
+                        <div class="card">
+                            <div class="tab-content" id="content">
+                                <div class="tab-pane fade show active" id="account_links" role="tabpanel">
+                                    <div class="card-body" id="links_card">
+                                        {% include 'api/index.html' %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

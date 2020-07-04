@@ -13,18 +13,37 @@
                 <div class="lds-pos"></div>
             </div>
         </div>
-        <div class="page-wrapper"
-             style="background:url({% static 'img/auth_bg.jpg' %}) no-repeat center center;">
-            <form action="{% url 'search' %}" method="GET">
-                <label>
-                    Поиск
-                    <input name="q" type="text" value="{% if value %}{{ value }}{% endif %}"
-                           placeholder="Введите Имя Пользователя/Эл.Почту/Ссылку/Подборку" style="width: 300px;">
-                </label>
-                <button type="submit">Поиск</button>
-            </form>
-            <div id="content">
-                {% include 'api/search.html' %}
+        <div class="page-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-8 col-xlg-9 col-md-7">
+                        <div class="card">
+                            <div class="tab-content" id="content">
+                                <div class="tab-pane fade show active">
+                                    <div class="card-body" id="search_card">
+                                    <h4>Запрос</h4>
+                                        <form class="form-horizontal form-material" action="{% url 'search' %}"
+                                              method="GET">
+                                            <div class="form-group">
+                                                <div class="col-md-12">
+                                                    <input class="form-control form-control-line" name="q" type="text"
+                                                           value="{% if value %}{{ value }}{% endif %}"
+                                                           placeholder="Введите Имя Пользователя/Эл.Почту/Ссылку/Подборку">
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="col-sm-12">
+                                                        <button class="btn btn-success">Поиск</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        {% include 'api/search.html' %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

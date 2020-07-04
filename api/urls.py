@@ -17,8 +17,12 @@ from django.urls import path
 from api import views
 
 urlpatterns = [
-    path('account/', views.account_view, name='account_view'),
-    path('account/<str:username>/', views.account_view, name='account_view_username'),
+    path('account/folder/', views.account_folder, name='account_folder'),
+    path('account/<str:username>/folder/', views.account_folder, name='account_folder_username'),
+    path('account/links/', views.account_folder, name='account_links'),
+    path('account/<str:username>/links/', views.account_links, name='account_links_username'),
+    path('account/saved/', views.account_saved, name='account_folder'),
+    path('account/<str:username>/saved/', views.account_saved, name='account_saved_username'),
     path('folder/<int:folder_id>/', views.folder_view, name='folder_view'),
     path('index/', views.index_view, name='index_view'),
     path('search/', views.search_view, name='search_view'),

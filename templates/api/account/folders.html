@@ -1,0 +1,35 @@
+<table id="folders_table" class="dt table table-striped table-bordered display text-center table-responsive-sm"
+       style="width:100%">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Рейтинг</th>
+        <th scope="col">Подборка</th>
+        {% if request.user == user %}
+            <th scope="col">Действия</th>
+        {% endif %}
+    </tr>
+    </thead>
+    <tbody>
+    {% for folder in folders %}
+        <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <th>{{ folder.rating }} </th>
+            <th><a href="{% url 'folder_view' folder.id %}" target="_blank">{{ folder.name }}</a></th>
+            {% if request.user == folder.user %}
+                <th>
+                    <a href="{% url 'folder_edit' folder.id %}" data-toggle="tooltip" data-placement="top"
+                       title="Редактировать Подборку">
+                        <i style="color: blue; font-size: 150%" class="ti-pencil"></i>
+                    </a>
+                    <a href="javascript:void(0)" class="delete_folder_btn" data-id="{{ folder.id }}" data-type="account"
+                       data-data="{{ user.username }}" data-toggle="tooltip" data-placement="top"
+                       title="Удалить Подборку">
+                        <i style="color: red; font-size: 150%" class="ti-trash"></i>
+                    </a>
+                </th>
+            {% endif %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

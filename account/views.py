@@ -76,13 +76,9 @@ def login(request):
                 else:
                     try:
                         code_object = Code.objects.get(user=user, status=True)
-                        messages.warning(request, {
-                            'title': 'Был получен запрос на восстановление пароля. Учётная запись деактивирована. Следуйте инструкциями отправленным на электронную почту, указанную при регистрации.',
-                            "submessages": [f'https://{user.email[user.email.find("@"):]}']}, extra_tags='link')
+                        messages.warning(request, 'Был получен запрос на восстановление пароля. Учётная запись деактивирована. Следуйте инструкциями отправленным на электронную почту, указанную при регистрации.')
                     except Code.DoesNotExist:
-                        messages.error(request, {
-                            'title': "На электронную почту, указанную при регистрации было выслано письмо с инструкцией для подтверждения аккаунта.",
-                            "submessages": [f'https://{user.email[user.email.find("@"):]}']}, extra_tags='link')
+                        messages.error(request, "На электронную почту, указанную при регистрации было выслано письмо с инструкцией для подтверждения аккаунта.")
             else:
                 try:
                     User.objects.get(username=username)
@@ -126,9 +122,7 @@ def signup(request):
                 code_object.save()
                 mail_context = {'token': code_object.token, 'code': code_object.code, 'user': new_user}
                 utils.send_mail(new_user.email, 'Подтверждение Регистрации', 'mail/confirmation.html', mail_context)
-                messages.warning(request, {
-                    'title': 'На вашу электронную почту было отправлено письмо, для подтверждения.',
-                    "submessages": [f'https://{new_user.email[new_user.email.find("@"):]}']}, extra_tags='link')
+                messages.warning(request, 'На вашу электронную почту было отправлено письмо, для подтверждения.')
                 return redirect(reverse('account:login'))
         else:
             errors = user_form.errors.as_json()
@@ -178,9 +172,7 @@ def forgot(request):
                     code_object.user.save()
                     mail_context = {'token': code_object.token, 'code': code_object.code, 'user': user}
                     utils.send_mail(user.email, 'Восстановление Пароля', 'mail/recovery.html', mail_context)
-                    messages.warning(request, {
-                        'title': 'Инструкция по восстановлению пароля отправлена на почту.',
-                        "submessages": [f'https://{user.email[user.email.find("@"):]}']}, extra_tags='link')
+                    messages.warning(request, 'Инструкция по восстановлению пароля отправлена на почту.')
                     return redirect(reverse('account:login'))
                 else:
                     try:
@@ -194,9 +186,7 @@ def forgot(request):
                     code_object.save()
                     mail_context = {'token': code_object.token, 'code': code_object.code, 'user': user}
                     utils.send_mail(user.email, 'Подтверждение Регистрации', 'mail/confirmation.html', mail_context)
-                    messages.warning(request, {
-                        'title': 'Аккаунт не был активирован, поэтому письмо для подтверждения регистрации было повторно отправлено на почту.',
-                        "submessages": [f'https://{user.email[user.email.find("@"):]}']}, extra_tags='link')
+                    messages.warning(request, 'Аккаунт не был активирован, поэтому письмо для подтверждения регистрации было повторно отправлено на почту.')
             else:
                 messages.error(request, 'Пользователя с таким email не существует')
         else:
