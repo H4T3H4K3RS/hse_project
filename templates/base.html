@@ -27,6 +27,8 @@
             <link href="{% static 'theme/dist/css/style.min.css' %}" rel="stylesheet">
             <link href="{% static 'theme/assets/libs/sweetalert2/dist/sweetalert2.min.css' %}" rel="stylesheet">
             <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
+            <link href="{% static 'theme/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.css' %}"
+                  rel="stylesheet">
             <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
             <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
             <!--[if lt IE 9]>
@@ -70,7 +72,7 @@
                         SidebarType: 'full', // You can change it full / mini-sidebar / iconbar / overlay
                     {% endif %}
                     SidebarColor: 'skin6', // You can change the Value to be skin1/skin2/skin3/skin4/skin5/skin6
-                    SidebarPosition: false, // it can be true / false ( true means Fixed and false means absolute )
+                    SidebarPosition: true, // it can be true / false ( true means Fixed and false means absolute )
                     HeaderPosition: false, // it can be true / false ( true means Fixed and false means absolute )
                     BoxedLayout: false, // it can be true / false ( true means Boxed and false means Fluid )
                 });
@@ -92,9 +94,9 @@
         <!--Menu sidebar -->
         <script src="{% static 'theme/dist/js/sidebarmenu.js' %}"></script>
         <!--Custom JavaScript -->
-        <script src="{% static 'theme/assets/extra-libs/jquery-datatables-editable/jquery.dataTables.js' %}"></script>
-        <script src="{% static 'theme/assets/extra-libs/jquery-datatables-editable/dataTables.bootstrap.js' %}"></script>
-        <script src="{% static 'theme/dist/js/custom.min.js' %}"></script>
+        <script src="{% static 'theme/assets/extra-libs/DataTables/datatables.min.js' %}"></script>
+        <script src="{% static 'theme/dist/js/pages/datatable/datatable-basic.init.js' %}"></script>
+        <script src="{% static 'theme/dist/js/custom.js' %}"></script>
         <!--This page JavaScript -->
         <!--chartis chart-->
         <script src="{% static 'theme/assets/libs/chartist/dist/chartist.min.js' %}"></script>
@@ -107,9 +109,6 @@
         <script src="{% static 'theme/dist/js/pages/dashboards/dashboard1.js' %}"></script>
         <script src="{% static 'theme/assets/libs/sweetalert2/dist/sweetalert2.all.min.js' %}"></script>
         <script src="{% static 'theme/assets/libs/sweetalert2/sweet-alert.init.js' %}"></script>
-        <script>
-
-        </script>
     {% endblock footer_javascript_site %}
     {% block footer_javascript_section %}{% endblock footer_javascript_section %}
     {% block footer_javascript_page %}{% endblock footer_javascript_page %}
@@ -118,47 +117,23 @@
             <script type=text/javascript>
                 setTimeout(function () {
                     {% for message in messages %}
-                        console.log('{{ message.tags }}');
-                        {% if 'link' in message.tags %}
-                            var params = {timeout: {{ message.message.title|length }} * 40};
-                            params.onHidden = function () {
-                                var win = window.open('{{ message.message.submessages.0 }}', '_blank');
-                                if (win) {
-                                    //Browser has allowed it to be opened
-                                    win.focus();
-                                } else {
-                                    //Browser has blocked it
-                                    alert('Сайту требуется разрешение на открытие всплывающих окон, для открытия почты.');
-                                }
-                            };
-                            {% if 'success' in message.tags %}
-                                toastr.success('{{ message.message.title }}', "", params);
-                            {% elif 'info' in message.tags %}
-                                toastr.info('{{ message.message.title }}', "", params);
-                            {% elif 'warning' in message.tags %}
-                                toastr.warning('{{ message.message.title }}', "", params);
-                            {% elif 'error' in message.tags %}
-                                toastr.error('{{ message.message.title }}', "", params);
-                            {% endif %}
-                            console.log('{{ message.message.title }}');
-                        {% else %}
-                            var params = {timeout: {{ message|length }} * 40};
-                            {% if 'success' in message.tags %}
-                                toastr.success('{{ message }}', "", params);
-                            {% elif 'info' in message.tags %}
-                                toastr.info('{{ message }}', "", params);
-                            {% elif 'warning' in message.tags %}
-                                toastr.warning('{{ message }}', "", params);
-                            {% elif 'error' in message.tags %}
-                                toastr.error('{{ message }}', "", params);
-                            {% endif %}
-                            console.log('{{ message }}');
+
+                        var params = {timeout: {{ message|length }} * 40};
+                        {% if 'success' in message.tags %}
+                            toastr.success('{{ message }}', "", params);
+                        {% elif 'info' in message.tags %}
+                            toastr.info('{{ message }}', "", params);
+                        {% elif 'warning' in message.tags %}
+                            toastr.warning('{{ message }}', "", params);
+                        {% elif 'error' in message.tags %}
+                            toastr.error('{{ message }}', "", params);
                         {% endif %}
                     {% endfor %}
                 }, 1000);
             </script>
         {% endif %}
     {% endblock messages %}
+
     <script src="{% static 'js/app.js' %}"></script>
 {% endblock footer_javascript %}
 </html>

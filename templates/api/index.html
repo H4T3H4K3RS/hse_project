@@ -1,68 +1,86 @@
-<h1>Топ Ссылок:</h1>
-{% for link in links %}
-    {% if not request.user.is_authenticated %}
-        <button class="redirect_login">
-            &#8657;
-        </button>
-        [ Рейтинг: {{ link.rating }} ] |
-        <button class="redirect_login">
-            &#8659;
-        </button>
-    {% elif link.folder.user != request.user %}
-        <button class="vote_btn" data-id="{{ link.id }}" data-type="index" data-data="" data-vote="1">
-            &#8657;
-        </button>
-        [ Рейтинг: {{ link.rating }} ] |
-        <button class="vote_btn" data-id="{{ link.id }}" data-type="index" data-data="" data-vote="-1">
-            &#8659;
-        </button>
-    {% else %}
-        [ Рейтинг: {{ link.rating }} ] |
-    {% endif %}
-    <a href="{{ link.link }}" target="_blank">{{ link.link }}</a>
-    {% if not request.user.is_authenticated %}
-        {% if link.link in saved_links_links %}
-            {% for saved_link in saved_links %}
-                {% if link.link == saved_link.link %}
-                    <button class="favourite_delete_btn" data-id="{{ saved_link.id }}" data-type="index" data-data="">
-                        Удалить из Сохранённых
-                    </button>
+<table id="links_table" class="dt table table-striped table-bordered display text-center table-responsive-sm"
+       style="width:100%">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Рейтинг</th>
+        <th scope="col">Ссылка</th>
+        <th scope="col">Действия</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for link in links %}
+        <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>
+                {% if link.folder.user != request.user %}
+                    <a href="javascript:void(0)" class="vote_btn" data-id="{{ link.id }}" data-type="index"
+                       data-vote="1">
+                        <i style="color: #00c210; font-size: 150%" class="ti-thumb-up"></i>
+                    </a>
+                    <span style="font-weight: bold;">{{ link.rating }}</span>
+                    <a href="javascript:void(0)" class="vote_btn" data-id="{{ link.id }}" data-type="index"
+                       data-vote="-1">
+                        <i style="color: red; font-size: 150%" class="ti-thumb-down"></i>
+                    </a>
+                {% else %}
+                    <span style="font-weight: bold;">{{ link.rating }}</span>
                 {% endif %}
-            {% endfor %}
-        {% else %}
-            <button class="favourite_add_btn" data-id="{{ link.id }}" data-type="index" data-data="">
-                Добавить в Сохранённые
-            </button>
-        {% endif %}
-        <button>
-            <a href="{% url 'account:view_others' link.folder.user %}" class="button_link">К Источнику</a>
-        </button>
-    {% elif link.folder.user == request.user %}
-        <button class="delete_link_btn" data-id="{{ link.id }}" data-type="index" data-data="">
-            Удалить
-        </button>
-        <button>
-            <a href="{% url 'link_edit' link.id %}" class="button_link">
-                Редактировать
-            </a>
-        </button>
-    {% else %}
-        <button>
-            <a href="{% url 'account:view_others' link.folder.user %}" class="button_link">К Источнику</a>
-        </button>
-    {% endif %}
-    {% if link.link in saved_links_links %}
-        {% for saved_link in saved_links %}
-            {% if link.link == saved_link.link %}
-                <button class="favourite_delete_btn" data-id="{{ saved_link.id }}" data-type="index" data-data="">
-                    Удалить из Сохранённых
-                </button>
-            {% endif %}
-        {% endfor %}
-    {% else %}
-        <button class="favourite_add_btn" data-id="{{ link.id }}" data-type="index" data-data="">
-            Добавить в Сохранённые
-        </button>
-    {% endif %}
-    <br>
-{% endfor %}
+            </td>
+            <td><a href="{{ link.link }}" target="_blank">{{ link.link }}</a></td>
+            <td>
+                {% if request.user == link.folder.user %}
+                    <a href="javascript:void(0)" class="delete_link_btn" data-id="{{ link.id }}" data-type="index" data-toggle="tooltip" data-placement="top"
+                       title="Удалить Ссылку">
+                        <i style="color: red; font-size: 150%" class="ti-close"></i>
+                    </a>
+                    <a href="{% url 'link_edit' link.id %}" data-toggle="tooltip" data-placement="top"
+                       title="Редактировать Ссылку">
+                        <i style="color: blue; font-size: 150%" class="ti-pencil"></i>
+                    </a>
+                    {% if link.link in saved_links_links %}
+                        {% for saved_link in saved_links %}
+                            {% if link.link == saved_link.link %}
+                                <a href="javascript:void(0)" class="favourite_delete_btn" data-id="{{ saved_link.id }}"
+                                   data-type="index" data-toggle="tooltip" data-placement="top"
+                                   title="Удалить из Сохранённых">
+                                    <i style="color: red; font-size: 150%" class="ti-trash"></i>
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <a href="javascript:void(0)" class="favourite_add_btn" data-id="{{ link.id }}"
+                           data-type="index" data-toggle="tooltip" data-placement="top"
+                           title="Добавить в Сохранённое">
+                            <i style="color: #00c210; font-size: 150%; font-weight: bold;" class="ti-plus"></i>
+                        </a>
+                    {% endif %}
+                {% else %}
+                    {% if link.link in saved_links_links %}
+                        {% for saved_link in saved_links %}
+                            {% if link.link == saved_link.link %}
+                                <a href="javascript:void(0)" class="favourite_delete_btn" data-id="{{ saved_link.id }}"
+                                   data-type="index" data-toggle="tooltip" data-placement="top"
+                                   title="Удалить из Сохранённых">
+                                    <i style="color: red; font-size: 150%" class="ti-trash"></i>
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <a href="javascript:void(0)" class="favourite_add_btn" data-id="{{ link.id }}"
+                           data-type="index" data-toggle="tooltip" data-placement="top"
+                           title="Добавить в Сохранённое">
+                            <i style="color: #00c210; font-size: 150%; font-weight: bold;" class="ti-plus"></i>
+                        </a>
+                    {% endif %}
+                    <a href="{% url 'account:view_others' link.folder.user %}" data-toggle="tooltip"
+                       data-placement="top"
+                       title="К источнику">
+                        <i style="color: blue; font-size: 150%" class="ti-link"></i>
+                    </a>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

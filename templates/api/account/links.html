@@ -1,4 +1,3 @@
-<h4>Ссылки</h4>
 <table id="links_table" class="dt table table-striped table-bordered display text-center table-responsive-sm"
        style="width:100%">
     <thead>
@@ -15,13 +14,13 @@
             <th scope="row">{{ forloop.counter }}</th>
             <td>
                 {% if link.folder.user != request.user %}
-                    <a href="javascript:void(0)" class="vote_btn" data-id="{{ link.id }}" data-type="search"
+                    <a href="javascript:void(0)" class="vote_btn" data-id="{{ link.id }}" data-type="account"
                        data-data="{{ user.username }}"
                        data-vote="1">
                         <i style="color: #00c210; font-size: 150%" class="ti-thumb-up"></i>
                     </a>
                     <span style="font-weight: bold;">{{ link.rating }}</span>
-                    <a href="javascript:void(0)" class="vote_btn" data-id="{{ link.id }}" data-type="search"
+                    <a href="javascript:void(0)" class="vote_btn" data-id="{{ link.id }}" data-type="account"
                        data-data="{{ user.username }}"
                        data-vote="-1">
                         <i style="color: red; font-size: 150%" class="ti-thumb-down"></i>
@@ -33,7 +32,7 @@
             <td><a href="{{ link.link }}" target="_blank">{{ link.link }}</a></td>
             <td>
                 {% if request.user == link.folder.user %}
-                    <a href="javascript:void(0)" class="delete_link_btn" data-id="{{ link.id }}" data-type="search"
+                    <a href="javascript:void(0)" class="delete_link_btn" data-id="{{ link.id }}" data-type="account"
                        data-data="{{ user.username }}" data-toggle="tooltip" data-placement="top"
                        title="Удалить Ссылку">
                         <i style="color: red; font-size: 150%" class="ti-close"></i>
@@ -46,7 +45,7 @@
                         {% for saved_link in saved_links %}
                             {% if link.link == saved_link.link %}
                                 <a href="javascript:void(0)" class="favourite_delete_btn" data-id="{{ saved_link.id }}"
-                                   data-type="search"
+                                   data-type="account"
                                    data-data="{{ user.username }}" data-toggle="tooltip" data-placement="top"
                                    title="Удалить из Сохранённых">
                                     <i style="color: red; font-size: 150%" class="ti-trash"></i>
@@ -55,7 +54,7 @@
                         {% endfor %}
                     {% else %}
                         <a href="javascript:void(0)" class="favourite_add_btn" data-id="{{ link.id }}"
-                           data-type="search"
+                           data-type="account"
                            data-data="{{ user.username }}" data-toggle="tooltip" data-placement="top"
                            title="Добавить в Сохранённое">
                             <i style="color: #00c210; font-size: 150%; font-weight: bold;" class="ti-plus"></i>
@@ -66,7 +65,7 @@
                         {% for saved_link in saved_links %}
                             {% if link.link == saved_link.link %}
                                 <a href="javascript:void(0)" class="favourite_delete_btn" data-id="{{ saved_link.id }}"
-                                   data-type="search"
+                                   data-type="account"
                                    data-data="{{ user.username }}" data-toggle="tooltip" data-placement="top"
                                    title="Удалить из Сохранённых">
                                     <i style="color: red; font-size: 150%" class="ti-trash"></i>
@@ -75,7 +74,7 @@
                         {% endfor %}
                     {% else %}
                         <a href="javascript:void(0)" class="favourite_add_btn" data-id="{{ link.id }}"
-                           data-type="search"
+                           data-type="account"
                            data-data="{{ user.username }}" data-toggle="tooltip" data-placement="top"
                            title="Добавить в Сохранённое">
                             <i style="color: #00c210; font-size: 150%; font-weight: bold;" class="ti-plus"></i>
@@ -88,64 +87,6 @@
                     </a>
                 {% endif %}
             </td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
-<h4>Подборки</h4>
-<table id="folders_table" class="dt table table-striped table-bordered display text-center table-responsive-sm"
-       style="width:100%">
-    <thead>
-    <tr>
-        <th scope="col">#</th>
-        <th scope="col">Рейтинг</th>
-        <th scope="col">Подборка</th>
-        <th scope="col">Действия</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for folder in folders %}
-        <tr>
-            <th scope="row">{{ forloop.counter }}</th>
-            <th>{{ folder.rating }} </th>
-            <th><a href="{% url 'folder_view' folder.id %}" target="_blank">{{ folder.name }}</a></th>
-
-            <th>
-                {% if request.user == folder.user %}
-                    <a href="{% url 'folder_edit' folder.id %}" data-toggle="tooltip" data-placement="top"
-                       title="Редактировать Подборку">
-                        <i style="color: blue; font-size: 150%" class="ti-pencil"></i>
-                    </a>
-                    <a href="javascript:void(0)" class="delete_folder_btn" data-id="{{ folder.id }}" data-type="search"
-                       data-data="{{ user.username }}" data-toggle="tooltip" data-placement="top"
-                       title="Удалить Подборку">
-                        <i style="color: red; font-size: 150%" class="ti-trash"></i>
-                    </a>
-                {% else %}
-                    Подборка вам не принадлежит
-                {% endif %}
-
-            </th>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
-<h4>Пользователи</h4>
-<table id="folders_table" class="dt table table-striped table-bordered display text-center table-responsive-sm"
-       style="width:100%">
-    <thead>
-    <tr>
-        <th scope="col">#</th>
-        <th scope="col">Рейтинг</th>
-        <th scope="col">Пользователь</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for user in users %}
-        <tr>
-            <th scope="row">{{ forloop.counter }}</th>
-            <th>{{ user.rating }} </th>
-            <th><a href="{% url 'account:view_others' user.user %}" target="_blank">{{ user.user }}</a></th>
         </tr>
     {% endfor %}
     </tbody>

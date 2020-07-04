@@ -11,7 +11,7 @@ from app.models import Folder, Link, BotKey, SavedLink
 
 
 @login_required
-def account_view(request, username=None):
+def account_links(request, username=None):
     context = {}
     s_links = SavedLink.objects.filter(user=request.user)
     if username is None or request.user.username == username:
@@ -21,7 +21,7 @@ def account_view(request, username=None):
                    'user': request.user,
                    'saved_links_links': utils.get_saved_links(s_links),
                    'saved_links': s_links}
-        return render(request, 'api/account.html', context)
+        return render(request, 'api/account/links.html', context)
     else:
         context['owner'] = 0
     try:
@@ -34,7 +34,61 @@ def account_view(request, username=None):
     context['links'] = Link.objects.filter(folder__user__username=username).order_by("-rating")
     context['saved_links'] = s_links
     context['saved_links_links'] = utils.get_saved_links(s_links)
-    return render(request, 'api/account.html', context)
+    return render(request, 'api/account/links.html', context)
+
+
+@login_required
+def account_folder(request, username=None):
+    context = {}
+    s_links = SavedLink.objects.filter(user=request.user)
+    if username is None or request.user.username == username:
+        context = {'saved': SavedLink.objects.filter(user=request.user),
+                   'folders': Folder.objects.filter(user=request.user).order_by("-rating"),
+                   'links': Link.objects.filter(folder__user=request.user).order_by("-rating"), 'owner': 1,
+                   'user': request.user,
+                   'saved_links_links': utils.get_saved_links(s_links),
+                   'saved_links': s_links}
+        return render(request, 'api/account/folders.html', context)
+    else:
+        context['owner'] = 0
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return handler404(request)
+    context['user'] = user
+    context['saved'] = SavedLink.objects.filter(user__username=username)
+    context['folders'] = Folder.objects.filter(user__username=username).order_by("-rating")
+    context['links'] = Link.objects.filter(folder__user__username=username).order_by("-rating")
+    context['saved_links'] = s_links
+    context['saved_links_links'] = utils.get_saved_links(s_links)
+    return render(request, 'api/account/folders.html', context)
+
+
+@login_required
+def account_saved(request, username=None):
+    context = {}
+    s_links = SavedLink.objects.filter(user=request.user)
+    if username is None or request.user.username == username:
+        context = {'saved': SavedLink.objects.filter(user=request.user),
+                   'folders': Folder.objects.filter(user=request.user).order_by("-rating"),
+                   'links': Link.objects.filter(folder__user=request.user).order_by("-rating"), 'owner': 1,
+                   'user': request.user,
+                   'saved_links_links': utils.get_saved_links(s_links),
+                   'saved_links': s_links}
+        return render(request, 'api/account/saved.html', context)
+    else:
+        context['owner'] = 0
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return handler404(request)
+    context['user'] = user
+    context['saved'] = SavedLink.objects.filter(user__username=username)
+    context['folders'] = Folder.objects.filter(user__username=username).order_by("-rating")
+    context['links'] = Link.objects.filter(folder__user__username=username).order_by("-rating")
+    context['saved_links'] = s_links
+    context['saved_links_links'] = utils.get_saved_links(s_links)
+    return render(request, 'api/account/saved.html', context)
 
 
 @login_required
@@ -65,7 +119,7 @@ def index_view(request):
         s_links = SavedLink.objects.none()
         context['saved_links'] = s_links
         context['saved_links_links'] = utils.get_saved_links(s_links)
-    return render(request, '')
+    return render(request, 'api/index.html', context)
 
 
 @login_required

@@ -1,10 +1,70 @@
-function reload_account(username, id = "content") {
+function datatables_init() {
+    $(".dt").DataTable({
+        "columnDefs": [
+            {"orderable": false, "targets": [0, -1]}
+        ],
+        "destroy": true,
+        "stateSave": true,
+        "language": {
+            "emptyTable": "Нет данных",
+            "info": "Показано с _START_ по _END_ из _TOTAL_ элементов",
+            "infoEmpty": "Показано с 0 по 0 из 0 элементов",
+            "infoFiltered": "(отфильтровано из _MAX_ элементов)",
+            "infoPostFix": "",
+            "thousands": ",",
+            "lengthMenu": "Показать _MENU_ элементов",
+            "loadingRecords": "Загрузка...",
+            "processing": "Обработка...",
+            "search": "Поиск:",
+            "zeroRecords": "Не найдено",
+            "paginate": {
+                "first": "Первый",
+                "last": "Последний",
+                "next": "След.",
+                "previous": "Пред."
+            },
+            "aria": {
+                "sortAscending": ": активируйте для того, чтобы отсортировать по возрастанию",
+                "sortDescending": ": активируйте для того, чтобы отсортировать по убыванию"
+            }
+        }
+    });
+}
+
+function reload_account_links(username, id = "content") {
     $.ajax({
-        url: window.reverse('api:account_view_username', username),
+        url: window.reverse('api:account_links_username', username),
         type: 'GET',
         data: {},
         success: function (data, status) {
             document.getElementById(id).innerHTML = data;
+            set_listeners();
+        }
+    });
+}
+
+
+function reload_account_folder(username, id = "content") {
+    $.ajax({
+        url: window.reverse('api:account_folder_username', username),
+        type: 'GET',
+        data: {},
+        success: function (data, status) {
+            document.getElementById(id).innerHTML = data;
+            set_listeners();
+        }
+    });
+}
+
+
+function reload_account_saved(username, id = "content") {
+    $.ajax({
+        url: window.reverse('api:account_saved_username', username),
+        type: 'GET',
+        data: {},
+        success: function (data, status) {
+            document.getElementById(id).innerHTML = data;
+            datatables_init();
             set_listeners();
         }
     });
@@ -17,6 +77,7 @@ function reload_folder(folder_id, id = "content") {
         data: {},
         success: function (data, status) {
             document.getElementById(id).innerHTML = data;
+            datatables_init();
             set_listeners();
         }
     });
@@ -30,6 +91,7 @@ function reload_index(id = "content") {
         data: {},
         success: function (data, status) {
             document.getElementById(id).innerHTML = data;
+            datatables_init();
             set_listeners();
         }
     });
@@ -44,6 +106,7 @@ function reload_search(id = "content") {
         data: {},
         success: function (data, status) {
             document.getElementById(id).innerHTML = data;
+            datatables_init();
             set_listeners();
         }
     });
@@ -52,16 +115,19 @@ function reload_search(id = "content") {
 
 function reload(type, reloader, id = "content") {
     $(".preloader").fadeIn();
-    if (type === 'account')
-        reload_account(reloader, id);
-    else if (type === 'folder') {
-        reload_folder(reloader, id);
+    if (type === 'account') {
+        reload_account_links(reloader, "links_card");
+        reload_account_folder(reloader, "folders_card");
+        reload_account_saved(reloader, "saved_card");
+    } else if (type === 'folder') {
+        reload_folder(reloader, "links_card");
     } else if (type === 'index') {
-        reload_index();
+        reload_index("links_card");
     } else if (type === 'search') {
-        reload_search();
+        reload_search("search_card");
     }
     $(".preloader").delay(1000).fadeOut();
+
 }
 
 
@@ -70,10 +136,10 @@ function delete_link(link_id, type, reloader, id = 'messages') {
         url: window.reverse('link_delete', link_id),
         type: 'GET',
         beforeSend: function () {
-            toastr.warning("Удаление ссылки...");
-
+            toastr.info("Удаление ссылки...");
         },
         success: function (data, status) {
+            toastr.clear();
             toastr.success(data.data);
             reload(type, reloader);
         }
@@ -86,10 +152,10 @@ function favourite_save(link_id, type, reloader, id = 'messages') {
         url: window.reverse('favourite_save', link_id),
         type: 'GET',
         beforeSend: function () {
-            toastr.warning("Добавление ссылки в сохранённое...");
-
+            toastr.info("Добавление ссылки в сохранённое...");
         },
         success: function (data, status) {
+            toastr.clear();
             toastr.success(data.data);
             reload(type, reloader);
         }
@@ -102,10 +168,10 @@ function favourite_save_alt(link_id, type, reloader, id = 'messages') {
         url: window.reverse('favourite_save_alt', link_id),
         type: 'GET',
         beforeSend: function () {
-            toastr.warning("Добавление ссылки в сохранённое...");
-
+            toastr.info("Добавление ссылки в сохранённое...");
         },
         success: function (data, status) {
+            toastr.clear();
             toastr.success(data.data);
             reload(type, reloader);
         }
@@ -118,11 +184,17 @@ function vote(link_id, vote, type, reloader, id = 'messages') {
         url: window.reverse('link_vote', link_id, vote),
         type: 'GET',
         beforeSend: function () {
-            toastr.warning("Отправка голоса...");
+            toastr.info("Отправка голоса");
 
         },
-        success: function (data, status) {
-            toastr.success(data.data);
+        success: function (data, status, xhr) {
+            toastr.clear();
+            if (xhr.status === 200)
+                toastr.success(data.data);
+            if (xhr.status === 202)
+                toastr.warning(data.data);
+            if (xhr.status === 208)
+                toastr.error(data.data);
             reload(type, reloader);
         }
     });
@@ -134,9 +206,10 @@ function delete_favourite(link_id, type, reloader, id = 'messages') {
         url: window.reverse('favourite_delete', link_id),
         type: 'GET',
         beforeSend: function () {
-            toastr.warning("Удаление из сохранённого");
+            toastr.info("Удаление ссылки из сохранённого");
         },
         success: function (data, status) {
+            toastr.clear();
             toastr.success(data.data);
             reload(type, reloader);
         }
@@ -149,10 +222,10 @@ function delete_folder(folder_id, type, reloader, id = 'messages') {
         url: window.reverse('folder_delete', folder_id),
         type: 'GET',
         beforeSend: function () {
-            toastr.warning("Удаление подборки");
-
+            toastr.info("Удаление подборки");
         },
         success: function (data, status) {
+            toastr.clear();
             toastr.success(data.data);
             reload(type, reloader);
         }
@@ -239,4 +312,8 @@ $("#delete_account_button").click(function () {
         }
     })
 });
-$('#links').DataTable({});
+$(document).ready(function () {
+
+        datatables_init();
+    }
+);

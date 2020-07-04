@@ -23,7 +23,7 @@ SECRET_KEY = '2i$oqu0zz2j4ih5*rb#4$du=ks0safg^!a$*(f7z_^%arfj$%m'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', True)
 
-ALLOWED_HOSTS = ["0.0.0.0", "localhost", "127.0.0.1", "links.cleverapps.io", "10.2.152.143", "hselyc.herokuapp.com"]
+ALLOWED_HOSTS = ["0.0.0.0", "localhost", "127.0.0.1", "links.cleverapps.io", "10.2.152.143", "hselyc.herokuapp.com", "192.168.1.72"]
 HOST = os.getenv('HOST', "http://127.0.0.1:8000")
 BOT_HOST = os.getenv('BOT_HOST', "https://hselycbot.herokuapp.com")
 # Application definition
@@ -162,8 +162,12 @@ MEDIA_URL = '/media/'
 JS_URLS = (
     'api:search_view',
     'api:index_view',
-    'api:account_view',
-    'api:account_view_username',
+    'api:account_links',
+    'api:account_links_username',
+    'api:account_folder',
+    'api:account_folder_username',
+    'api:account_saved',
+    'api:account_saved_username',
     'api:folder_view',
     'api:account_key',
     'link_delete',
