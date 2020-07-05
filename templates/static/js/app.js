@@ -189,12 +189,20 @@ function vote(link_id, vote, type, reloader, id = 'messages') {
         },
         success: function (data, status, xhr) {
             toastr.clear();
-            if (xhr.status === 200)
+            console.log(data);
+            if (xhr.status === 200) {
+                toastr.success("Войдите для того, чтобы проголосовать");
+                setTimeout(function () {
+                    window.location.href = window.reverse('account:login');
+                }, 3000);
+            }
+            if (xhr.status === 203)
                 toastr.success(data.data);
             if (xhr.status === 202)
                 toastr.warning(data.data);
             if (xhr.status === 208)
                 toastr.error(data.data);
+            console.log(xhr.status);
             reload(type, reloader);
         }
     });
@@ -313,7 +321,9 @@ $("#delete_account_button").click(function () {
     })
 });
 $(document).ready(function () {
-
+        $('.btn-secondary').click(function () {
+            $(".tooltip").remove();
+        });
         datatables_init();
     }
 );

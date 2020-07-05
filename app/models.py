@@ -52,7 +52,7 @@ class Link(models.Model):
                     vote.save()
                     self.folder.rating += 1
                     self.folder.save()
-                    return JsonResponse({'data': "Вы повысили рейтинг ссылки на 1."}, status=200)
+                    return JsonResponse({'data': "Вы повысили рейтинг ссылки на 1."}, status=203)
                 else:
                     self.rating -= 1
                     self.save()
@@ -60,7 +60,7 @@ class Link(models.Model):
                     vote.save()
                     self.folder.rating -= 1
                     self.folder.save()
-                    return JsonResponse({'data': "Вы понизили рейтинг ссылки на 1."}, status=200)
+                    return JsonResponse({'data': "Вы понизили рейтинг ссылки на 1."}, status=203)
             else:
                 if state == 1:
                     self.rating += 1
@@ -80,7 +80,7 @@ class Link(models.Model):
             self.folder.save()
             vote.save()
             return JsonResponse(
-                {'data': "Вы повысили рейтинг ссылки на 1." if state == 1 else "Вы понизили рейтинг ссылки на 1."}, status=200)
+                {'data': "Вы повысили рейтинг ссылки на 1." if state == 1 else "Вы понизили рейтинг ссылки на 1."}, status=203)
 
 
 class SavedLink(models.Model):
