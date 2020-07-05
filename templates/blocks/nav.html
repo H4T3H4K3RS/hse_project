@@ -13,7 +13,7 @@
                                              <img src="{% static 'img/brand.png' %}" height="40px" alt="homepage">
                                         </span>
             </a>
-            <a id="searchtoggle" class="topbartoggler d-block d-md-none waves-effect waves-light collapsed"
+            <a id="searchtoggle" class="d-block d-md-none waves-effect waves-light collapsed"
                href="javascript:void(0)"><i class="ti-search"></i></a>
             {#            <ul class="navbar-nav float-right mr-1 d-md-none waves-effect waves-light">#}
             {#                <li class="nav-item search-box"><a class="nav-link waves-effect waves-dark" href="javascript:void(0)"><i#}
@@ -31,10 +31,10 @@
                                                           href="javascript:void(0)" data-sidebartype="mini-sidebar"><i
                         class="mdi mdi-menu font-24"></i></a></li>
             </ul>
-            <ul class="navbar-nav float-right mr-1">
+            <ul class="navbar-nav float-right mr-1" id="searchbox">
                 <li class="nav-item search-box"><a class="nav-link waves-effect waves-dark" href="javascript:void(0)"><i
                         class="ti-search d-sm-none d-lg-inline "></i></a>
-                    <form id="searchbox" class="app-search position-absolute" action="{% url 'search' %}"
+                    <form class="app-search position-absolute" action="{% url 'search' %}"
                           style="display: none;">
                         <input name="q" type="text" class="form-control" value="{% if value %}{{ value }}{% endif %}"
                                placeholder="Введите Имя Пользователя/Эл.Почту/Ссылку/Подборку"> <a class="srh-btn"><i
@@ -68,8 +68,10 @@
                                 </a>
                             </div>
                         {% else %}
+
+<a href="{% url 'account:view_my' %}">
                             <div class="user-pic"><img src="{% static 'img/incognito.png' %}" alt="users"
-                                                       class="rounded-circle" width="40"/></div>
+                                                       class="rounded-circle" width="40"/></div></a>
                             <div class="user-content ml-2">
                                 <a href="{% url 'account:login' %}">
                                     <h5 class="user-name font-medium">Инкогнито </h5>
