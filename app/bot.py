@@ -14,10 +14,9 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "links.settings")
 django.setup()
 
 from links import settings
-from app.models import BotKey, Folder, Link, BotUnsavedLinks
+from app.models import BotKey, Folder, Link, BotUnsavedLinks, BotKeyLanguage
 from app.config import DEVELOPER_CHAT_ID, nickname, words
 from app.utils import get_lang
-from account.models import Profile
 
 extractor = URLExtract()
 TOKEN = settings.BOT_KEY
@@ -38,7 +37,7 @@ def links(update, context):
             answer = words['ru'] + words[lang]['help']
         update.message.reply_text(answer)
     except BotKey.DoesNotExist:
-        update.message.reply_text(words[lang]["logout"]['no_auth'])
+        update.message.reply_text(words[lang]["logout"]['not_auth'])
 
 
 def get_keyboard(chat_id, start_num, update):
@@ -154,7 +153,7 @@ def logout(update, context):
         bot_key.save()
         update.message.reply_text(words[lang]["logout"]["success"])
     except BotKey.DoesNotExist:
-        update.message.reply_text(words[lang]["logout"]['no_auth'])
+        update.message.reply_text(words[lang]["logout"]['not_auth'])
     keyboard = [
         [InlineKeyboardButton(words[lang]["keyboard"]["get"], url=f'{settings.HOST}{reverse("account:view_my")}')]]
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -201,10 +200,9 @@ def error(update, context):
 
 
 def callback_handler(update, context):
-    lang = get_lang(update)
+    lang = get_lang(update.callback_query)
     query = update.callback_query
     chat_id = str(query.from_user.id)
-    user = BotKey.objects.get(chat_id=chat_id).user
     keyboard = None
     try:
         unsaved_link = BotUnsavedLinks.objects.get(chat_id=chat_id)
@@ -215,6 +213,7 @@ def callback_handler(update, context):
         keyboard = get_keyboard(chat_id, int(query.data.replace("folder_next_", "")), query)
         answer = words[lang]['folder']["choose"].format(unsaved_link.link)
     elif query.data.startswith("folder_choose_"):
+        user = BotKey.objects.get(chat_id=chat_id).user
         try:
             folder = Folder.objects.get(id=int(query.data.replace("folder_choose_", "")), user=user)
         except Folder.DoesNotExist:
@@ -233,7 +232,7 @@ def callback_handler(update, context):
             link.save()
     elif query.data.startswith("setlanguage_"):
         language = query.data.replace("setlanguage_", "")
-        profile = Profile.objects.get(chat_id=chat_id)
+        profile = BotKeyLanguage.objects.get(chat_id=chat_id)
         profile.lang = language
         profile.save()
         answer = words[get_lang(query, True)]['success']
@@ -257,10 +256,11 @@ def main():
     updater.dispatcher.add_handler(MessageHandler(Filters.text, add_link))
     updater.dispatcher.add_error_handler(error)
     PORT = int(os.environ.get('PORT', '8443'))
-    updater.start_webhook(listen="0.0.0.0",
-                          port=PORT,
-                          url_path=TOKEN)
-    updater.bot.set_webhook(f"{settings.BOT_HOST}/" + TOKEN)
+    # updater.start_webhook(listen="0.0.0.0",
+    #                       port=PORT,
+    #                       url_path=TOKEN)
+    # updater.bot.set_webhook(f"{settings.BOT_HOST}/" + TOKEN)
+    updater.start_polling()
     updater.idle()
 
 

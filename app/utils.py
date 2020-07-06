@@ -1,8 +1,5 @@
-import os
 from email.mime.image import MIMEImage
 from hashlib import sha3_256
-from account.models import Profile
-
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.models import User
 from django.core.mail import EmailMultiAlternatives
@@ -11,21 +8,22 @@ from django.conf import settings
 import base64
 
 from app.config import languages
+from app.models import BotKeyLanguage
 
 
 def get_lang(update, query=False):
     try:
         if not query:
-            profile = Profile.objects.get(chat_id=str(update.message.from_user.id))
+            bot_key = BotKeyLanguage.objects.get(chat_id=str(update.message.from_user.id))
         else:
-            profile = Profile.objects.get(chat_id=str(update.from_user.id))
-    except Profile.DoesNotExist:
+            bot_key = BotKeyLanguage.objects.get(chat_id=str(update.from_user.id))
+    except BotKeyLanguage.DoesNotExist:
         if not query:
-            profile = Profile(chat_id=str(update.message.from_user.id), lang=update.message.from_user.language_code)
+            bot_key = BotKeyLanguage(chat_id=str(update.message.from_user.id), lang=update.message.from_user.language_code)
         else:
-            profile = Profile(chat_id=str(update.from_user.id), lang=update.message.language_code)
-        profile.save()
-    return profile.lang if profile.lang in languages else "en"
+            bot_key = BotKeyLanguage(chat_id=str(update.from_user.id), lang=update.message.language_code)
+        bot_key.save()
+    return bot_key.lang if bot_key.lang in languages else "en"
 
 
 class NegativeIntConverter:
