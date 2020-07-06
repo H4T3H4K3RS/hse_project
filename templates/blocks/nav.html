@@ -68,8 +68,10 @@
                                 </a>
                             </div>
                         {% else %}
+
+<a href="{% url 'account:view_my' %}">
                             <div class="user-pic"><img src="{% static 'img/incognito.png' %}" alt="users"
-                                                       class="rounded-circle" width="40"/></div>
+                                                       class="rounded-circle" width="40"/></div></a>
                             <div class="user-content ml-2">
                                 <a href="{% url 'account:login' %}">
                                     <h5 class="user-name font-medium">Инкогнито </h5>
