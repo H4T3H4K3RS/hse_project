@@ -15,22 +15,17 @@ def account_links(request, username=None):
     context = {}
     s_links = SavedLink.objects.filter(user=request.user)
     if username is None or request.user.username == username:
-        context = {'saved': SavedLink.objects.filter(user=request.user),
-                   'folders': Folder.objects.filter(user=request.user).order_by("-rating"),
-                   'links': Link.objects.filter(folder__user=request.user).order_by("-rating"), 'owner': 1,
-                   'user': request.user,
-                   'saved_links_links': utils.get_saved_links(s_links),
-                   'saved_links': s_links}
+        context = {
+            'links': Link.objects.filter(folder__user=request.user).order_by("-rating"),
+            'user': request.user,
+            'saved_links_links': utils.get_saved_links(s_links),
+            'saved_links': s_links}
         return render(request, 'api/account/links.html', context)
-    else:
-        context['owner'] = 0
     try:
         user = User.objects.get(username=username)
     except User.DoesNotExist:
         return handler404(request)
     context['user'] = user
-    context['saved'] = SavedLink.objects.filter(user__username=username)
-    context['folders'] = Folder.objects.filter(user__username=username).order_by("-rating")
     context['links'] = Link.objects.filter(folder__user__username=username).order_by("-rating")
     context['saved_links'] = s_links
     context['saved_links_links'] = utils.get_saved_links(s_links)
@@ -42,12 +37,8 @@ def account_folder(request, username=None):
     context = {}
     s_links = SavedLink.objects.filter(user=request.user)
     if username is None or request.user.username == username:
-        context = {'saved': SavedLink.objects.filter(user=request.user),
-                   'folders': Folder.objects.filter(user=request.user).order_by("-rating"),
-                   'links': Link.objects.filter(folder__user=request.user).order_by("-rating"), 'owner': 1,
-                   'user': request.user,
-                   'saved_links_links': utils.get_saved_links(s_links),
-                   'saved_links': s_links}
+        context = {'folders': Folder.objects.filter(user=request.user).order_by("-rating"),
+                   'user': request.user}
         return render(request, 'api/account/folders.html', context)
     else:
         context['owner'] = 0
@@ -56,11 +47,7 @@ def account_folder(request, username=None):
     except User.DoesNotExist:
         return handler404(request)
     context['user'] = user
-    context['saved'] = SavedLink.objects.filter(user__username=username)
     context['folders'] = Folder.objects.filter(user__username=username).order_by("-rating")
-    context['links'] = Link.objects.filter(folder__user__username=username).order_by("-rating")
-    context['saved_links'] = s_links
-    context['saved_links_links'] = utils.get_saved_links(s_links)
     return render(request, 'api/account/folders.html', context)
 
 
@@ -69,10 +56,7 @@ def account_saved(request, username=None):
     context = {}
     s_links = SavedLink.objects.filter(user=request.user)
     if username is None or request.user.username == username:
-        context = {'saved': SavedLink.objects.filter(user=request.user),
-                   'folders': Folder.objects.filter(user=request.user).order_by("-rating"),
-                   'links': Link.objects.filter(folder__user=request.user).order_by("-rating"), 'owner': 1,
-                   'user': request.user,
+        context = {'user': request.user,
                    'saved_links_links': utils.get_saved_links(s_links),
                    'saved_links': s_links}
         return render(request, 'api/account/saved.html', context)
@@ -83,9 +67,6 @@ def account_saved(request, username=None):
     except User.DoesNotExist:
         return handler404(request)
     context['user'] = user
-    context['saved'] = SavedLink.objects.filter(user__username=username)
-    context['folders'] = Folder.objects.filter(user__username=username).order_by("-rating")
-    context['links'] = Link.objects.filter(folder__user__username=username).order_by("-rating")
     context['saved_links'] = s_links
     context['saved_links_links'] = utils.get_saved_links(s_links)
     return render(request, 'api/account/saved.html', context)
