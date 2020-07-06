@@ -12,7 +12,6 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ParseMode
 from telegram.utils import helpers
 from telegram.ext import CommandHandler, Updater, MessageHandler, Filters, CallbackQueryHandler
 
-from account.models import Profile
 from app.config import DEVELOPER_CHAT_ID, nickname, words
 from app.utils import get_lang
 
@@ -21,6 +20,7 @@ django.setup()
 
 from links import settings
 from app.models import BotKey, Folder, Link, BotUnsavedLinks
+from account.models import Profile
 
 extractor = URLExtract()
 TOKEN = settings.BOT_KEY
