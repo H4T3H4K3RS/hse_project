@@ -137,7 +137,7 @@ function delete_link(link_id, type, reloader) {
         url: window.reverse('link_delete', link_id),
         type: 'GET',
         beforeSend: function () {
-            toastr.info("Удаление ссылки...");
+            toastr.info("Удаление ссылки");
         },
         success: function (data, status) {
             toastr.clear();
@@ -153,7 +153,7 @@ function favourite_save(link_id, type, reloader, id = 'messages') {
         url: window.reverse('favourite_save', link_id),
         type: 'GET',
         beforeSend: function () {
-            toastr.info("Добавление ссылки в сохранённое...");
+            toastr.info("Добавление ссылки в сохранённое");
         },
         success: function (data, status) {
             toastr.clear();
@@ -169,7 +169,7 @@ function favourite_save_alt(link_id, type, reloader, id = 'messages') {
         url: window.reverse('favourite_save_alt', link_id),
         type: 'GET',
         beforeSend: function () {
-            toastr.info("Добавление ссылки в сохранённое...");
+            toastr.info("Добавление ссылки в сохранённое");
         },
         success: function (data, status) {
             toastr.clear();
@@ -190,12 +190,9 @@ function vote(link_id, vote, type, reloader, id = 'messages') {
         },
         success: function (data, status, xhr) {
             toastr.clear();
-            console.log(data);
+            // console.log(data);
             if (xhr.status === 200) {
-                toastr.success("Войдите для того, чтобы проголосовать");
-                setTimeout(function () {
-                    window.location.href = window.reverse('account:login');
-                }, 3000);
+
             }
             if (xhr.status === 203)
                 toastr.success(data.data);
@@ -203,7 +200,7 @@ function vote(link_id, vote, type, reloader, id = 'messages') {
                 toastr.warning(data.data);
             if (xhr.status === 208)
                 toastr.error(data.data);
-            console.log(xhr.status);
+            // console.log(xhr.status);
             reload(type, reloader);
         }
     });
@@ -243,37 +240,40 @@ function delete_folder(folder_id, type, reloader, id = 'messages') {
 
 function set_listeners() {
     $('.delete_link_btn').click(function () {
-        console.log($(this).data('id'), $(this).data('type'), $(this).data('data'));
+        // console.log($(this).data('id'), $(this).data('type'), $(this).data('data'));
         delete_link($(this).data('id'), $(this).data('type'), $(this).data('data'));
     });
     $('.favourite_delete_btn').click(function () {
-        console.log($(this).data('id'), $(this).data('type'), $(this).data('data'));
+        // console.log($(this).data('id'), $(this).data('type'), $(this).data('data'));
         delete_favourite($(this).data('id'), $(this).data('type'), $(this).data('data'));
     });
     $('.favourite_add_btn').click(function () {
-        console.log($(this).data('id'), $(this).data('type'), $(this).data('data'));
+        // console.log($(this).data('id'), $(this).data('type'), $(this).data('data'));
         favourite_save($(this).data('id'), $(this).data('type'), $(this).data('data'));
     });
     $('.favourite_add_alt_btn').click(function () {
-        console.log($(this).data('id'), $(this).data('type'), $(this).data('data'));
+        // console.log($(this).data('id'), $(this).data('type'), $(this).data('data'));
         favourite_save_alt($(this).data('id'), $(this).data('type'), $(this).data('data'));
     });
     $('.vote_btn').click(function () {
-        console.log($(this).data('id'), $(this).data('type'), $(this).data('data'));
+        // console.log($(this).data('id'), $(this).data('type'), $(this).data('data'));
         vote($(this).data('id'), $(this).data('vote'), $(this).data('type'), $(this).data('data'));
     });
     $('.delete_folder_btn').click(function () {
-        console.log($(this).data('id'), $(this).data('type'), $(this).data('data'));
+        // console.log($(this).data('id'), $(this).data('type'), $(this).data('data'));
         delete_folder($(this).data('id'), $(this).data('type'), $(this).data('data'));
-    });
-    $('.redirect_login').click(function () {
-        window.location.href = window.reverse('account:login');
     });
     $('[data-toggle="tooltip"]').click(function () {
         $('[data-toggle="tooltip"]').tooltip("hide");
 
     });
     $('[data-toggle="tooltip"]').tooltip();
+    $(".redirect").on('click', function (event) {
+        toastr.success("Войдите для того, чтобы выполнить данное действие");
+        setTimeout(function () {
+            window.location.href = window.reverse('account:login');
+        }, 3000);
+    });
 }
 
 datatables_init();

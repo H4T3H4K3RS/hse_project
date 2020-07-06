@@ -52,6 +52,7 @@ def handler500(request, exception=None):
 def login(request):
     context = {}
     if request.method == "POST":
+        next_page = request.POST.get('next', None)
         if not request.POST.get("remember_me", None):
             request.session.set_expiry(0)
         form = LoginForm(request.POST)
@@ -72,6 +73,9 @@ def login(request):
                     user_auth = authenticate(request, username=username)
                     auth_login(request, user_auth)
                     messages.success(request, f'Здравствуйте, {user.username}')
+                    print(next_page)
+                    if next_page is not None:
+                        return redirect(next_page)
                     return redirect(reverse('link_add'))
                 else:
                     try:
@@ -89,6 +93,8 @@ def login(request):
             messages.error(request, "Неправильный формат данных.")
             context["form"] = LoginForm()
     else:
+        next_page = request.GET.get('next', None)
+        context['next'] = next_page
         context["form"] = LoginForm()
     return render(request, "account/login.html", context)
 

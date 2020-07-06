@@ -109,6 +109,15 @@
         <script src="{% static 'theme/dist/js/pages/dashboards/dashboard1.js' %}"></script>
         <script src="{% static 'theme/assets/libs/sweetalert2/dist/sweetalert2.all.min.js' %}"></script>
         <script src="{% static 'theme/assets/libs/sweetalert2/sweet-alert.init.js' %}"></script>
+        {% if not request.user.is_authenticated %}
+            <script>
+                var classes = [".delete_link_btn", ".favourite_delete_btn", ".favourite_add_btn", ".favourite_add_alt_btn", ".vote_btn", ".delete_folder_btn"];
+                for (var i = 0; i < classes.length; i++) {
+                    $(classes[i]).addClass("redirect");
+                    $(classes[i]).removeClass(classes[i].replace(".", ""));
+                }
+            </script>
+        {% endif %}
     {% endblock footer_javascript_site %}
     {% block footer_javascript_section %}{% endblock footer_javascript_section %}
     {% block footer_javascript_page %}{% endblock footer_javascript_page %}

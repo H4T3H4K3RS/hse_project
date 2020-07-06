@@ -17,13 +17,15 @@
                 {% if link.folder.user != request.user %}
                     <a href="javascript:void(0)" class="vote_btn" data-id="{{ link.id }}" data-type="search"
                        data-data="{{ user.username }}"
-                       data-vote="1">
+                       data-vote="1" data-toggle="tooltip" data-placement="top"
+                                   title="Повысить рейтинг на 1">
                         <i style="color: #00c210; font-size: 150%" class="ti-thumb-up"></i>
                     </a>
                     <span style="font-weight: bold;">{{ link.rating }}</span>
                     <a href="javascript:void(0)" class="vote_btn" data-id="{{ link.id }}" data-type="search"
                        data-data="{{ user.username }}"
-                       data-vote="-1">
+                       data-vote="-1" data-toggle="tooltip" data-placement="top"
+                                   title="Понизить рейтинг на 1">
                         <i style="color: red; font-size: 150%" class="ti-thumb-down"></i>
                     </a>
                 {% else %}
