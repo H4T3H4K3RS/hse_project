@@ -3,23 +3,20 @@ import json
 import logging
 import os
 import traceback
-
 import django
-import telegram
-from urlextract import URLExtract
 from django.urls import reverse
+from urlextract import URLExtract
+import telegram
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ParseMode
-from telegram.utils import helpers
 from telegram.ext import CommandHandler, Updater, MessageHandler, Filters, CallbackQueryHandler
-
-from app.config import DEVELOPER_CHAT_ID, nickname, words
-from app.utils import get_lang
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "links.settings")
 django.setup()
 
 from links import settings
 from app.models import BotKey, Folder, Link, BotUnsavedLinks
+from app.config import DEVELOPER_CHAT_ID, nickname, words
+from app.utils import get_lang
 from account.models import Profile
 
 extractor = URLExtract()
