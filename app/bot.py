@@ -1,12 +1,20 @@
+import html
+import json
 import logging
 import os
+import traceback
+
 import django
 import telegram
 from urlextract import URLExtract
 from django.urls import reverse
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ParseMode
 from telegram.utils import helpers
 from telegram.ext import CommandHandler, Updater, MessageHandler, Filters, CallbackQueryHandler
+
+from account.models import Profile
+from app.config import DEVELOPER_CHAT_ID, nickname, words
+from app.utils import get_lang
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "links.settings")
 django.setup()
@@ -16,14 +24,10 @@ from app.models import BotKey, Folder, Link, BotUnsavedLinks
 
 extractor = URLExtract()
 TOKEN = settings.BOT_KEY
-help_msg = 'Просто пришлите/перешлите текст, содержащий ссылку, в сообщении.\n'
-folder_msg = "Выберите подборку, в которую вы хотите сохранить ссылку {}\n" \
-                 'Нажмите на кнопку ">", чтобы увидеть следующие 3 подборки\n' \
-                 'Нажмите на кнопку "<", чтобы увидеть предыдущие 3 подборки\n' \
-                 'Если вы не хотите сохранять данную ссылку, просто отправьте новую.'
 
 
 def links(update, context):
+    lang = get_lang(update)
     chat_id = str(update.message.from_user.id)
     try:
         bot_key = BotKey.objects.get(chat_id=chat_id)
@@ -34,13 +38,14 @@ def links(update, context):
             answer += f"{cnt}. [{link.rating}] {link.link}\n"
             cnt += 1
         if answer == "":
-            answer = "Вы ещё не добавили ни одну ссылку.\n" + help_msg
+            answer = words['ru'] + words[lang]['help']
         update.message.reply_text(answer)
     except BotKey.DoesNotExist:
-        update.message.reply_text("Вы не авторизованы.")
+        update.message.reply_text(words[lang]["logout"]['no_auth'])
 
 
-def get_keyboard(chat_id, start_num):
+def get_keyboard(chat_id, start_num, update):
+    lang = get_lang(update)
     folders = Folder.objects.filter(user=BotKey.objects.get(chat_id=chat_id).user).order_by("-rating")
     next = False
     prev = True
@@ -53,25 +58,28 @@ def get_keyboard(chat_id, start_num):
             prev = True
             folders = folders[start_num:len(folders)]
         else:
-            folders = folders[start_num:start_num+3]
+            folders = folders[start_num:start_num + 3]
             next = True
     keyboard = []
     if len(folders) != 0:
         tmp = start_num
         for folder in folders:
-            keyboard.append([InlineKeyboardButton(f"{tmp+1}. {escape(folder.name)}", callback_data=f"folder_choose_{folder.id}")])
+            keyboard.append(
+                [InlineKeyboardButton(f"{tmp + 1}. {escape(folder.name)}", callback_data=f"folder_choose_{folder.id}")])
             tmp += 1
         if next:
             keyboard.append([InlineKeyboardButton(">", callback_data=f"folder_next_{tmp}")])
         if prev:
-            keyboard.append([InlineKeyboardButton("<", callback_data=f"folder_next_{start_num-3}")])
+            keyboard.append([InlineKeyboardButton("<", callback_data=f"folder_next_{start_num - 3}")])
     else:
-        keyboard.append([InlineKeyboardButton("Создать", url=f"{settings.HOST}{reverse('folder_add')}")])
+        keyboard.append(
+            [InlineKeyboardButton(words[lang]['keyboard']['create'], url=f"{settings.HOST}{reverse('folder_add')}")])
     keyboard = InlineKeyboardMarkup(keyboard)
     return keyboard
 
 
 def add_link(update, context):
+    lang = get_lang(update)
     chat_id = str(update.message.from_user.id)
     try:
         bot_key = BotKey.objects.get(chat_id=chat_id)
@@ -79,20 +87,20 @@ def add_link(update, context):
         cnt = 1
         url = extractor.find_urls(update.message.text)
         if len(url) == 0:
-            answer = "В вашем сообщении не обнаружено ни одной ссылки."
+            answer = words[lang]['links']['error']['no_message_links']
             folder_keyboard = None
         else:
             if len(Folder.objects.filter(user=bot_key.user)) != 0:
-                answer = folder_msg.format(url[0])
+                answer = words[lang]['folder']["choose"].format(url[0])
             else:
-                answer = "Вы пока ещё не создали ни одной подборки. Нажмите на кнопку ниже, чтобы перейти к странице создания подборки."
+                answer = words[lang]['links']['error']['no_folder']
             try:
                 unsaved_link = BotUnsavedLinks.objects.get(chat_id=chat_id)
                 unsaved_link.link = url[0]
             except BotUnsavedLinks.DoesNotExist:
                 unsaved_link = BotUnsavedLinks(chat_id=chat_id, link=url[0])
             unsaved_link.save()
-            folder_keyboard = get_keyboard(chat_id, 0)
+            folder_keyboard = get_keyboard(chat_id, 0, update)
         update.message.reply_text(answer, reply_markup=folder_keyboard)
     except BotKey.DoesNotExist:
         bot_keys = BotKey.objects.filter(key=update.message.text)
@@ -108,13 +116,16 @@ def add_link(update, context):
                     flag = True
                     bot_key.save()
                 if flag:
-                    update.message.reply_text(f"Здравствуйте, [{bot_keys[i].user.username}]({settings.HOST}{reverse('account:view_my')})\n", parse_mode=telegram.ParseMode.MARKDOWN_V2)
-                    update.message.reply_text(help_msg)
+                    update.message.reply_text(words[lang]["hello"].format(bot_keys[i].user.username, settings.HOST,
+                                                                          reverse('account:view_my')),
+                                              parse_mode=telegram.ParseMode.MARKDOWN_V2)
+                    update.message.reply_text(words[lang]['help'])
         else:
-            update.message.reply_text("Неправильный API-ключ.")
-            keyboard = [[InlineKeyboardButton("Получить", url=f'{settings.HOST}{reverse("api:account_key")}')]]
+            update.message.reply_text(words[lang]["links"]["errors"]["incorrect_api_key"])
+            keyboard = [[InlineKeyboardButton(words[lang]["keyboard"]["get"],
+                                              url=f'{settings.HOST}{reverse("api:account_key")}')]]
             reply_markup = InlineKeyboardMarkup(keyboard)
-            update.message.reply_text('Отправьте боту полученный API-ключ', reply_markup=reply_markup)
+            update.message.reply_text(words[lang]["links"]["errors"]["send_key"], reply_markup=reply_markup)
 
 
 def escape(text):
@@ -130,12 +141,70 @@ logger = logging.getLogger(__name__)
 
 
 def start(update, context):
-    keyboard = [[InlineKeyboardButton("Получить", url=f'{settings.HOST}{reverse("api:account_key")}')]]
+    lang = get_lang(update)
+    keyboard = [
+        [InlineKeyboardButton(words[lang]["keyboard"]["get"], url=f'{settings.HOST}{reverse("api:account_key")}')]]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    update.message.reply_text('Отправьте боту полученный API-ключ', reply_markup=reply_markup)
+    update.message.reply_text(words[lang]["links"]["errors"]["send_key"], reply_markup=reply_markup)
+
+
+def logout(update, context):
+    lang = get_lang(update)
+    chat_id = str(update.message.from_user.id)
+    try:
+        bot_key = BotKey.objects.get(chat_id=chat_id)
+        bot_key.chat_id = ""
+        bot_key.save()
+        update.message.reply_text(words[lang]["logout"]["success"])
+    except BotKey.DoesNotExist:
+        update.message.reply_text(words[lang]["logout"]['no_auth'])
+    keyboard = [
+        [InlineKeyboardButton(words[lang]["keyboard"]["get"], url=f'{settings.HOST}{reverse("account:view_my")}')]]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    update.message.reply_text(words[lang]["logout"]["help"], reply_markup=reply_markup)
+
+
+def help(update, context):
+    lang = get_lang(update)
+    update.message.reply_text(words[lang]['help'])
+
+
+def language(update, context):
+    lang = get_lang(update)
+    keyboard = []
+    for i, k in words.items():
+        keyboard.append([InlineKeyboardButton(k['name'], callback_data=f"setlanguage_{i}")])
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    update.message.reply_text(words[lang]['language'].format(nickname), reply_markup=reply_markup)
+
+
+def error(update, context):
+    logger.error(msg="Exception while handling an update:", exc_info=context.error)
+
+    # traceback.format_exception returns the usual python message about an exception, but as a
+    # list of strings rather than a single string, so we have to join them together.
+    tb_list = traceback.format_exception(None, context.error, context.error.__traceback__)
+    tb = ''.join(tb_list)
+
+    # Build the message with some markup and additional information about what happened.
+    # You might need to add some logic to deal with messages longer than the 4096 character limit.
+    message = (
+        'An exception was raised while handling an update\n'
+        '<pre>update = {}</pre>\n\n'
+        '<pre>context.chat_data = {}</pre>\n\n'
+        '<pre>context.user_data = {}</pre>\n\n'
+        '<pre>{}</pre>'
+    ).format(
+        html.escape(json.dumps(update.to_dict(), indent=2, ensure_ascii=False)),
+        html.escape(str(context.chat_data)),
+        html.escape(str(context.user_data)),
+        html.escape(tb)
+    )
+    context.bot.send_message(chat_id=DEVELOPER_CHAT_ID, text=message, parse_mode=ParseMode.HTML)
 
 
 def callback_handler(update, context):
+    lang = get_lang(update)
     query = update.callback_query
     chat_id = str(query.from_user.id)
     user = BotKey.objects.get(chat_id=chat_id).user
@@ -146,8 +215,8 @@ def callback_handler(update, context):
         query.answer("ХА-ХА-ХА")
         return
     if query.data.startswith("folder_next_"):
-        keyboard = get_keyboard(chat_id, int(query.data.replace("folder_next_", "")))
-        answer = folder_msg.format(unsaved_link.link)
+        keyboard = get_keyboard(chat_id, int(query.data.replace("folder_next_", "")), query)
+        answer = words[lang]['folder']["choose"].format(unsaved_link.link)
     elif query.data.startswith("folder_choose_"):
         try:
             folder = Folder.objects.get(id=int(query.data.replace("folder_choose_", "")), user=user)
@@ -158,40 +227,23 @@ def callback_handler(update, context):
         is_saved = False
         for link in links:
             if link.link == unsaved_link.link:
-                answer = f'Ссылка {link.link} уже сохранена в подборке "{folder.name}".\nВыберите подборку повторно'
-                keyboard = get_keyboard(chat_id, 0)
+                answer = words[lang]["links"]["errors"]["already_saved"].format(link.link, folder.name)
+                keyboard = get_keyboard(chat_id, 0, query)
                 is_saved = True
         if not is_saved:
             link = Link(folder=folder, link=unsaved_link.link)
-            answer = 'Ссылка {} сохранена в подборку "{}"'.format(link.link, link.folder.name)
+            answer = words[lang]["links"]["saved"].format(link.link, link.folder.name)
             link.save()
+    elif query.data.startswith("setlanguage_"):
+        language = query.data.replace("setlanguage_", "")
+        profile = Profile.objects.get(chat_id=chat_id)
+        profile.lang = language
+        profile.save()
+        answer = words[get_lang(query, True)]['success']
     query.edit_message_text(answer, reply_markup=keyboard)
     # CallbackQueries need to be answered, even if no notification to the user is needed
     # Some clients may have trouble otherwise. See https://core.telegram.org/bots/api#callbackquery
     query.answer()
-
-
-def logout(update, context):
-    chat_id = str(update.message.from_user.id)
-    try:
-        bot_key = BotKey.objects.get(chat_id=chat_id)
-        bot_key.chat_id = ""
-        bot_key.save()
-        update.message.reply_text("Вы успешны вышли из аккаунта!")
-    except BotKey.DoesNotExist:
-        update.message.reply_text("Вы не авторизованы.")
-    keyboard = [[InlineKeyboardButton("Получить", url=f'{settings.HOST}{reverse("api:account_key")}')]]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    update.message.reply_text('Для авторизации отправьте боту полученный API-ключ', reply_markup=reply_markup)
-
-
-def help(update, context):
-    update.message.reply_text(help_msg)
-
-
-def error(update, context):
-    """Log Errors caused by Updates."""
-    logger.warning('Update "%s" caused error "%s"', update, context.error)
 
 
 def main():
@@ -204,6 +256,7 @@ def main():
     updater.dispatcher.add_handler(CommandHandler("links", links))
     updater.dispatcher.add_handler(CommandHandler('logout', logout))
     updater.dispatcher.add_handler(CommandHandler('help', help))
+    updater.dispatcher.add_handler(CommandHandler('lang', language))
     updater.dispatcher.add_handler(MessageHandler(Filters.text, add_link))
     updater.dispatcher.add_error_handler(error)
     PORT = int(os.environ.get('PORT', '8443'))
