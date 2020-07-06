@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -23,7 +24,8 @@ SECRET_KEY = '2i$oqu0zz2j4ih5*rb#4$du=ks0safg^!a$*(f7z_^%arfj$%m'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', True)
 
-ALLOWED_HOSTS = ["0.0.0.0", "localhost", "127.0.0.1", "links.cleverapps.io", "10.2.152.143", "hselyc.herokuapp.com", "192.168.1.72"]
+ALLOWED_HOSTS = ["0.0.0.0", "localhost", "127.0.0.1", "links.cleverapps.io", "10.2.152.143", "hselyc.herokuapp.com",
+                 "192.168.1.72"]
 HOST = os.getenv('HOST', "http://127.0.0.1:8000")
 BOT_HOST = os.getenv('BOT_HOST', "https://hselycbot.herokuapp.com")
 # Application definition
@@ -35,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'disable_cache_headers.apps.DisableCacheHeadersConfig',
     'account.apps.AccountConfig',
     'api.apps.ApiConfig',
     'app.apps.AppConfig',
@@ -51,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "disable_cache_headers.middleware.DisableCacheControl",
 ]
 
 ROOT_URLCONF = 'links.urls'
@@ -73,7 +77,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'links.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
@@ -137,7 +140,6 @@ EMAIL_USE_TLS = True
 AUTHENTICATION_BACKENDS = (
     'account.utils.PasswordlessAuthBackend',
 )
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/

@@ -1,8 +1,9 @@
-function datatables_init() {
-    $(".dt").DataTable({
+function datatables_init(selector = ".dt") {
+    $(selector).DataTable({
         "columnDefs": [
             {"orderable": false, "targets": [0, -1]}
         ],
+        "lengthMenu": [[3, 10, 50, 100, -1], [3, 10, 50, 100, "Все"]],
         "destroy": true,
         "stateSave": true,
         "language": {
@@ -31,33 +32,33 @@ function datatables_init() {
     });
 }
 
-function reload_account_links(username, id = "content") {
+function reload_account_links(username, id = "links_card") {
     $.ajax({
         url: window.reverse('api:account_links_username', username),
         type: 'GET',
         data: {},
         success: function (data, status) {
             document.getElementById(id).innerHTML = data;
-            set_listeners();
+            reload_account_folder(username, "folders_card");
         }
     });
 }
 
 
-function reload_account_folder(username, id = "content") {
+function reload_account_folder(username, id = "folders_card") {
     $.ajax({
         url: window.reverse('api:account_folder_username', username),
         type: 'GET',
         data: {},
         success: function (data, status) {
             document.getElementById(id).innerHTML = data;
-            set_listeners();
+            reload_account_saved(username, "saved_card");
         }
     });
 }
 
 
-function reload_account_saved(username, id = "content") {
+function reload_account_saved(username, id = "saved_card") {
     $.ajax({
         url: window.reverse('api:account_saved_username', username),
         type: 'GET',
@@ -66,11 +67,12 @@ function reload_account_saved(username, id = "content") {
             document.getElementById(id).innerHTML = data;
             datatables_init();
             set_listeners();
+            $(".preloader").delay(1000).fadeOut();
         }
     });
 }
 
-function reload_folder(folder_id, id = "content") {
+function reload_folder(folder_id, id = "links_card") {
     $.ajax({
         url: window.reverse('api:folder_view', folder_id),
         type: 'GET',
@@ -84,7 +86,7 @@ function reload_folder(folder_id, id = "content") {
 }
 
 
-function reload_index(id = "content") {
+function reload_index(id = "links_card") {
     $.ajax({
         url: window.reverse('api:index_view'),
         type: 'GET',
@@ -98,7 +100,7 @@ function reload_index(id = "content") {
 }
 
 
-function reload_search(id = "content") {
+function reload_search(id = "search_card") {
     let url = window.reverse('api:search_view') + '?q=' + $("#search_value").val().split(" ").join("+");
     $.ajax({
         url: url,
@@ -117,21 +119,20 @@ function reload(type, reloader, id = "content") {
     $(".preloader").fadeIn();
     if (type === 'account') {
         reload_account_links(reloader, "links_card");
-        reload_account_folder(reloader, "folders_card");
-        reload_account_saved(reloader, "saved_card");
     } else if (type === 'folder') {
         reload_folder(reloader, "links_card");
     } else if (type === 'index') {
         reload_index("links_card");
+        $(".preloader").delay(1000).fadeOut();
     } else if (type === 'search') {
         reload_search("search_card");
+        $(".preloader").delay(1000).fadeOut();
     }
-    $(".preloader").delay(1000).fadeOut();
 
 }
 
 
-function delete_link(link_id, type, reloader, id = 'messages') {
+function delete_link(link_id, type, reloader) {
     $.ajax({
         url: window.reverse('link_delete', link_id),
         type: 'GET',
@@ -209,7 +210,7 @@ function vote(link_id, vote, type, reloader, id = 'messages') {
 }
 
 
-function delete_favourite(link_id, type, reloader, id = 'messages') {
+function delete_favourite(link_id, type, reloader) {
     $.ajax({
         url: window.reverse('favourite_delete', link_id),
         type: 'GET',
@@ -242,36 +243,42 @@ function delete_folder(folder_id, type, reloader, id = 'messages') {
 
 function set_listeners() {
     $('.delete_link_btn').click(function () {
-        // console.log($(this).data('id'), $(this).data('type'), $(this).data('data'));
+        console.log($(this).data('id'), $(this).data('type'), $(this).data('data'));
         delete_link($(this).data('id'), $(this).data('type'), $(this).data('data'));
     });
     $('.favourite_delete_btn').click(function () {
-        // console.log($(this).data('id'), $(this).data('type'), $(this).data('data'));
+        console.log($(this).data('id'), $(this).data('type'), $(this).data('data'));
         delete_favourite($(this).data('id'), $(this).data('type'), $(this).data('data'));
     });
     $('.favourite_add_btn').click(function () {
-        // console.log($(this).data('id'), $(this).data('type'), $(this).data('data'));
+        console.log($(this).data('id'), $(this).data('type'), $(this).data('data'));
         favourite_save($(this).data('id'), $(this).data('type'), $(this).data('data'));
     });
     $('.favourite_add_alt_btn').click(function () {
-        // console.log($(this).data('id'), $(this).data('type'), $(this).data('data'));
+        console.log($(this).data('id'), $(this).data('type'), $(this).data('data'));
         favourite_save_alt($(this).data('id'), $(this).data('type'), $(this).data('data'));
     });
     $('.vote_btn').click(function () {
-        // console.log($(this).data('id'), $(this).data('type'), $(this).data('data'));
+        console.log($(this).data('id'), $(this).data('type'), $(this).data('data'));
         vote($(this).data('id'), $(this).data('vote'), $(this).data('type'), $(this).data('data'));
     });
     $('.delete_folder_btn').click(function () {
-        // console.log($(this).data('id'), $(this).data('type'), $(this).data('data'));
+        console.log($(this).data('id'), $(this).data('type'), $(this).data('data'));
         delete_folder($(this).data('id'), $(this).data('type'), $(this).data('data'));
     });
     $('.redirect_login').click(function () {
         window.location.href = window.reverse('account:login');
     });
+    $('[data-toggle="tooltip"]').click(function () {
+        $('[data-toggle="tooltip"]').tooltip("hide");
+
+    });
+    $('[data-toggle="tooltip"]').tooltip();
 }
 
-set_listeners();
+datatables_init();
 $(document).ready(function () {
+    set_listeners();
     $(".btn-hide a").on('click', function (event) {
         event.preventDefault();
         if ($('.closed .input-hide').attr("type") == "text") {
@@ -297,6 +304,7 @@ $(document).ready(function () {
         document.execCommand("copy");
         toastr.success("API-ключ скопирован.")
     });
+
 });
 toastr.options.closeButton = true;
 toastr.options.showMethod = 'slideDown';
@@ -320,10 +328,3 @@ $("#delete_account_button").click(function () {
         }
     })
 });
-$(document).ready(function () {
-        $('.btn-secondary').click(function () {
-            $(".tooltip").remove();
-        });
-        datatables_init();
-    }
-);
