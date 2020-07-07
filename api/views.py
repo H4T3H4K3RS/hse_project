@@ -4,7 +4,7 @@ from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 
-from account.models import Profile
+from account.models import Profile, Avatar
 from account.views import handler403, handler404
 from app import utils
 from app.models import Folder, Link, BotKey, SavedLink
@@ -140,13 +140,15 @@ def account_key_get(request):
 
 @login_required
 def account_avatar_set(request, avatar):
-    available_avatars = range(1, 11)
+    try:
+        avatar = Avatar.objects.get(name=str(avatar))
+    except Avatar.DoesNotExist:
+        return JsonResponse({"before": "1.jpg", "after": "1.jpg"}, status=200)
     profile = Profile.objects.get(user=request.user)
-    data = {"before": profile.avatar}
-    if avatar in available_avatars:
-        profile.avatar = avatar
-        profile.save()
-    data['after'] = profile.avatar
+    data = {"before": profile.avatar.path}
+    profile.avatar = avatar
+    profile.save()
+    data['after'] = profile.avatar.path
     return JsonResponse(data, status=200)
 
 

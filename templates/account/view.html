@@ -231,8 +231,8 @@
                     <div class="col-lg-4 col-xlg-3 col-md-5">
                         <div class="card">
                             <div class="card-body">
-                                <center class="m-t-30"><img src="{% static 'img/avatars/' %}{{ profile.avatar }}.jpg"
-                                                            class="rounded-circle avatar" style="cursor:pointer;"
+                                <center class="m-t-30"><img src="{% static 'img/avatars/' %}{{ profile.avatar.path }}"
+                                                            class="rounded-circle avatar"
                                                             width="150"/>
                                     <h4 class="card-title m-t-10">{{ user.username }}</h4>
                                     <h6 class="card-subtitle"><a href="mailto:{{ user.email }}">{{ user.email }}</a>
@@ -240,7 +240,7 @@
 
                                     <div class="card-body align-items-center d-flex justify-content-center">
                                         <div class=""><a href="#" class="link"><i class="icon-star"></i> Рейтинг
-                                            <font class="font-medium">{{ profile.rating }}</font></a></div>
+                                            <font class="font-medium" id="user_rating">{{ profile.rating }}</font></a></div>
                                     </div>
                                 </center>
                             </div>
