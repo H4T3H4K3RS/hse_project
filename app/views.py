@@ -18,8 +18,10 @@ def get_bootstrap_alert_msg_css_name(tags):
 
 
 def index(request):
+    context = []
     context = {'links': Link.objects.order_by("-rating")}
     if request.user.is_authenticated:
+        context["profile"] = Profile.objects.get(user=request.user)
         s_links = SavedLink.objects.filter(user=request.user)
         context['saved_links'] = s_links
         context['saved_links_links'] = utils.get_saved_links(s_links)
