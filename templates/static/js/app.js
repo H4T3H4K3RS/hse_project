@@ -101,7 +101,7 @@ function reload_index(id = "links_card") {
 
 
 function reload_search(id = "search_card") {
-    let url = window.reverse('api:search_view') + '?q=' + $("#search_value").val().split(" ").join("+");
+    let url = window.reverse('api:search_view') + '?q=' + $('[name="hidden_query"]').val().split(" ").join("+");
     $.ajax({
         url: url,
         type: 'GET',
