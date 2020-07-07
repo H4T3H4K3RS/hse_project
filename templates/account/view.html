@@ -64,6 +64,75 @@
                                     <div class="tab-pane fade" id="settings" role="tabpanel"
                                          aria-labelledby="pills-setting-tab">
                                         <div class="card-body">
+                                            <div class="align-content-center text-center">
+                                                <button type="button"
+                                                        class="btn btn-primary btn-circle btn-lg"
+                                                        data-toggle="modal"
+                                                        data-target="#changeavatar"><i
+                                                        class="fa fa-camera" data-toggle="tooltip" data-placement="top"
+                                                        title="Изменить аватар"></i></button>
+                                                <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog"
+                                                     aria-labelledby="myLargeModalLabel" aria-hidden="true"
+                                                     style="display: none;"
+                                                     id="changeavatar">
+                                                    <div class="modal-dialog modal-lg">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h4 class="modal-title" id="myLargeModalLabel">Изменение
+                                                                    Аватара</h4>
+                                                                <button type="button" class="close" data-dismiss="modal"
+                                                                        aria-hidden="true">×
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <h4>Выберите аватар, который хотите установить.</h4>
+                                                                <div class="row text-center align-content-center">
+                                                                    <a class="col" href="javascript:void(0)" data-change="avatar"
+                                                                       data-data="1">
+                                                                        <div class="user-pic"><img
+                                                                                src="{% static 'img/avatars/1.jpg' %}"
+                                                                                alt="users"
+                                                                                class="rounded-circle"
+                                                                                width="60"/></div>
+                                                                    </a>
+                                                                    <a class="col" href="javascript:void(0)" data-change="avatar"
+                                                                       data-data="2">
+                                                                        <div class="user-pic"><img
+                                                                                src="{% static 'img/avatars/2.jpg' %}"
+                                                                                alt="users"
+                                                                                class="rounded-circle"
+                                                                                width="60"/></div>
+                                                                    </a>
+                                                                    <a class="col" href="javascript:void(0)" data-change="avatar"
+                                                                       data-data="3">
+                                                                        <div class="user-pic"><img
+                                                                                src="{% static 'img/avatars/3.jpg' %}"
+                                                                                alt="users"
+                                                                                class="rounded-circle"
+                                                                                width="60"/></div>
+                                                                    </a>
+                                                                    <a class="col" href="javascript:void(0)" data-change="avatar"
+                                                                       data-data="4">
+                                                                        <div class="user-pic"><img
+                                                                                src="{% static 'img/avatars/4.jpg' %}"
+                                                                                alt="users"
+                                                                                class="rounded-circle"
+                                                                                width="60"/></div>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button"
+                                                                        class="btn btn-danger waves-effect text-left"
+                                                                        data-dismiss="modal">Закрыть
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <!-- /.modal-content -->
+                                                    </div>
+                                                    <!-- /.modal-dialog -->
+                                                </div>
+                                            </div>
                                             <form class="form-horizontal form-material" method="post"
                                                   action="{% url 'account:view_my' %}">
                                                 {% csrf_token %}
@@ -110,38 +179,12 @@
                         <div class="card">
                             <div class="card-body">
                                 <center class="m-t-30"><img src="{% static 'img/avatars/' %}{{ profile.avatar }}.jpg"
-                                                            class="rounded-circle avatar" style="cursor:pointer;" width="150" data-toggle="modal" data-target="#changeavatar"/>
+                                                            class="rounded-circle avatar" style="cursor:pointer;"
+                                                            width="150"/>
                                     <h4 class="card-title m-t-10">{{ user.username }}</h4>
                                     <h6 class="card-subtitle"><a href="mailto:{{ user.email }}">{{ user.email }}</a>
                                     </h6>
-                                    <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog"
-                                         aria-labelledby="myLargeModalLabel" aria-hidden="true" style="display: none;" id="changeavatar">
-                                        <div class="modal-dialog modal-lg">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h4 class="modal-title" id="myLargeModalLabel">Large modal</h4>
-                                                    <button type="button" class="close" data-dismiss="modal"
-                                                            aria-hidden="true">×
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <h4>Изменение Аватара</h4>
-                                                    <p>Нажмите на аватар, который хотите выбрать</p>
-                                                    <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo
-                                                        cursus magna, vel scelerisque nisl consectetur et. Donec sed
-                                                        odio dui. Donec ullamcorper nulla non metus auctor
-                                                        fringilla.</p>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-danger waves-effect text-left"
-                                                            data-dismiss="modal">Close
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <!-- /.modal-content -->
-                                        </div>
-                                        <!-- /.modal-dialog -->
-                                    </div>
+
                                     <div class="card-body align-items-center d-flex justify-content-center">
                                         <div class=""><a href="#" class="link"><i class="icon-star"></i> Рейтинг
                                             <font class="font-medium">{{ profile.rating }}</font></a></div>

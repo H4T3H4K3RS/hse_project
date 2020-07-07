@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 
 from account.models import Profile
@@ -142,7 +142,9 @@ def account_key_get(request):
 def account_avatar_set(request, avatar):
     available_avatars = [1, 2, 3, 4]
     profile = Profile.objects.get(user=request.user)
+    data = {"before": profile.avatar}
     if avatar in available_avatars:
         profile.avatar = avatar
         profile.save()
-    return HttpResponse(status=200)
+    data['after'] = profile.avatar
+    return JsonResponse(data, status=200)

@@ -172,6 +172,7 @@ JS_URLS = (
     'api:account_saved_username',
     'api:folder_view',
     'api:account_key',
+    "api:account_avatar",
     'link_delete',
     'link_vote',
     'favourite_delete',

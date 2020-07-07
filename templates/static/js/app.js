@@ -238,6 +238,26 @@ function delete_folder(folder_id, type, reloader, id = 'messages') {
     });
 }
 
+
+function set_avatar(id, imgselector = ".avatar") {
+    $.ajax({
+        url: window.reverse('api:account_avatar', id),
+        type: 'GET',
+        beforeSend: function () {
+            $(".preloader").fadeIn();
+            toastr.info("Обновление аватара");
+        },
+        success: function (data, status) {
+            toastr.clear();
+            toastr.success("Аватар обновлён");
+            var avatars = $(imgselector);
+            console.log(avatars);
+            avatars.attr('src', avatars.attr('src').replace(data.before, data.after));
+            $(".preloader").fadeOut();
+        }
+    });
+}
+
 function set_listeners() {
     $('.delete_link_btn').click(function () {
         // console.log($(this).data('id'), $(this).data('type'), $(this).data('data'));
@@ -274,6 +294,9 @@ function set_listeners() {
             window.location.href = window.reverse('account:login');
         }, 3000);
     });
+    $('[data-change="avatar"]').click(function () {
+        set_avatar($(this).data('data'));
+    })
 }
 
 datatables_init();

@@ -27,4 +27,5 @@ urlpatterns = [
     path('index/', views.index_view, name='index_view'),
     path('search/', views.search_view, name='search_view'),
     path('settings/account/key/', views.account_key_get, name='account_key'),
+    path('settings/account/avatar/<int:avatar>/', views.account_avatar_set, name='account_avatar'),
 ]
