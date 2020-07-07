@@ -140,7 +140,7 @@ def account_key_get(request):
 
 @login_required
 def account_avatar_set(request, avatar):
-    available_avatars = [1, 2, 3, 4]
+    available_avatars = range(1, 11)
     profile = Profile.objects.get(user=request.user)
     data = {"before": profile.avatar}
     if avatar in available_avatars:
@@ -148,3 +148,17 @@ def account_avatar_set(request, avatar):
         profile.save()
     data['after'] = profile.avatar
     return JsonResponse(data, status=200)
+
+
+@login_required
+def get_rating(request, username=None):
+    context = {}
+    if username is None or request.user.username == username:
+        context["rating"] = Profile.objects.get(user=request.user)
+        return JsonResponse(context)
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return handler404(request)
+    context["rating"] = Profile.objects.get(user__username=username)
+    return JsonResponse(context)
