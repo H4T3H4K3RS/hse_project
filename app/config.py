@@ -28,7 +28,7 @@ words = {
             "success": "Вы успешны вышли из аккаунта!",
             "help": 'Для авторизации отправьте боту полученный API-ключ',
         },
-        "hello": "Здравствуйте, [{}]({}{})\n",
+        "hello": "Здравствуйте, [{}] 🌟 ({}{})\n",
         "success": 'Ваш язык был изменён на "🇷🇺 РУССКИЙ 🇷🇺", чтобы изменить выбор используйте команду: /lang'
     },
     "en": {
@@ -58,7 +58,7 @@ words = {
             "success": "You have successfully logged out!",
             "help": 'To authorize send the API-key to me.',
         },
-        "hello": "Hello, [{}]({}{})\n",
+        "hello": "Hello, [{}] 🌟 ({}{})\n",
         "success": 'Your language has been successfully changed to "🇺🇸 ENGLISH 🇺🇸". To choose another language use command: /lang'
     }
 }
