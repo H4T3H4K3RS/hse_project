@@ -87,92 +87,23 @@
                                                             <div class="modal-body">
                                                                 <h4>Выберите аватар, который хотите установить.</h4>
                                                                 <div class="row text-center align-content-center">
-                                                                    <a class="col" href="javascript:void(0)" data-change="avatar"
-                                                                       data-data="1">
-                                                                        <div class="user-pic"><img
-                                                                                src="{% static 'img/avatars/1.jpg' %}"
-                                                                                alt="users"
-                                                                                class="rounded-circle"
-                                                                                width="60"/></div>
-                                                                    </a>
-                                                                    <a class="col" href="javascript:void(0)" data-change="avatar"
-                                                                       data-data="2">
-                                                                        <div class="user-pic"><img
-                                                                                src="{% static 'img/avatars/2.jpg' %}"
-                                                                                alt="users"
-                                                                                class="rounded-circle"
-                                                                                width="60"/></div>
-                                                                    </a>
-                                                                    <a class="col" href="javascript:void(0)" data-change="avatar"
-                                                                       data-data="3">
-                                                                        <div class="user-pic"><img
-                                                                                src="{% static 'img/avatars/3.jpg' %}"
-                                                                                alt="users"
-                                                                                class="rounded-circle"
-                                                                                width="60"/></div>
-                                                                    </a>
-                                                                    <a class="col" href="javascript:void(0)" data-change="avatar"
-                                                                       data-data="4">
-                                                                        <div class="user-pic"><img
-                                                                                src="{% static 'img/avatars/4.jpg' %}"
-                                                                                alt="users"
-                                                                                class="rounded-circle"
-                                                                                width="60"/></div>
-                                                                    </a>
-
-                                                                </div>
-                                                                <div class="mt-3 row text-center align-content-center">
-                                                                    <a class="col" href="javascript:void(0)" data-change="avatar"
-                                                                       data-data="5">
-                                                                        <div class="user-pic"><img
-                                                                                src="{% static 'img/avatars/5.jpg' %}"
-                                                                                alt="users"
-                                                                                class="rounded-circle"
-                                                                                width="60"/></div>
-                                                                    </a>
-                                                                    <a class="col" href="javascript:void(0)" data-change="avatar"
-                                                                       data-data="6">
-                                                                        <div class="user-pic"><img
-                                                                                src="{% static 'img/avatars/6.jpg' %}"
-                                                                                alt="users"
-                                                                                class="rounded-circle"
-                                                                                width="60"/></div>
-                                                                    </a>
-                                                                    <a class="col" href="javascript:void(0)" data-change="avatar"
-                                                                       data-data="7">
-                                                                        <div class="user-pic"><img
-                                                                                src="{% static 'img/avatars/7.jpg' %}"
-                                                                                alt="users"
-                                                                                class="rounded-circle"
-                                                                                width="60"/></div>
-                                                                    </a>
-                                                                    <a class="col" href="javascript:void(0)" data-change="avatar"
-                                                                       data-data="8">
-                                                                        <div class="user-pic"><img
-                                                                                src="{% static 'img/avatars/8.jpg' %}"
-                                                                                alt="users"
-                                                                                class="rounded-circle"
-                                                                                width="60"/></div>
-                                                                    </a>
-                                                                </div>
-                                                                <div class="mt-3 row text-center align-content-center">
-                                                                    <a class="col" href="javascript:void(0)" data-change="avatar"
-                                                                       data-data="9">
-                                                                        <div class="user-pic"><img
-                                                                                src="{% static 'img/avatars/9.jpg' %}"
-                                                                                alt="users"
-                                                                                class="rounded-circle"
-                                                                                width="60"/></div>
-                                                                    </a>
-                                                                    <a class="col" href="javascript:void(0)" data-change="avatar"
-                                                                       data-data="10">
-                                                                        <div class="user-pic"><img
-                                                                                src="{% static 'img/avatars/10.jpg' %}"
-                                                                                alt="users"
-                                                                                class="rounded-circle"
-                                                                                width="60"/></div>
-                                                                    </a>
-                                                                </div>
+                                                                    {% for avatar in avatars %}
+                                                                        {% if forloop.counter in numbers_4 %}
+                                                                            </div>
+                                                                            <div class="mt-3 row text-center align-content-center">
+                                                                        {% endif %}
+                                                                        <a class="col" href="javascript:void(0)"
+                                                                           data-change="avatar"
+                                                                           data-data="{{ avatar.name }}">
+                                                                            <div class="user-pic"><img
+                                                                                    src="
+                                                                                            {% static 'img/avatars/' %}{{ avatar.path }}"
+                                                                                    alt="users"
+                                                                                    class="rounded-circle"
+                                                                                    width="60"/></div>
+                                                                        </a>
+                                                                    {% endfor %}
+                                                                    </div>
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <button type="button"
@@ -231,16 +162,20 @@
                     <div class="col-lg-4 col-xlg-3 col-md-5">
                         <div class="card">
                             <div class="card-body">
-                                <center class="m-t-30"><img src="{% static 'img/avatars/' %}{{ profile.avatar.path }}"
-                                                            class="rounded-circle avatar"
-                                                            width="150"/>
+                                <center class="m-t-30"><img
+                                        src="{% static 'img/avatars/' %}{{ profile.avatar.path }}"
+                                        class="rounded-circle avatar"
+                                        width="150"/>
                                     <h4 class="card-title m-t-10">{{ user.username }}</h4>
-                                    <h6 class="card-subtitle"><a href="mailto:{{ user.email }}">{{ user.email }}</a>
+                                    <h6 class="card-subtitle"><a
+                                            href="mailto:{{ user.email }}">{{ user.email }}</a>
                                     </h6>
 
                                     <div class="card-body align-items-center d-flex justify-content-center">
                                         <div class=""><a href="#" class="link"><i class="icon-star"></i> Рейтинг
-                                            <font class="font-medium" id="user_rating">{{ profile.rating }}</font></a></div>
+                                            <font class="font-medium"
+                                                  id="user_ratingё">{{ profile.rating }}</font></a>
+                                        </div>
                                     </div>
                                 </center>
                             </div>
