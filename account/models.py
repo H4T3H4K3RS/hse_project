@@ -13,4 +13,5 @@ class Code(models.Model):
 class Profile(models.Model):
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     rating = models.IntegerField(default=100)
+    avatar = models.IntegerField(default=1)
     # description = models.CharField(default="Описание", max_length=500)

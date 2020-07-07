@@ -136,3 +136,13 @@ def search_view(request):
 def account_key_get(request):
     bot_key = BotKey.objects.filter(user=request.user)[0]
     return HttpResponse(bot_key.key)
+
+
+@login_required
+def account_avatar_set(request, avatar):
+    available_avatars = [1, 2, 3, 4]
+    profile = Profile.objects.get(user=request.user)
+    if avatar in available_avatars:
+        profile.avatar = avatar
+        profile.save()
+    return HttpResponse(status=200)

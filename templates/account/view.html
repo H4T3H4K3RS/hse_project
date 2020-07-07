@@ -21,11 +21,13 @@
                         <div class="card">
                             <ul class="nav nav-pills custom-pills" id="pills-tab" role="tablist">
                                 <li class="nav-item">
-                                    <a class="nav-link active" id="pills-links-tab" data-toggle="pill" href="#account_links"
+                                    <a class="nav-link active" id="pills-links-tab" data-toggle="pill"
+                                       href="#account_links"
                                        role="tab" aria-controls="pills-links" aria-selected="true">Ссылки</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" id="pills-folders-tab" data-toggle="pill" href="#account_folders"
+                                    <a class="nav-link" id="pills-folders-tab" data-toggle="pill"
+                                       href="#account_folders"
                                        role="tab" aria-controls="pills-folders" aria-selected="false">Подборки</a>
                                 </li>
                                 <li class="nav-item">
@@ -107,11 +109,39 @@
                     <div class="col-lg-4 col-xlg-3 col-md-5">
                         <div class="card">
                             <div class="card-body">
-                                <center class="m-t-30"><img src="{% static 'img/avatars/1.jpg' %}"
-                                                            class="rounded-circle" width="150"/>
+                                <center class="m-t-30"><img src="{% static 'img/avatars/' %}{{ profile.avatar }}.jpg"
+                                                            class="rounded-circle avatar" style="cursor:pointer;" width="150" data-toggle="modal" data-target="#changeavatar"/>
                                     <h4 class="card-title m-t-10">{{ user.username }}</h4>
                                     <h6 class="card-subtitle"><a href="mailto:{{ user.email }}">{{ user.email }}</a>
                                     </h6>
+                                    <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog"
+                                         aria-labelledby="myLargeModalLabel" aria-hidden="true" style="display: none;" id="changeavatar">
+                                        <div class="modal-dialog modal-lg">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title" id="myLargeModalLabel">Large modal</h4>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                            aria-hidden="true">×
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <h4>Изменение Аватара</h4>
+                                                    <p>Нажмите на аватар, который хотите выбрать</p>
+                                                    <p>Aenean lacinia bibendum nulla sed consectetur. Praesent commodo
+                                                        cursus magna, vel scelerisque nisl consectetur et. Donec sed
+                                                        odio dui. Donec ullamcorper nulla non metus auctor
+                                                        fringilla.</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-danger waves-effect text-left"
+                                                            data-dismiss="modal">Close
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <!-- /.modal-content -->
+                                        </div>
+                                        <!-- /.modal-dialog -->
+                                    </div>
                                     <div class="card-body align-items-center d-flex justify-content-center">
                                         <div class=""><a href="#" class="link"><i class="icon-star"></i> Рейтинг
                                             <font class="font-medium">{{ profile.rating }}</font></a></div>

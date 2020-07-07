@@ -73,7 +73,6 @@ def login(request):
                     user_auth = authenticate(request, username=username)
                     auth_login(request, user_auth)
                     messages.success(request, f'Здравствуйте, {user.username}')
-                    print(next_page)
                     if next_page is not None:
                         return redirect(next_page)
                     return redirect(reverse('link_add'))
@@ -310,7 +309,7 @@ def activate(request):
 
 @login_required
 def view(request, username=None):
-    context = {}
+    context = {"profile": Profile.objects.get(user=request.user)}
     s_links = SavedLink.objects.filter(user=request.user)
     if request.user.username == username:
         return redirect(reverse("account:view_my"))

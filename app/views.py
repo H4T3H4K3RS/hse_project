@@ -32,7 +32,7 @@ def index(request):
 
 @login_required
 def search(request):
-    context = {}
+    context = {"profile": Profile.objects.get(user=request.user)}
     s_links = SavedLink.objects.filter(user=request.user)
     queries = request.GET.get('q', None)
     if queries is not None:
@@ -61,7 +61,7 @@ def search(request):
 
 @login_required
 def link_add(request):
-    context = {}
+    context = {"profile": Profile.objects.get(user=request.user)}
     if request.method == "POST":
         link_form = LinkAddForm(request.user, request.POST)
         if link_form.is_valid():
@@ -105,7 +105,7 @@ def link_vote(request, link_id, state):
 
 @login_required
 def link_edit(request, link_id):
-    context = {}
+    context = {"profile": Profile.objects.get(user=request.user)}
     if request.method == "POST":
         link_form = LinkAddForm(request.user, request.POST)
         if link_form.is_valid():
@@ -252,7 +252,7 @@ def favourite_delete(request, link_id):
 
 @login_required
 def folder_add(request):
-    context = {}
+    context = {"profile": Profile.objects.get(user=request.user)}
     if request.method == "POST":
         folder_form = FolderAddForm(request.POST)
         if folder_form.is_valid():
@@ -276,7 +276,7 @@ def folder_add(request):
 
 @login_required
 def folder_view(request, folder_id):
-    context = {}
+    context = {"profile": Profile.objects.get(user=request.user)}
     s_links = SavedLink.objects.filter(user=request.user)
     try:
         context['folder'] = Folder.objects.get(id=folder_id)
@@ -290,7 +290,7 @@ def folder_view(request, folder_id):
 
 @login_required
 def folder_edit(request, folder_id):
-    context = {}
+    context = {"profile": Profile.objects.get(user=request.user)}
     if request.method == "POST":
         folder_form = FolderAddForm(request.POST)
         if folder_form.is_valid():
