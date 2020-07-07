@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from account.forms import LoginForm, SignupForm, RecoverForm, NewPasswordForm, EditForm
-from account.models import Profile, Code
+from account.models import Profile, Code, Avatar
 from app import utils
 from app.models import SavedLink, Folder, Link, BotKey
 
@@ -314,13 +314,16 @@ def view(request, username=None):
     if request.user.username == username:
         return redirect(reverse("account:view_my"))
     if username is None:
+        avatars = Avatar.objects.all()
         context = {'saved': SavedLink.objects.filter(user=request.user),
                    'folders': Folder.objects.filter(user=request.user).order_by("-rating"),
                    'links': Link.objects.filter(folder__user=request.user).order_by("-rating"), 'owner': 1,
                    'user': request.user, 'saved_links': s_links, 'saved_links_links': utils.get_saved_links(s_links),
                    'api_key': BotKey.objects.filter(user=request.user)[0],
                    'form': EditForm(initial={'username': request.user.username}),
-                   'profile': Profile.objects.get(user=request.user)}
+                   'profile': Profile.objects.get(user=request.user),
+                   'avatars': avatars,
+                   "numbers_4": range(5, len(avatars)+1, 4)}
         if request.method == "POST":
             form = EditForm(request.POST)
             if form.is_valid() or (form.data['password1'] == "" and form.data['password2'] == ""):

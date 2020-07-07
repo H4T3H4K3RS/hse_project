@@ -10,8 +10,12 @@ class Code(models.Model):
     status = models.BooleanField(default=0)  # T - activate, 1 - recover
 
 
+class Avatar(models.Model):
+    name = models.IntegerField(default=1)
+    path = models.CharField(default="1.jpg", max_length=10)
+
+
 class Profile(models.Model):
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     rating = models.IntegerField(default=100)
-    avatar = models.IntegerField(default=1)
-    # description = models.CharField(default="Описание", max_length=500)
+    avatar = models.ForeignKey(to=Avatar, on_delete=models.CASCADE)

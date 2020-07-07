@@ -37,7 +37,7 @@
                     <div class="user-profile d-flex no-block dropdown mt-3">
                         {% if request.user.is_authenticated %}
                             <a href="{% url 'account:view_my' %}">
-                                <div class="user-pic"><img src="{% static 'img/avatars/' %}{{ profile.avatar }}.jpg" alt="users"
+                                <div class="user-pic"><img src="{% static 'img/avatars/' %}{{ profile.avatar.path }}" alt="users"
                                                            class="rounded-circle avatar" width="40"/></div>
                             </a>
                             <div class="user-content hide-menu ml-2">
