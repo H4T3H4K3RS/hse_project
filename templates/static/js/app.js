@@ -39,7 +39,7 @@ function reload_account_links(username, id = "links_card") {
         data: {},
         success: function (data, status) {
             document.getElementById(id).innerHTML = data;
-            reload_account_folder(username, "folders_card");
+            reload_account_folder(username);
         }
     });
 }
@@ -52,7 +52,7 @@ function reload_account_folder(username, id = "folders_card") {
         data: {},
         success: function (data, status) {
             document.getElementById(id).innerHTML = data;
-            reload_account_saved(username, "saved_card");
+            reload_account_saved(username);
         }
     });
 }
@@ -65,6 +65,19 @@ function reload_account_saved(username, id = "saved_card") {
         data: {},
         success: function (data, status) {
             document.getElementById(id).innerHTML = data;
+            reload_account_rating(username);
+        }
+    });
+}
+
+
+function reload_account_rating(username, id = "user_rating") {
+    $.ajax({
+        url: window.reverse('api:account_rating', username),
+        type: 'GET',
+        data: {},
+        success: function (data, status) {
+            document.getElementById(id).innerHTML = data.rating;
             datatables_init();
             set_listeners();
             $(".preloader").delay(1000).fadeOut();

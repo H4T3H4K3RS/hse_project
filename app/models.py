@@ -43,6 +43,9 @@ class Link(models.Model):
                     vote.save()
                     self.folder.rating -= 1
                     self.folder.save()
+                    profile = Profile.objects.get(user=self.folder.user)
+                    profile.rating -= 1
+                    profile.save()
                     return JsonResponse({'data': "Вы удалили свой голос."}, status=202)
             elif vote.state == 0:
                 if state == 1:
@@ -52,6 +55,9 @@ class Link(models.Model):
                     vote.save()
                     self.folder.rating += 1
                     self.folder.save()
+                    profile = Profile.objects.get(user=self.folder.user)
+                    profile.rating += 1
+                    profile.save()
                     return JsonResponse({'data': "Вы повысили рейтинг ссылки на 1."}, status=203)
                 else:
                     self.rating -= 1
@@ -60,6 +66,9 @@ class Link(models.Model):
                     vote.save()
                     self.folder.rating -= 1
                     self.folder.save()
+                    profile = Profile.objects.get(user=self.folder.user)
+                    profile.rating -= 1
+                    profile.save()
                     return JsonResponse({'data': "Вы понизили рейтинг ссылки на 1."}, status=203)
             else:
                 if state == 1:
@@ -69,6 +78,9 @@ class Link(models.Model):
                     vote.save()
                     self.folder.rating += 1
                     self.folder.save()
+                    profile = Profile.objects.get(user=self.folder.user)
+                    profile.rating += 1
+                    profile.save()
                     return JsonResponse({'data': "Вы удалили свой голос."}, status=202)
                 else:
                     return JsonResponse({'data': "Вы уже проголосовали за понижение рейтинга ссылки."}, status=208)
@@ -79,6 +91,9 @@ class Link(models.Model):
             self.folder.rating += state
             self.folder.save()
             vote.save()
+            profile = Profile.objects.get(user=self.folder.user)
+            profile.rating += state
+            profile.save()
             return JsonResponse(
                 {'data': "Вы повысили рейтинг ссылки на 1." if state == 1 else "Вы понизили рейтинг ссылки на 1."}, status=203)
 

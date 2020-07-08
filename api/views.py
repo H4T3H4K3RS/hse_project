@@ -162,5 +162,5 @@ def get_rating(request, username=None):
         user = User.objects.get(username=username)
     except User.DoesNotExist:
         return handler404(request)
-    context["rating"] = Profile.objects.get(user__username=username)
+    context["rating"] = Profile.objects.get(user__username=username).rating
     return JsonResponse(context)
