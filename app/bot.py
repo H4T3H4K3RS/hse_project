@@ -117,11 +117,11 @@ def add_link(update, context):
                                               parse_mode=telegram.ParseMode.MARKDOWN_V2)
                     update.message.reply_text(words[lang]['help'])
         else:
-            update.message.reply_text(words[lang]["links"]["errors"]["incorrect_api_key"])
+            update.message.reply_text(words[lang]["links"]["error"]["incorrect_api_key"])
             keyboard = [[InlineKeyboardButton(words[lang]["keyboard"]["get"],
-                                              url=f'{settings.HOST}{reverse("api:account_key")}')]]
+                                              url=f'{settings.HOST}{reverse("account:view_my")[:-1]}#api_key')]]
             reply_markup = InlineKeyboardMarkup(keyboard)
-            update.message.reply_text(words[lang]["links"]["errors"]["send_key"], reply_markup=reply_markup)
+            update.message.reply_text(words[lang]["links"]["error"]["send_key"], reply_markup=reply_markup)
 
 
 def escape(text):
@@ -139,9 +139,9 @@ logger = logging.getLogger(__name__)
 def start(update, context):
     lang = get_lang(update)
     keyboard = [
-        [InlineKeyboardButton(words[lang]["keyboard"]["get"], url=f'{settings.HOST}{reverse("api:account_key")}')]]
+        [InlineKeyboardButton(words[lang]["keyboard"]["get"], url=f'{settings.HOST}{reverse("account:view_my")[:-1]}#api_key')]]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    update.message.reply_text(words[lang]["links"]["errors"]["send_key"], reply_markup=reply_markup)
+    update.message.reply_text(words[lang]["links"]["error"]["send_key"], reply_markup=reply_markup)
 
 
 def logout(update, context):
@@ -155,7 +155,7 @@ def logout(update, context):
     except BotKey.DoesNotExist:
         update.message.reply_text(words[lang]["logout"]['not_auth'])
     keyboard = [
-        [InlineKeyboardButton(words[lang]["keyboard"]["get"], url=f'{settings.HOST}{reverse("account:view_my")}')]]
+        [InlineKeyboardButton(words[lang]["keyboard"]["get"], url=f'{settings.HOST}{reverse("account:view_my")[:-1]}#api_key')]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     update.message.reply_text(words[lang]["logout"]["help"], reply_markup=reply_markup)
 
@@ -223,7 +223,7 @@ def callback_handler(update, context):
         is_saved = False
         for link in links:
             if link.link == unsaved_link.link:
-                answer = words[lang]["links"]["errors"]["already_saved"].format(link.link, folder.name)
+                answer = words[lang]["links"]["error"]["already_saved"].format(link.link, folder.name)
                 keyboard = get_keyboard(chat_id, 0, query)
                 is_saved = True
         if not is_saved:
@@ -256,11 +256,11 @@ def main():
     updater.dispatcher.add_handler(MessageHandler(Filters.text, add_link))
     updater.dispatcher.add_error_handler(error)
     PORT = int(os.environ.get('PORT', '8443'))
-    updater.start_webhook(listen="0.0.0.0",
-                          port=PORT,
-                          url_path=TOKEN)
-    updater.bot.set_webhook(f"{settings.BOT_HOST}/" + TOKEN)
-    # updater.start_polling()
+    # updater.start_webhook(listen="0.0.0.0",
+    #                       port=PORT,
+    #                       url_path=TOKEN)
+    # updater.bot.set_webhook(f"{settings.BOT_HOST}/" + TOKEN)
+    updater.start_polling()
     updater.idle()
 
 
