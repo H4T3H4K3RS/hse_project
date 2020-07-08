@@ -31,7 +31,7 @@ def links(update, context):
         answer = ""
         cnt = 1
         for link in all_links:
-            answer += f"{cnt}. [{link.rating}] {link.link}\n"
+            answer += f"{cnt}. {link.rating} 🌟 {link.link}\n"
             cnt += 1
         if answer == "":
             answer = words['ru'] + words[lang]['help']
