@@ -119,7 +119,7 @@ def signup(request):
                 new_user.set_password(user_form.cleaned_data["password1"])
                 new_user.is_active = False
                 new_user.save()
-                profile = Profile(user=new_user)
+                profile = Profile(user=new_user, avatar_id=1)
                 profile.save()
                 code_object = Code()
                 code_object.user = new_user
