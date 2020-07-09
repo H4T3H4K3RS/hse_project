@@ -29,4 +29,5 @@ urlpatterns = [
     path('settings/account/key/', views.account_key_get, name='account_key'),
     path('settings/account/avatar/<int:avatar>/', views.account_avatar_set, name='account_avatar'),
     path('account/rating/<str:username>/', views.get_rating, name='account_rating'),
+    path('account/key/new/', views.update_api_key, name='account_new_api_key'),
 ]

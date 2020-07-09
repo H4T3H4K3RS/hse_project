@@ -190,12 +190,19 @@
                                             <input class="form-control input-hide input-copy" type="password"
                                                    value="{{ api_key.key }}"
                                                    disabled aria-describedby="show_hide_pwd">
-                                            <div class="input-group-append btn-hide">
+                                            <div class="input-group-append btn-hide" data-toggle="tooltip" data-placement="top"
+                                                        title="Показать">
                                                 <a href="javascript:void(0)" class="input-group-text"><i
                                                         class="fa fa-eye-slash" aria-hidden="true"></i></a>
                                             </div>
-                                            <div class="input-group-append btn-copy btn-success">
-                                                <a href class="input-group-text "><i class="fa fa-clipboard"
+                                            <div class="input-group-append btn-copy btn-success" data-toggle="tooltip" data-placement="top"
+                                                        title="Скопировать">
+                                                <a href class="input-group-text"><i class="fa fa-clipboard"
+                                                                                     aria-hidden="true"></i></a>
+                                            </div>
+                                            <div class="input-group-append btn-success" data-change="api_key" data-toggle="tooltip" data-placement="top"
+                                                        title="Сгенерировать новый">
+                                                <a href class="input-group-text"><i class="fa ti-reload"
                                                                                      aria-hidden="true"></i></a>
                                             </div>
                                         </div>
