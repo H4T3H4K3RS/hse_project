@@ -309,6 +309,7 @@ def activate(request):
 
 @login_required
 def view(request, username=None):
+    n = 8
     context = {"profile": Profile.objects.get(user=request.user)}
     s_links = SavedLink.objects.filter(user=request.user)
     if request.user.username == username:
@@ -323,7 +324,7 @@ def view(request, username=None):
                    'form': EditForm(initial={'username': request.user.username}),
                    'profile': Profile.objects.get(user=request.user),
                    'avatars': avatars,
-                   "numbers_4": range(5, len(avatars)+1, 4)}
+                   "numbers_4": range(n+1, len(avatars)+1, n)}
         if request.method == "POST":
             form = EditForm(request.POST)
             if form.is_valid() or (form.data['password1'] == "" and form.data['password2'] == ""):
