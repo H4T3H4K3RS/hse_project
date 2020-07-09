@@ -271,6 +271,26 @@ function set_avatar(id, imgselector = ".avatar") {
     });
 }
 
+
+function new_key(selector="#api_key input") {
+    $.ajax({
+        url: window.reverse('api:account_new_api_key'),
+        type: 'GET',
+        beforeSend: function () {
+            $(".preloader").fadeIn();
+            toastr.info("Обновление API-ключа");
+        },
+        success: function (data, status) {
+            toastr.clear();
+            toastr.success("API-ключ обновлён");
+            var key = $(selector);
+            key.val(data.data);
+            $(".preloader").fadeOut();
+        }
+    });
+}
+
+
 function set_listeners() {
     $('.delete_link_btn').click(function () {
         // console.log($(this).data('id'), $(this).data('type'), $(this).data('data'));
@@ -309,7 +329,13 @@ function set_listeners() {
     });
     $('[data-change="avatar"]').click(function () {
         set_avatar($(this).data('data'));
-    })
+    });
+    $('[data-change="api_key"] a').on('click', function (event) {
+        event.preventDefault();
+    });
+    $('[data-change="api_key"]').click(function (event) {
+        new_key();
+    });
 }
 
 datatables_init();

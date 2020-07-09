@@ -182,6 +182,7 @@ JS_URLS = (
     'folder_delete',
     'account:login',
     "account:delete",
+    "api:account_new_api_key",
 )
 
 RECAPTCHA_PRIVATE_KEY = '6Lfb0KIZAAAAADLS85en7FJNXjBATL0jgMtxVKcv'

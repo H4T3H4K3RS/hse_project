@@ -1,3 +1,5 @@
+import datetime
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db.models import Q
@@ -164,3 +166,14 @@ def get_rating(request, username=None):
         return handler404(request)
     context["rating"] = Profile.objects.get(user__username=username).rating
     return JsonResponse(context)
+
+
+@login_required
+def update_api_key(request):
+    bot_keys = BotKey.objects.filter(user=request.user)
+    for bot_key in bot_keys:
+        bot_key.delete()
+    new_code, token = utils.generate_codes(request.user, datetime.datetime.now())
+    new_code = BotKey(key=new_code, user=request.user)
+    new_code.save()
+    return JsonResponse({"data": new_code.key})
