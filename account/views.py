@@ -92,6 +92,9 @@ def login(request):
             messages.error(request, "Неправильный формат данных.")
             context["form"] = LoginForm()
     else:
+        if request.user.is_authenticated:
+            messages.warning(request, "Вы уже вошли в аккаунт.")
+            return redirect(reverse('account:view_my'))
         next_page = request.GET.get('next', None)
         context['next'] = next_page
         context["form"] = LoginForm()
@@ -150,6 +153,9 @@ def signup(request):
                                         "1 спец.символ, 1 строчная буква, 1 прописная буква, 1 цифра)")
             context["form"] = SignupForm(request.POST)
     else:
+        if request.user.is_authenticated:
+            messages.warning(request, "Вы уже вошли в аккаунт.")
+            return redirect(reverse('account:view_my'))
         context["form"] = SignupForm()
     return render(request, "account/signup.html", context)
 
@@ -198,6 +204,9 @@ def forgot(request):
             messages.error("Проблемы с ReCaptcha")
         context["form"] = RecoverForm(request.POST)
     else:
+        if request.user.is_authenticated:
+            messages.warning(request, "Вы уже вошли в аккаунт.")
+            return redirect(reverse('account:view_my'))
         context["form"] = RecoverForm()
     return render(request, "account/forgot.html", context)
 
@@ -253,6 +262,9 @@ def recover(request):
                                         "1 спец.символ, 1 строчная буква, 1 прописная буква, 1 цифра)")
             context["form"] = NewPasswordForm(request.POST)
     else:
+        if request.user.is_authenticated:
+            messages.warning(request, "Вы уже вошли в аккаунт.")
+            return redirect(reverse('account:view_my'))
         token = request.GET.get('token', '0')
         code = request.GET.get('code', '0')
         user = request.GET.get('user', '0')
@@ -278,6 +290,9 @@ def recover(request):
 
 
 def activate(request):
+    if request.user.is_authenticated:
+        messages.warning(request, "Вы уже вошли в аккаунт.")
+        return redirect(reverse('account:view_my'))
     token = request.GET.get('token', '0')
     code = request.GET.get('code', '0')
     user = request.GET.get('user', '0')
