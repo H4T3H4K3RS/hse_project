@@ -1,9 +1,4 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
-from snowpenguin.django.recaptcha2.fields import ReCaptchaField
-from django.forms.widgets import PasswordInput, TextInput, EmailInput, URLInput, Textarea
-from snowpenguin.django.recaptcha2.widgets import ReCaptchaWidget
 
 from app.models import Folder
 

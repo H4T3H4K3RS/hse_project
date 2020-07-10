@@ -2,10 +2,8 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from snowpenguin.django.recaptcha2.fields import ReCaptchaField
-from django.forms.widgets import PasswordInput, TextInput, EmailInput, URLInput, Textarea
 from snowpenguin.django.recaptcha2.widgets import ReCaptchaWidget
-
-from app.models import Folder
+from django.forms.widgets import PasswordInput, TextInput, EmailInput
 
 
 class SignupForm(UserCreationForm):
@@ -17,6 +15,7 @@ class SignupForm(UserCreationForm):
                                 widget=PasswordInput(attrs={'id': 'password1'}))
     password2 = forms.CharField(label="Повторите Пароль",
                                 widget=PasswordInput(attrs={'id': 'password2'}))
+    captcha = ReCaptchaField(widget=ReCaptchaWidget(), required=True)
 
     class Meta:
         model = User
@@ -83,7 +82,7 @@ class RecoverForm(forms.Form):
             }
         ), required=True
     )
-    # recaptcha = ReCaptchaField(widget=ReCaptchaWidget(), required=True)
+    captcha = ReCaptchaField(widget=ReCaptchaWidget(), required=True)
 
 
 class EditForm(UserCreationForm):

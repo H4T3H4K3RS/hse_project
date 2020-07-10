@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'disable_cache_headers.apps.DisableCacheHeadersConfig',
+    'snowpenguin.django.recaptcha2',
     'account.apps.AccountConfig',
     'api.apps.ApiConfig',
     'app.apps.AppConfig',
@@ -185,8 +185,8 @@ JS_URLS = (
     "api:account_new_api_key",
 )
 
-RECAPTCHA_PRIVATE_KEY = '6Lfb0KIZAAAAADLS85en7FJNXjBATL0jgMtxVKcv'
-RECAPTCHA_PUBLIC_KEY = '6Lfb0KIZAAAAAIqf2J9UsWj4jzsxLkiQ5sFTrPeG'
+RECAPTCHA_PRIVATE_KEY = '6Lf3xa8ZAAAAAPVLUClGyFUd2ONvb0d2TF7anwfs'
+RECAPTCHA_PUBLIC_KEY = '6Lf3xa8ZAAAAAMfsWeb0mzmnJQGYN60gn-Rxnh06'
 RECAPTCHA_DEFAULT_ACTION = 'generic'
 RECAPTCHA_SCORE_THRESHOLD = 0.5
 BOT_KEY = "1169232934:AAHFXUE6Fq02RUn0gi7hHrY0KDRm9kx8KDI"
