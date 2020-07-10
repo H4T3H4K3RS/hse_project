@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load widget_tweaks %}
+{% load recaptcha2 %}
 {% block title %}
     Регистрация
 {% endblock %}
@@ -8,7 +9,7 @@
     <body>
 
     <div id="main-wrapper">
-    {% include 'blocks/nav.html' %}
+        {% include 'blocks/nav.html' %}
         <div class="preloader">
             <div class="lds-ripple">
                 <div class="lds-pos"></div>
@@ -54,11 +55,15 @@
                                     </div>
                                     {% render_field form.password2 class="form-control form-control-lg" placeholder="Повторите Пароль" aria-label="Повторите Пароль" aria-describedby="basic-addon1" %}
                                 </div>
+                                <div class="input-group mb-3">
+                                    {{ form.captcha }}
+                                </div>
                                 <div class="form-group row">
                                     <div class="col-md-12">
                                         <div class="custom-control custom-checkbox">
                                             <input type="checkbox" class="custom-control-input" id="customCheck1">
-                                            <label class="custom-control-label" for="customCheck1">Я принимаю <a href="{% url 'account:agreement' %}">Условия Пользования</a></label>
+                                            <label class="custom-control-label" for="customCheck1">Я принимаю <a
+                                                    href="{% url 'account:agreement' %}">Условия Пользования</a></label>
                                             <br>
                                             <br>
                                             <a href="{% url 'account:forgot' %}" class="text-dark float-right"><i
@@ -94,3 +99,6 @@
     </div>
     </body>
 {% endblock content %}
+{% block footer_javascript_page %}
+    {% recaptcha_init %}
+{% endblock footer_javascript_page %}

@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load widget_tweaks %}
+{% load recaptcha2 %}
 {% block title %}
     Восстановление Пароля
 {% endblock %}
@@ -8,7 +9,7 @@
     <body>
 
     <div id="main-wrapper">
-    {% include 'blocks/nav.html' %}
+        {% include 'blocks/nav.html' %}
         <div class="preloader">
             <div class="lds-ripple">
                 <div class="lds-pos"></div>
@@ -34,9 +35,13 @@
                                     </div>
                                     {% render_field form.email class="form-control form-control-lg" placeholder="Email" aria-label="Имя пользователя/Email" aria-describedby="basic-addon1" %}
                                 </div>
+                                <div class="input-group mb-3">
+                                    {{ form.captcha }}
+                                </div>
                                 <div class="form-group text-center">
                                     <div class="col-xs-12 p-b-20">
-                                        <button class="btn btn-block btn-lg btn-info" type="submit">Восстановить</button>
+                                        <button class="btn btn-block btn-lg btn-info" type="submit">Восстановить
+                                        </button>
                                     </div>
                                 </div>
                                 {#                                <div class="row">#}
@@ -66,3 +71,6 @@
     </div>
     </body>
 {% endblock content %}
+{% block footer_javascript_page %}
+    {% recaptcha_init %}
+{% endblock footer_javascript_page %}
