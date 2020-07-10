@@ -158,7 +158,7 @@ def account_avatar_set(request, avatar):
 def get_rating(request, username=None):
     context = {}
     if username is None or request.user.username == username:
-        context["rating"] = Profile.objects.get(user=request.user)
+        context["rating"] = Profile.objects.get(user=request.user).rating
         return JsonResponse(context)
     try:
         user = User.objects.get(username=username)
