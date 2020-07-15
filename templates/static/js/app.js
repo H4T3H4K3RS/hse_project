@@ -272,7 +272,7 @@ function set_avatar(id, imgselector = ".avatar") {
 }
 
 
-function new_key(selector="#api_key input") {
+function new_key(selector = "#api_key input") {
     $.ajax({
         url: window.reverse('api:account_new_api_key'),
         type: 'GET',
@@ -341,6 +341,7 @@ function set_listeners() {
 datatables_init();
 $(document).ready(function () {
     set_listeners();
+    $(".bs-switch [type='checkbox']").bootstrapSwitch();
     $(".btn-hide a").on('click', function (event) {
         event.preventDefault();
         if ($('.closed .input-hide').attr("type") == "text") {

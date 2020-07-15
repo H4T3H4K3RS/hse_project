@@ -1,63 +1,24 @@
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
-from django.template.defaulttags import register
 from django.urls import reverse
 from django.contrib import messages
 from account.models import Profile
 from account.views import handler403
 from app import utils
+from account import utils
 from app.forms import LinkAddForm, FolderAddForm
-from app.models import Link, Folder, Vote, SavedLink, BotKey
-
-
-@register.simple_tag
-def get_bootstrap_alert_msg_css_name(tags):
-    return 'danger' if tags == 'error' else tags
+from app.models import Link, Folder, Vote, SavedLink
 
 
 def index(request):
-    context = []
-    context = {'links': Link.objects.order_by("-rating")}
-    if request.user.is_authenticated:
-        context["profile"] = Profile.objects.get(user=request.user)
-        s_links = SavedLink.objects.filter(user=request.user)
-        context['saved_links'] = s_links
-        context['saved_links_links'] = utils.get_saved_links(s_links)
-    else:
-        s_links = SavedLink.objects.none()
-        context['saved_links'] = s_links
-        context['saved_links_links'] = utils.get_saved_links(s_links)
+    context = utils.get_main_context(request, 1)
     return render(request, 'index.html', context)
 
 
 @login_required
 def search(request):
-    context = {"profile": Profile.objects.get(user=request.user)}
-    s_links = SavedLink.objects.filter(user=request.user)
-    queries = request.GET.get('q', None)
-    if queries is not None:
-        context['value'] = queries
-        queries = queries.split()
-        q_users = q_folders = q_links = Q()
-        for query in queries:
-            q_users |= Q(user__username__icontains=query) | Q(user__email__iexact=query)
-            q_folders |= Q(name__icontains=query)
-            q_links |= Q(link__icontains=query)
-        users = Profile.objects.filter(q_users)
-        folders = Folder.objects.filter(q_folders)
-        links = Link.objects.filter(q_links)
-    else:
-        context['value'] = ""
-        users = Profile.objects.order_by("-rating")
-        folders = Folder.objects.order_by("-rating")
-        links = Link.objects.order_by("-rating")
-    context['users'] = users
-    context['links'] = links
-    context['folders'] = folders
-    context['saved_links'] = s_links
-    context['saved_links_links'] = utils.get_saved_links(s_links)
+    context = utils.get_main_context(request, 2)
     return render(request, 'search.html', context)
 
 
@@ -205,7 +166,7 @@ def favourite_save_saved(request, link_id):
 @login_required
 def favourite_save(request, link_id):
     try:
-        link = Link.objects.get(id=link_id)
+        link = Link.objects.get(id=link_id, folder__public=True)
         try:
             saved_link = SavedLink.objects.get(link=link.link, user=request.user)
             data = 'Ссылка уже сохранена'
@@ -265,8 +226,12 @@ def folder_add(request):
                 return render(request, "folder/add.html", context)
             except Folder.DoesNotExist:
                 folder = Folder(name=folder_form.data['name'], user=request.user)
+                private = "Публичная"
+                if not request.POST.get("public", None):
+                    folder.public = False
+                    private = "Приватная"
                 folder.save()
-                messages.success(request, f"Подборка \"{folder_form.data['name']}\" создана")
+                messages.success(request, f"{private} подборка \"{folder_form.data['name']}\" создана")
                 return redirect(reverse('link_add'))
         else:
             messages.error(request, f"Неправильные данные")
@@ -278,15 +243,9 @@ def folder_add(request):
 
 @login_required
 def folder_view(request, folder_id):
-    context = {"profile": Profile.objects.get(user=request.user)}
-    s_links = SavedLink.objects.filter(user=request.user)
-    try:
-        context['folder'] = Folder.objects.get(id=folder_id)
-    except Folder.DoesNotExist:
+    context = utils.get_main_context(request, 3, folder_id)
+    if context is None:
         return handler403(request)
-    context['links'] = Link.objects.filter(folder_id=folder_id).order_by("-rating")
-    context['saved_links_links'] = utils.get_saved_links(s_links)
-    context['saved_links'] = s_links
     return render(request, 'folder/view.html', context)
 
 
@@ -298,7 +257,11 @@ def folder_edit(request, folder_id):
         if folder_form.is_valid():
             try:
                 context['folder'] = folder = Folder.objects.get(id=folder_id, user=request.user)
-                messages.success(request, f"Название подборки \"{folder.name}\"изменено на \"{folder_form.data.get('name')}\"")
+                private = "публичной"
+                if not request.POST.get("public", None):
+                    folder.public = False
+                    private = "приватной"
+                messages.success(request, f"Название {private} подборки \"{folder.name}\"изменено на \"{folder_form.data.get('name')}\"")
                 folder.name = folder_form.data.get("name")
                 folder.save()
                 return redirect(reverse("folder_view", kwargs={"folder_id": folder.id}))

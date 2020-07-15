@@ -11,9 +11,10 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from account.forms import LoginForm, SignupForm, RecoverForm, NewPasswordForm, EditForm
-from account.models import Profile, Code, Avatar
+from account.models import Profile, Code
 from app import utils
-from app.models import SavedLink, Folder, Link, BotKey
+from account import utils
+from app.models import SavedLink, BotKey
 
 
 def handler404(request, exception=None):
@@ -324,22 +325,10 @@ def activate(request):
 
 @login_required
 def view(request, username=None):
-    n = 8
-    context = {"profile": Profile.objects.get(user=request.user)}
-    s_links = SavedLink.objects.filter(user=request.user)
     if request.user.username == username:
         return redirect(reverse("account:view_my"))
     if username is None:
-        avatars = Avatar.objects.all()
-        context = {'saved': SavedLink.objects.filter(user=request.user),
-                   'folders': Folder.objects.filter(user=request.user).order_by("-rating"),
-                   'links': Link.objects.filter(folder__user=request.user).order_by("-rating"), 'owner': 1,
-                   'user': request.user, 'saved_links': s_links, 'saved_links_links': utils.get_saved_links(s_links),
-                   'api_key': BotKey.objects.filter(user=request.user)[0],
-                   'form': EditForm(initial={'username': request.user.username}),
-                   'profile': Profile.objects.get(user=request.user),
-                   'avatars': avatars,
-                   "numbers_4": range(n+1, len(avatars)+1, n)}
+        context = utils.get_account_context(request, username, 5)
         if request.method == "POST":
             form = EditForm(request.POST)
             if form.is_valid() or (form.data['password1'] == "" and form.data['password2'] == ""):
@@ -375,19 +364,9 @@ def view(request, username=None):
                     messages.error(request, "Пароль не соответствует требованиям. (минимум: длина 8 символов, "
                                             "1 спец.символ, 1 строчная буква, 1 прописная буква, 1 цифра)")
         return render(request, 'account/view.html', context)
-    else:
-        context['owner'] = 0
-    try:
-        user = User.objects.get(username=username)
-    except User.DoesNotExist:
+    context = utils.get_account_context(request, username, 4)
+    if context is None:
         return handler404(request)
-    context['user'] = user
-    context['saved'] = SavedLink.objects.filter(user__username=username)
-    context['folders'] = Folder.objects.filter(user__username=username).order_by("-rating")
-    context['links'] = Link.objects.filter(folder__user__username=username).order_by("-rating")
-    context['saved_links_links'] = utils.get_saved_links(s_links)
-    context['saved_links'] = s_links
-    context['profile'] = Profile.objects.get(user=user)
     return render(request, 'account/view.html', context)
 
 

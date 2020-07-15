@@ -9,6 +9,7 @@ class Folder(models.Model):
     name = models.CharField(max_length=128)
     user = models.ForeignKey(to=User, on_delete=models.CASCADE)
     rating = models.IntegerField(default=0)
+    public = models.BooleanField(default=True)
 
 
 class Link(models.Model):
@@ -31,6 +32,8 @@ class Link(models.Model):
     def vote(self, user, state):
         if self.folder.user == user:
             return JsonResponse({'data': "Вы являетесь владельцем данной ссылки."}, status=202)
+        if not self.folder.public:
+            return JsonResponse({'data': "Подборка приватная."}, status=202)
         try:
             vote = Vote.objects.get(link=self, user=user)
             if vote.state == 1:

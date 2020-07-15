@@ -27,6 +27,17 @@
                        title="Удалить Подборку">
                         <i style="color: red; font-size: 150%" class="ti-trash"></i>
                     </a>
+                    {% if folder.public %}
+                    <a data-toggle="tooltip" data-placement="top"
+                       title="Публичная">
+                        <i style="color: #00c210; font-size: 150%" class="ti-unlock"></i>
+                    </a>
+                        {% else %}
+                        <a data-toggle="tooltip" data-placement="top"
+                       title="Приватная">
+                        <i style="color: red; font-size: 150%" class="ti-lock"></i>
+                    </a>
+                        {% endif %}
                 </th>
             {% endif %}
         </tr>

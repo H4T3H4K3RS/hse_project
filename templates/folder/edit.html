@@ -25,7 +25,8 @@
                     <!-- Form -->
                     <div class="row">
                         <div class="col-12">
-                            <form class="form-horizontal m-t-20" action="{% url 'folder_edit' folder.id %}" method="post">
+                            <form class="form-horizontal m-t-20" action="{% url 'folder_edit' folder.id %}"
+                                  method="post">
                                 {% csrf_token %}
                                 <div class="input-group mb-3">
                                     <div class="col-sm-12 text-center mb-2">
@@ -36,6 +37,14 @@
                                                 class="ti-pencil"></i></span>
                                     </div>
                                     {% render_field form.name class="form-control form-control-lg" placeholder="Название" aria-label="Название" aria-describedby="basic-addon1" %}
+                                </div>
+                                <div class="input-group mb-3 bs-switch">
+                                    <div class="col-sm-12 text-center mb-2">
+                                        <input name="public" type="checkbox" checked data-on-color="success"
+                                               data-off-color="danger"
+                                               data-on-text='<i class="ti-unlock"></i>&nbsp;Публичная'
+                                               data-off-text='<i class="ti-lock"></i>&nbsp;Приватная'>
+                                    </div>
                                 </div>
                                 <div class="form-group text-center">
                                     <div class="col-xs-12 p-b-20">

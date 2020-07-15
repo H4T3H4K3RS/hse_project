@@ -3,9 +3,15 @@ from hashlib import sha3_256
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.models import User
 from django.core.mail import EmailMultiAlternatives
+from django.db.models import Q
 from django.template.loader import get_template
 from django.conf import settings
 import base64
+
+from account.forms import EditForm
+from account.models import Profile, Avatar
+from app import utils
+from app.models import SavedLink, Link, Folder, BotKey
 
 
 def send_mail(to, subject, template_name, context={}, images=[]):
@@ -56,3 +62,126 @@ def generate_codes(user, date):
     d1 = str(sha3_256(d1.encode()).hexdigest())
     d2 = str(sha3_256(d2.encode()).hexdigest())
     return d1, d2
+
+
+def get_account_context(request, username=None, data_type=1, n=8):
+    context = {}
+    if data_type == 1:
+        s_links = SavedLink.objects.filter(user=request.user)
+        if username is None or request.user.username == username:
+            context = {
+                'links': Link.objects.filter(folder__user=request.user).order_by("-rating"),
+                'user': request.user,
+                'saved_links_links': utils.get_saved_links(s_links),
+                'saved_links': s_links}
+            return context
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return None
+        context['user'] = user
+        context['links'] = Link.objects.filter(folder__user__username=username, folder__public=True).order_by("-rating")
+        context['saved_links'] = s_links
+        context['saved_links_links'] = utils.get_saved_links(s_links)
+    elif data_type == 2:
+        if username is None or request.user.username == username:
+            context = {'folders': Folder.objects.filter(user=request.user).order_by("-rating", "public"),
+                       'user': request.user}
+            return context
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return None
+        context['user'] = user
+        context['folders'] = Folder.objects.filter(user__username=username, public=True).order_by("-rating")
+    elif data_type == 3:
+        s_links = SavedLink.objects.filter(user=request.user)
+        if username is None or request.user.username == username:
+            context = {'user': request.user,
+                       'saved_links_links': utils.get_saved_links(s_links),
+                       'saved_links': s_links}
+            return context
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return None
+        context['user'] = user
+        context['saved_links'] = s_links
+        context['saved_links_links'] = utils.get_saved_links(s_links)
+    elif data_type == 4:
+        s_links = SavedLink.objects.filter(user=request.user)
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return None
+        context['user'] = user
+        context['saved'] = SavedLink.objects.filter(user__username=username)
+        context['folders'] = Folder.objects.filter(user__username=username, public=True).order_by("-rating")
+        context['links'] = Link.objects.filter(folder__user__username=username, folder__public=True).order_by("-rating")
+        context['saved_links_links'] = utils.get_saved_links(s_links)
+        context['saved_links'] = s_links
+        context['profile'] = Profile.objects.get(user=user)
+    elif data_type == 5:
+        s_links = SavedLink.objects.filter(user=request.user)
+        avatars = Avatar.objects.all()
+        context = {'saved': SavedLink.objects.filter(user=request.user),
+                   'folders': Folder.objects.filter(user=request.user).order_by("public", "-rating"),
+                   'links': Link.objects.filter(folder__user=request.user).order_by("-rating"),
+                   'user': request.user, 'saved_links': s_links, 'saved_links_links': utils.get_saved_links(s_links),
+                   'api_key': BotKey.objects.filter(user=request.user)[0],
+                   'form': EditForm(initial={'username': request.user.username}),
+                   'avatars': avatars,
+                   "numbers_4": range(n + 1, len(avatars) + 1, n),
+                   "profile": Profile.objects.get(user=request.user)}
+    return context
+
+
+def get_main_context(request, data_type=1, folder_id=None):
+    if data_type == 1:
+        context = {}
+        context['links'] = Link.objects.filter(folder__public=True).order_by("-rating")
+        if request.user.is_authenticated:
+            context["profile"] = Profile.objects.get(user=request.user)
+            s_links = SavedLink.objects.filter(user=request.user)
+            context['saved_links'] = s_links
+            context['saved_links_links'] = utils.get_saved_links(s_links)
+        else:
+            s_links = SavedLink.objects.none()
+            context['saved_links'] = s_links
+            context['saved_links_links'] = utils.get_saved_links(s_links)
+    elif data_type == 2:
+        context = {"profile": Profile.objects.get(user=request.user)}
+        s_links = SavedLink.objects.filter(user=request.user)
+        queries = request.GET.get('q', None)
+        if queries is not None:
+            context['value'] = queries
+            queries = queries.split()
+            q_users = q_folders = q_links = Q()
+            for query in queries:
+                q_users |= Q(user__username__icontains=query) | Q(user__email__iexact=query)
+                q_folders |= Q(name__icontains=query, public=True)
+                q_links |= Q(link__icontains=query, folder__public=True)
+            users = Profile.objects.filter(q_users)
+            folders = Folder.objects.filter(q_folders)
+            links = Link.objects.filter(q_links)
+        else:
+            context['value'] = ""
+            users = Profile.objects.order_by("-rating")
+            folders = Folder.objects.filter(public=True).order_by("-rating")
+            links = Link.objects.filter(folder__public=True).order_by("-rating")
+        context['users'] = users
+        context['links'] = links
+        context['folders'] = folders
+        context['saved_links'] = s_links
+        context['saved_links_links'] = utils.get_saved_links(s_links)
+    elif data_type == 3:
+        context = {"profile": Profile.objects.get(user=request.user)}
+        s_links = SavedLink.objects.filter(user=request.user)
+        try:
+            context['folder'] = Folder.objects.get(id=folder_id)
+        except Folder.DoesNotExist:
+            return None
+        context['links'] = Link.objects.filter(folder_id=folder_id).order_by("-rating")
+        context['saved_links_links'] = utils.get_saved_links(s_links)
+        context['saved_links'] = s_links
+    return context

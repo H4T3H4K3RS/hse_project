@@ -26,6 +26,7 @@
         {% block head_css_site %}
             <link href="{% static 'theme/dist/css/style.min.css' %}" rel="stylesheet">
             <link href="{% static 'theme/assets/libs/sweetalert2/dist/sweetalert2.min.css' %}" rel="stylesheet">
+            <link href="{% static 'theme/assets/libs/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css' %}" rel="stylesheet">
             <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
             <link href="{% static 'theme/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.css' %}"
                   rel="stylesheet">
@@ -146,6 +147,7 @@
         {% endif %}
     {% endblock messages %}
 
+    <script src="{% static 'theme/assets/libs/bootstrap-switch/dist/js/bootstrap-switch.min.js' %}"></script>
     <script src="{% static 'js/app.js' %}"></script>
 {% endblock footer_javascript %}
 </html>
