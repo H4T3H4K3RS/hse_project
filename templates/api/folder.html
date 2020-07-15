@@ -1,12 +1,18 @@
-<h3>Это {% if folder.public %} Публичная {% else %} Приватная {% endif %}Подборка "{{ folder.name }}"</h3>
+<div class="float-right">
+    <a href="{% url 'folder_edit' folder.id %}" data-toggle="tooltip" data-placement="top"
+       title="Редактировать Подборку">
+        <i style="color: blue; font-size: 200%" class="ti-pencil"></i>
+    </a>
+</div>
+<h3>Подборка "{{ folder.name }}" {% if not folder.public %}(видна только вам){% endif %}</h3>
 <h4>Рейтинг: {{ folder.rating }} </h4>
-<h6>Создана
+<h5>Создана
     {% if request.user != folder.user %}
         пользователем <a href="{% url 'account:view_others' folder.user %}">{{ folder.user }}
     {% else %}
         <a href="{% url 'account:view_my' %}">вами
     {% endif %}
-    </a></h6>
+    </a></h5>
 <table id="links_table" class="dt table table-striped table-bordered display table-responsive-md"
        style="width:100%">
     <thead>

@@ -258,10 +258,11 @@ def folder_edit(request, folder_id):
             try:
                 context['folder'] = folder = Folder.objects.get(id=folder_id, user=request.user)
                 private = "публичной"
+                folder.public = True
                 if not request.POST.get("public", None):
                     folder.public = False
                     private = "приватной"
-                messages.success(request, f"Название {private} подборки \"{folder.name}\"изменено на \"{folder_form.data.get('name')}\"")
+                messages.success(request, f"Подборка изменена.")
                 folder.name = folder_form.data.get("name")
                 folder.save()
                 return redirect(reverse("folder_view", kwargs={"folder_id": folder.id}))

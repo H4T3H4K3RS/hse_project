@@ -39,9 +39,9 @@
                                     {% render_field form.name class="form-control form-control-lg" placeholder="Название" aria-label="Название" aria-describedby="basic-addon1" %}
                                 </div>
                                 <div class="input-group mb-3 bs-switch">
-                                    Видимость:
                                     <div class="col-sm-12 text-center mb-2">
-                                        <input name="public" type="checkbox" {% if folder.public %}checked{% endif %} data-on-color="success"
+                                        <input name="public" type="checkbox" {% if folder.public %}checked{% endif %}
+                                               data-on-color="success"
                                                data-off-color="danger"
                                                data-on-text='<i class="ti-unlock"></i>&nbsp;Публичная'
                                                data-off-text='<i class="ti-lock"></i>&nbsp;Приватная'>
