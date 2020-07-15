@@ -49,7 +49,14 @@ def link_add(request):
             messages.error(request, "Неправильные ссылка")
             context["form"] = LinkAddForm(request.user, request.POST)
     else:
+        folder_id = request.GET.get('folder_id', None)
         context["form"] = LinkAddForm(request.user)
+        if folder_id is not None:
+            try:
+                folder = Folder.objects.get(id=folder_id, user=request.user)
+                context["form"] = LinkAddForm(request.user, initial={"folder": [folder.name]})
+            except Folder.DoesNotExist:
+                pass
         folders = Folder.objects.filter(user=request.user)
         if len(folders) == 0:
             messages.warning(request, "Для начала, создайте подборку.")

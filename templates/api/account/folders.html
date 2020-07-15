@@ -27,17 +27,21 @@
                        title="Удалить Подборку">
                         <i style="color: red; font-size: 150%" class="ti-trash"></i>
                     </a>
+                    <a href="{% url 'link_add' %}?folder_id={{ folder.id }}" data-toggle="tooltip" data-placement="top"
+                       title="Добавить Ссылку">
+                        <i style="color: #00c210; font-size: 150%; font-weight: bold;" class="ti-plus"></i>
+                    </a>
                     {% if folder.public %}
-                    <a data-toggle="tooltip" data-placement="top"
-                       title="Публичная">
-                        <i style="color: #00c210; font-size: 150%" class="ti-unlock"></i>
-                    </a>
-                        {% else %}
                         <a data-toggle="tooltip" data-placement="top"
-                       title="Приватная">
-                        <i style="color: red; font-size: 150%" class="ti-lock"></i>
-                    </a>
-                        {% endif %}
+                           title="Публичная">
+                            <i style="color: #00c210; font-size: 150%" class="ti-unlock"></i>
+                        </a>
+                    {% else %}
+                        <a data-toggle="tooltip" data-placement="top"
+                           title="Приватная">
+                            <i style="color: red; font-size: 150%" class="ti-lock"></i>
+                        </a>
+                    {% endif %}
                 </th>
             {% endif %}
         </tr>

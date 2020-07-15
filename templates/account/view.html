@@ -45,12 +45,32 @@
                                 <div class="tab-pane fade show active" id="account_links" role="tabpanel"
                                      aria-labelledby="pills-links-tab">
                                     <div class="card-body" id="links_card">
+                                        {% if request.user == user %}
+                                            <div class="float-right">
+                                                <a href="{% url 'link_add' %}"
+                                                   data-toggle="tooltip" data-placement="top"
+                                                   title="Добавить Ссылку">
+                                                    <i style="color: #00c210; font-size: 150%; font-weight: bold;"
+                                                       class="ti-plus"></i>
+                                                </a>
+                                            </div>
+                                        {% endif %}
                                         {% include "api/account/links.html" %}
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="account_folders" role="tabpanel"
                                      aria-labelledby="pills-folders-tab">
                                     <div class="card-body" id="folders_card">
+                                        {% if request.user == user %}
+                                            <div class="float-right">
+                                                <a href="{% url 'link_add' %}"
+                                                   data-toggle="tooltip" data-placement="top"
+                                                   title="Создать Подборку">
+                                                    <i style="color: #00c210; font-size: 150%; font-weight: bold;"
+                                                       class="ti-plus"></i>
+                                                </a>
+                                            </div>
+                                        {% endif %}
                                         {% include "api/account/folders.html" %}
                                     </div>
                                 </div>
@@ -98,6 +118,8 @@
                                                                                data-data="{{ avatar.name }}">
                                                                                 <div class="user-pic"><img
                                                                                         src="
+
+
 
 
 
