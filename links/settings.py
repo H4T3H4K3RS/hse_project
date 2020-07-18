@@ -192,3 +192,6 @@ BOT_KEY = "1169232934:AAHFXUE6Fq02RUn0gi7hHrY0KDRm9kx8KDI"
 SECURE_SSL_REDIRECT = os.getenv('SSL', False)
 if SECURE_SSL_REDIRECT:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+
+BLACKLIST = ["1xbet", "porno365", "nigga", "isis", "игил", "blm", "fuck", "shit", "хуй", "говно", "жопа", "ass", "porn", ""]
