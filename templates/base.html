@@ -4,6 +4,7 @@
 {# Make modifiable head elements #}
 <head>
     <title>{% block title %}Главная {% endblock title %} | Link.IT</title>
+    <script src="//code.jivosite.com/widget/09tok5tMcj" async></script>
     <meta name="google-site-verification" content="9y0f_f7tdxIpydgjOdquvnQNGaHtSm2ejkAMKsACCRY"/>
     {% include 'blocks/metrics.html' %}
     {% block head_favicon %}
@@ -28,6 +29,8 @@
             <link href="{% static 'theme/dist/css/style.min.css' %}" rel="stylesheet">
             <link href="{% static 'theme/assets/libs/sweetalert2/dist/sweetalert2.min.css' %}" rel="stylesheet">
             <link href="{% static 'theme/assets/libs/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css' %}"
+                  rel="stylesheet">
+            <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
                   rel="stylesheet">
             <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
             <link href="{% static 'theme/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.css' %}"

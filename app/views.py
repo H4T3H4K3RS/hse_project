@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib import messages
 from account.models import Profile
+from account.utils import check_blacklist
 from account.views import handler403
 from app import utils
 from account import utils
@@ -39,12 +40,15 @@ def link_add(request):
                 messages.error(request, "Вы уже сохранили данную ссылку.")
                 return redirect('link_add')
             except Link.DoesNotExist:
+                ok = check_blacklist(link_form.data['link'])
+                if ok is not None:
+                    messages.error(request, f"Ссылка не должна содержать \"{ok}\"")
+                    return redirect(reverse("link_add"))
                 folder = Folder.objects.get(user=request.user, name=link_form.data.get("folder"))
                 link = Link(link=link_form.data.get("link"), folder=folder)
                 link.save()
                 messages.success(request, "Ссылка добавлена")
                 return redirect(reverse('folder_view', kwargs={"folder_id": folder.id}))
-
         else:
             messages.error(request, "Неправильные ссылка")
             context["form"] = LinkAddForm(request.user, request.POST)
@@ -91,7 +95,10 @@ def link_edit(request, link_id):
                     messages.error(request, "Ссылка уже была добавлена в данную подборку.")
                     return redirect(reverse('link_edit', kwargs={"link_id": link_in_folder.id}))
                 except Link.DoesNotExist:
-                    pass
+                    ok = check_blacklist(link_form.data['username'])
+                    if ok is not None:
+                        messages.error(request, f"Ссылка не должна содержать \"{ok}\"")
+                        return redirect(reverse('link_edit', kwargs={"link_id": link.id}))
                 link.folder = folder
                 if link.link != link_form.data.get("link"):
                     saved_links = SavedLink.objects.filter(original=request.user, link=link.link)
@@ -232,6 +239,10 @@ def folder_add(request):
                 context["form"] = FolderAddForm(request.POST)
                 return render(request, "folder/add.html", context)
             except Folder.DoesNotExist:
+                ok = check_blacklist(folder_form.data['name'])
+                if ok is not None:
+                    messages.error(request, f"Название подборки не должно содержать \"{ok}\"")
+                    return render(request, "folder/add.html", context)
                 folder = Folder(name=folder_form.data['name'], user=request.user)
                 private = "Публичная"
                 if not request.POST.get("public", None):
@@ -263,6 +274,10 @@ def folder_edit(request, folder_id):
         folder_form = FolderAddForm(request.POST)
         if folder_form.is_valid():
             try:
+                ok = check_blacklist(folder_form.data['name'])
+                if ok is not None:
+                    messages.error(request, f"Название подборки не должно содержать \"{ok}\"")
+                    return redirect(reverse("folder_edit", kwargs={"folder_id": folder_id}))
                 context['folder'] = folder = Folder.objects.get(id=folder_id, user=request.user)
                 private = "публичной"
                 folder.public = True

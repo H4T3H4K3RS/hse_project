@@ -31,6 +31,7 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('search/', views.search, name='search'),
     url(r'^account/', include(('account.urls', 'account'), namespace="account")),
+    url(r'^account/social/', include('social_django.urls', namespace='social')),
     path('favourite/save/<int:link_id>/', views.favourite_save, name='favourite_save'),
     path('favourite/save_alt/<int:link_id>/', views.favourite_save_saved, name='favourite_save_alt'),
     path('favourite/delete/<int:link_id>/', views.favourite_delete, name='favourite_delete'),

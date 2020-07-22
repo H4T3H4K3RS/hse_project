@@ -28,5 +28,4 @@ urlpatterns = [
     path('view/<str:username>/', views.view, name='view_others'),
     path('agreement/', views.agreement, name='agreement'),
     path('delete/', views.delete, name='delete'),
-    # url(r'', include('social_django.urls', namespace='social'))
 ]

@@ -24,7 +24,18 @@
                         <span class="db"><img height="30%" width="30%" src="{% static 'logo.png' %}" alt="logo"/></span>
                         <h5 class="font-medium m-b-20">Регистрация в Link.IT</h5>
                     </div>
-                    <!-- Form -->
+                    <div class="text-center social-btn">
+                        <a href="{% url 'social:begin' 'vk-oauth2' %}" class="btn btn-info btn-block"><i
+                                class="fa fa-vk"></i>С помощью
+                            <b>VK</b></a>
+                        <a href="{% url 'social:begin' 'google-oauth2' %}" class="btn btn-danger btn-block"><i
+                                class="fa fa-google"></i>С помощью
+                            <b>Google</b></a>
+                        <a href="{% url 'social:begin' 'facebook' %}" class="btn btn-info btn-block"><i
+                                class="fa fa-facebook"></i>С помощью
+                            <b>Facebook</b></a>
+                    </div>
+                    <div class="or-seperator"><i>или</i></div>
                     <div class="row">
                         <div class="col-12">
                             <form class="form-horizontal m-t-20" action="{% url 'account:signup' %}" method="post">
@@ -76,15 +87,7 @@
                                         <button class="btn btn-block btn-lg btn-info" type="submit">Создать</button>
                                     </div>
                                 </div>
-                                {#                                <div class="row">#}
-                                {#                                    <div class="col-xs-12 col-sm-12 col-md-12 m-t-10 text-center">#}
-                                {#                                        <div class="social">#}
-                                {#                                            <a href="javascript:void(0)" class="btn  btn-facebook" data-toggle="tooltip" title="" data-original-title="Login with Facebook"> <i aria-hidden="true" class="fab  fa-facebook"></i> </a>#}
-                                {#                                            <a href="javascript:void(0)" class="btn btn-googleplus" data-toggle="tooltip" title="" data-original-title="Login with Google"> <i aria-hidden="true" class="fab  fa-google-plus"></i> </a>#}
-                                {#                                        </div>#}
-                                {#                                    </div>#}
-                                {#                                </div>#}
-                                <div class="form-group m-b-0 m-t-10">
+                                <div class="form-group m-b-0 m-t-10 mt-2">
                                     <div class="col-sm-12 text-center">
                                         Уже есть аккаунт?<a href="{% url 'account:login' %}"
                                                             class="text-info m-l-5"><b> Войти</b></a>
@@ -122,5 +125,33 @@
             z-index: -999999;
             opacity: 0;
         }
+
+        .social-btn .btn {
+            margin: 10px 0;
+            font-size: 15px;
+            text-align: left;
+            line-height: 24px;
+        }
+
+        .social-btn .btn i {
+            float: left;
+            margin: 4px 15px 0 5px;
+            min-width: 15px;
+        }
+
+        .or-seperator {
+            margin: 20px 0 10px;
+            text-align: center;
+            border-top: 1px solid #ccc;
+        }
+
+        .or-seperator i {
+            padding: 0 10px;
+            background: #f7f7f7;
+            position: relative;
+            top: -11px;
+            z-index: 1;
+        }
     </style>
+
 {% endblock extra_styles %}

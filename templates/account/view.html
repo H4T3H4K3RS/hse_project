@@ -123,6 +123,10 @@
 
 
 
+
+
+
+
                                                                                                 {% static 'img/avatars/' %}{{ avatar.path }}"
                                                                                         alt="users"
                                                                                         class="rounded-circle"
@@ -209,7 +213,7 @@
                             <div>
                                 <hr>
                             </div>
-                            {% if request.user == user %}
+                            {% if request.user == user or request.user.is_staff %}
                                 <div class="card-body align-items-center d-flex justify-content-center">
                                     <div class="form-group col">
                                         <label>API-ключ</label>
@@ -238,13 +242,13 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="card-body align-items-center d-flex justify-content-center">
                                     <button id="delete_account_button" type="button"
                                             class="btn waves-effect waves-light btn-outline-danger">
                                         Удалить Аккаунт
                                     </button>
                                 </div>
+
                             {% endif %}
                         </div>
                     </div>

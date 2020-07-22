@@ -1,13 +1,13 @@
+import datetime
 from email.mime.image import MIMEImage
 from hashlib import sha3_256
 from django.contrib.auth.backends import ModelBackend
-from django.contrib.auth.models import User
 from django.core.mail import EmailMultiAlternatives
 from django.db.models import Q
 from django.template.loader import get_template
 from django.conf import settings
+from django.contrib.auth.models import User
 import base64
-
 from account.forms import EditForm
 from account.models import Profile, Avatar
 from app import utils
@@ -185,3 +185,22 @@ def get_main_context(request, data_type=1, folder_id=None):
         context['saved_links_links'] = utils.get_saved_links(s_links)
         context['saved_links'] = s_links
     return context
+
+
+def social_account_init(backend, user, response, *args, **kwargs):
+    try:
+        Profile.objects.get(user=user)
+    except Profile.DoesNotExist:
+        profile = Profile(user=user, avatar_id=1)
+        profile.save()
+        token, code = generate_codes(user, datetime.datetime.now())
+        bot_key = BotKey(user=user, chat_id="", key=token)
+        bot_key.save()
+    return
+
+
+def check_blacklist(data):
+    for word in settings.BLACKLIST:
+        if word in data:
+            return word
+    return None

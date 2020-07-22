@@ -12,6 +12,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from account.forms import LoginForm, SignupForm, RecoverForm, NewPasswordForm, EditForm
 from account.models import Profile, Code
+from account.utils import check_blacklist
 from app import utils
 from account import utils
 from app.models import SavedLink, BotKey
@@ -119,20 +120,26 @@ def signup(request):
                 context["form"] = SignupForm(request.POST)
                 return render(request, "account/signup.html", context)
             else:
-                new_user = user_form.save(commit=True)
-                new_user.set_password(user_form.cleaned_data["password1"])
-                new_user.is_active = False
-                new_user.save()
-                profile = Profile(user=new_user, avatar_id=1)
-                profile.save()
-                code_object = Code()
-                code_object.user = new_user
-                code_object.code, code_object.token = utils.generate_codes(new_user, datetime.datetime.now())
-                code_object.save()
-                mail_context = {'token': code_object.token, 'code': code_object.code, 'user': new_user}
-                utils.send_mail(new_user.email, 'Подтверждение Регистрации', 'mail/confirmation.html', mail_context)
-                messages.warning(request, 'На вашу электронную почту было отправлено письмо, для подтверждения.')
-                return redirect(reverse('account:login'))
+                ok = check_blacklist(user_form.data['email'])
+                if ok is not None:
+                    messages.error(request, f"Имя пользователя не должно содержать \"{ok}\"")
+                    context["form"] = SignupForm(request.POST)
+                    return render(request, "account/signup.html", context)
+                else:
+                    new_user = user_form.save(commit=True)
+                    new_user.set_password(user_form.cleaned_data["password1"])
+                    new_user.is_active = False
+                    new_user.save()
+                    profile = Profile(user=new_user, avatar_id=1)
+                    profile.save()
+                    code_object = Code()
+                    code_object.user = new_user
+                    code_object.code, code_object.token = utils.generate_codes(new_user, datetime.datetime.now())
+                    code_object.save()
+                    mail_context = {'token': code_object.token, 'code': code_object.code, 'user': new_user}
+                    utils.send_mail(new_user.email, 'Подтверждение Регистрации', 'mail/confirmation.html', mail_context)
+                    messages.warning(request, 'На вашу электронную почту было отправлено письмо, для подтверждения.')
+                    return redirect(reverse('account:login'))
         else:
             errors = user_form.errors.as_json()
             errors = json.loads(errors)
@@ -339,13 +346,19 @@ def view(request, username=None):
                         context["form"] = EditForm(initial={'username': form.data['username']})
                         return render(request, 'account/view.html', context)
                     except User.DoesNotExist:
-                        messages.success(request, "Имя пользователя успешно изменено.")
-                        request.user.username = form.data['username']
-                        request.user.save()
+                        ok = check_blacklist(form.data['username'])
+                        if ok is None:
+                            messages.success(request, "Имя пользователя успешно изменено.")
+                            request.user.username = form.data['username']
+                            request.user.save()
+                        else:
+                            messages.error(request, f"Имя пользователя не должно содержать \"{ok}\"")
                 if form.data['password1'] != "" and form.data['password2'] != "":
                     request.user.set_password(form.cleaned_data['password1'])
                     request.user.save()
                     messages.success(request, "Пароль был изменён.")
+                user_auth = authenticate(request, username=form.data['username'])
+                auth_login(request, user_auth)
             else:
                 errors = form.errors.as_json()
                 errors = json.loads(errors)

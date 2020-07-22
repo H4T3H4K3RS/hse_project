@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'app.apps.AppConfig',
     'js_urls',
     'django_extensions',
-    'widget_tweaks'
+    'widget_tweaks',
+    'social_django',
 ]
 
 MIDDLEWARE = [
@@ -71,6 +72,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -137,8 +140,14 @@ DEFAULT_FROM_EMAIL = 'linkitservice@yandex.ru'
 EMAIL_USE_TLS = True
 
 AUTHENTICATION_BACKENDS = (
+    'social_core.backends.google.GoogleOAuth2',
+    'social_core.backends.facebook.FacebookOAuth2',
+    'social_core.backends.vk.VKOAuth2',
     'account.utils.PasswordlessAuthBackend',
+    'django.contrib.auth.backends.ModelBackend',
 )
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
+SOCIAL_AUTH_FIELDS_STORED_IN_SESSION = ['local_password', ]
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
@@ -193,5 +202,33 @@ SECURE_SSL_REDIRECT = os.getenv('SSL', False)
 if SECURE_SSL_REDIRECT:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+BLACKLIST = ["1xbet", "porn", "nigg", "isis", "игил", "blm", "fuck", "shit", "хуй", "говно", "жопа", "ass",
+             "porn", "niger", "1xstavka", "anal", "lenkino", "gangbang", "xvideos", "bongacams"]
 
-BLACKLIST = ["1xbet", "porno365", "nigga", "isis", "игил", "blm", "fuck", "shit", "хуй", "говно", "жопа", "ass", "porn", ""]
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '993780323189-1qu6o9c8jfeqvcsr80qmpdf2q1ik718r.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '8NPdvR4dywuFBXZ5W53XtpX2'
+SOCIAL_AUTH_VK_OAUTH2_KEY = '7545690'
+SOCIAL_AUTH_VK_OAUTH2_SECRET = 'q5izFVt2Xaf3SFzwwGCv'
+SOCIAL_AUTH_VK_OAUTH2_SCOPE = ['email']
+SOCIAL_AUTH_FACEBOOK_KEY = '1669441123224901'
+SOCIAL_AUTH_FACEBOOK_SECRET = 'ad86491b3d7ac215d2964894b4205e34'
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = "/account/view/"
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.social_auth.associate_by_email',  # <--- enable this one
+    'social_core.pipeline.user.create_user',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+    'account.utils.social_account_init'
+)
+SOCIAL_AUTH_DISCONNECT_PIPELINE = (
+    'social_core.pipeline.disconnect.get_entries',
+    'social_core.pipeline.disconnect.revoke_tokens',
+    'social_core.pipeline.disconnect.disconnect',
+)
