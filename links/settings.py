@@ -142,7 +142,7 @@ AUTHENTICATION_BACKENDS = (
     'social_core.backends.google.GoogleOAuth2',
     'social_core.backends.facebook.FacebookOAuth2',
     'social_core.backends.vk.VKOAuth2',
-    'social_core.backends.instagram.InstagramOAuth2',
+    'social_core.backends.github.GithubOAuth2',
     'account.utils.PasswordlessAuthBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
@@ -214,9 +214,8 @@ SOCIAL_AUTH_FACEBOOK_KEY = '1669441123224901'
 SOCIAL_AUTH_FACEBOOK_SECRET = 'ad86491b3d7ac215d2964894b4205e34'
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {'fields': 'id, name, email, age_range', }
-SOCIAL_AUTH_INSTAGRAM_KEY = '287060382723141'
-SOCIAL_AUTH_INSTAGRAM_SECRET = '9b937876c276ee935aa88f0f782f8288'
-SOCIAL_AUTH_INSTAGRAM_AUTH_EXTRA_ARGUMENTS = {'scope': 'email username'}
+SOCIAL_AUTH_GITHUB_KEY = '06d863acdef205591af0'
+SOCIAL_AUTH_GITHUB_SECRET = '7d903b4d308ed249973d755eda50ee9cae2a80b5'
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = "/account/view/"
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details',
