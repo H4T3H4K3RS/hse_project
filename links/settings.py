@@ -142,6 +142,7 @@ AUTHENTICATION_BACKENDS = (
     'social_core.backends.google.GoogleOAuth2',
     'social_core.backends.facebook.FacebookOAuth2',
     'social_core.backends.vk.VKOAuth2',
+    'social_core.backends.instagram.InstagramOAuth2',
     'account.utils.PasswordlessAuthBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
@@ -202,7 +203,7 @@ if SECURE_SSL_REDIRECT:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 BLACKLIST = ["1xbet", "porn", "nigg", "isis", "игил", "blm", "fuck", "shit", "хуй", "говно", "жопа", "ass",
-             "porn", "niger", "1xstavka", "anal", "lenkino", "gangbang", "xvideos", "bongacams"]
+             "porn", "niger", "1xstavka", "anal", "lenkino", "gangbang", "xvideos", "bongacams", "ставки"]
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '993780323189-1qu6o9c8jfeqvcsr80qmpdf2q1ik718r.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '8NPdvR4dywuFBXZ5W53XtpX2'
@@ -213,6 +214,9 @@ SOCIAL_AUTH_FACEBOOK_KEY = '1669441123224901'
 SOCIAL_AUTH_FACEBOOK_SECRET = 'ad86491b3d7ac215d2964894b4205e34'
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {'fields': 'id, name, email, age_range', }
+SOCIAL_AUTH_INSTAGRAM_KEY = '287060382723141'
+SOCIAL_AUTH_INSTAGRAM_SECRET = '9b937876c276ee935aa88f0f782f8288'
+SOCIAL_AUTH_INSTAGRAM_AUTH_EXTRA_ARGUMENTS = {'scope': 'email username'}
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = "/account/view/"
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details',
