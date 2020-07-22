@@ -23,3 +23,4 @@ uritools>=3.0.0
 urlextract>=0.14.0
 django-recaptcha2
 django-widget-tweaks>=1.4.8
+python-social-auth
