@@ -138,10 +138,44 @@ logger = logging.getLogger(__name__)
 
 def start(update, context):
     lang = get_lang(update)
-    keyboard = [
-        [InlineKeyboardButton(words[lang]["keyboard"]["get"], url=f'{settings.HOST}{reverse("account:view_my")[:-1]}#api_key')]]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    update.message.reply_text(words[lang]["links"]["error"]["send_key"], reply_markup=reply_markup)
+    chat_id = str(update.message.from_user.id)
+    args = " ".join(context.args)
+    try:
+        bot_keys = BotKey.objects.get(chat_id=chat_id)
+        update.message.reply_text(words[lang]["hello"].format(bot_keys[0].user.username, settings.HOST,
+                                                              reverse('account:view_my')),
+                                  parse_mode=telegram.ParseMode.MARKDOWN_V2)
+    except BotKey.DoesNotExist:
+        if args != "":
+            bot_keys = BotKey.objects.filter(key=args.lower())
+            if len(bot_keys) != 0:
+                flag = False
+                for i in range(len(bot_keys)):
+                    if bot_keys[i].chat_id == "":
+                        bot_keys[i].chat_id = chat_id
+                        flag = True
+                        bot_keys[i].save()
+                    elif len(bot_keys) == i + 1:
+                        bot_key = BotKey(key=args.lower(), chat_id=chat_id, user=bot_keys[i].user)
+                        flag = True
+                        bot_key.save()
+                    if flag:
+                        update.message.reply_text(words[lang]["hello"].format(bot_keys[i].user.username, settings.HOST,
+                                                                              reverse('account:view_my')),
+                                                  parse_mode=telegram.ParseMode.MARKDOWN_V2)
+                        update.message.reply_text(words[lang]['help'])
+            else:
+                update.message.reply_text(words[lang]["links"]["error"]["incorrect_api_key"])
+                keyboard = [[InlineKeyboardButton(words[lang]["keyboard"]["get"],
+                                                  url=f'{settings.HOST}{reverse("account:view_my")[:-1]}#api_key')]]
+                reply_markup = InlineKeyboardMarkup(keyboard)
+                update.message.reply_text(words[lang]["links"]["error"]["send_key"], reply_markup=reply_markup)
+        else:
+            keyboard = [
+                [InlineKeyboardButton(words[lang]["keyboard"]["get"],
+                                      url=f'{settings.HOST}{reverse("account:view_my")[:-1]}#api_key')]]
+            reply_markup = InlineKeyboardMarkup(keyboard)
+            update.message.reply_text(words[lang]["links"]["error"]["send_key"], reply_markup=reply_markup)
 
 
 def logout(update, context):
