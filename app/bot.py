@@ -112,10 +112,9 @@ def add_link(update, context):
                     flag = True
                     bot_key.save()
                 if flag:
-                    update.message.reply_text(
-                        escape(words[lang]["hello"].format(bot_keys[i].user.username), settings.HOST,
-                               reverse('account:view_my')),
-                        parse_mode=telegram.ParseMode.MARKDOWN_V2)
+                    update.message.reply_text(words[lang]["hello"].format(escape(bot_keys[i].user.username), settings.HOST,
+                                                                          reverse('account:view_my')),
+                                              parse_mode=telegram.ParseMode.MARKDOWN_V2)
                     update.message.reply_text(words[lang]['help'])
         else:
             update.message.reply_text(words[lang]["links"]["error"]["incorrect_api_key"])
@@ -143,8 +142,8 @@ def start(update, context):
     args = " ".join(context.args)
     try:
         bot_keys = BotKey.objects.get(chat_id=chat_id)
-        update.message.reply_text(escape(words[lang]["hello"].format(bot_keys[0].user.username), settings.HOST,
-                                         reverse('account:view_my')),
+        update.message.reply_text(words[lang]["hello"].format(escape(bot_keys[0].user.username), settings.HOST,
+                                                              reverse('account:view_my')),
                                   parse_mode=telegram.ParseMode.MARKDOWN_V2)
     except BotKey.DoesNotExist:
         if args != "":
@@ -161,10 +160,9 @@ def start(update, context):
                         flag = True
                         bot_key.save()
                     if flag:
-                        update.message.reply_text(
-                            escape(words[lang]["hello"].format(bot_keys[i].user.username), settings.HOST,
-                                   reverse('account:view_my')),
-                            parse_mode=telegram.ParseMode.MARKDOWN_V2)
+                        update.message.reply_text(words[lang]["hello"].format(escape(bot_keys[i].user.username), settings.HOST,
+                                                                              reverse('account:view_my')),
+                                                  parse_mode=telegram.ParseMode.MARKDOWN_V2)
                         update.message.reply_text(words[lang]['help'])
             else:
                 update.message.reply_text(words[lang]["links"]["error"]["incorrect_api_key"])
@@ -191,8 +189,7 @@ def logout(update, context):
     except BotKey.DoesNotExist:
         update.message.reply_text(words[lang]["logout"]['not_auth'])
     keyboard = [
-        [InlineKeyboardButton(words[lang]["keyboard"]["get"],
-                              url=f'{settings.HOST}{reverse("account:view_my")[:-1]}#api_key')]]
+        [InlineKeyboardButton(words[lang]["keyboard"]["get"], url=f'{settings.HOST}{reverse("account:view_my")[:-1]}#api_key')]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     update.message.reply_text(words[lang]["logout"]["help"], reply_markup=reply_markup)
 
