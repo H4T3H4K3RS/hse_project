@@ -61,7 +61,7 @@ def get_keyboard(chat_id, start_num, update):
         tmp = start_num
         for folder in folders:
             keyboard.append(
-                [InlineKeyboardButton(f"{tmp + 1}. {escape(folder.name)}", callback_data=f"folder_choose_{folder.id}")])
+                [InlineKeyboardButton(f"{tmp + 1}. {folder.name}", callback_data=f"folder_choose_{folder.id}")])
             tmp += 1
         if next:
             keyboard.append([InlineKeyboardButton(">", callback_data=f"folder_next_{tmp}")])
