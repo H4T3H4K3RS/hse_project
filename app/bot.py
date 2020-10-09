@@ -234,7 +234,7 @@ def error(update, context):
 
 
 def callback_handler(update, context):
-    lang = get_lang(update.callback_query)
+    lang = get_lang(update.callback_query, query=True)
     query = update.callback_query
     chat_id = str(query.from_user.id)
     keyboard = None
