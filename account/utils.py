@@ -136,6 +136,7 @@ def get_account_context(request, username=None, data_type=1, n=8):
                    'api_key': BotKey.objects.filter(user=request.user)[0],
                    'form': EditForm(initial={'username': request.user.username}), 'avatars': avatars,
                    "numbers_4": range(n + 1, len(avatars) + 1, n), "profile": Profile.objects.get(user=request.user),
+                   "user_profile": Profile.objects.get(user=request.user),
                    "bot_api_key": BotKey.objects.get(user=request.user).key}
     return context
 
