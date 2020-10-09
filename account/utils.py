@@ -123,7 +123,8 @@ def get_account_context(request, username=None, data_type=1, n=8):
         context['links'] = Link.objects.filter(folder__user__username=username, folder__public=True).order_by("-rating")
         context['saved_links_links'] = utils.get_saved_links(s_links)
         context['saved_links'] = s_links
-        context['profile'] = Profile.objects.get(user=user)
+        context['profile'] = Profile.objects.get(user=request.user)
+        context['user_profile'] = Profile.objects.get(user=user)
         context["bot_api_key"] = BotKey.objects.get(user=request.user).key
     elif data_type == 5:
         s_links = SavedLink.objects.filter(user=request.user)
