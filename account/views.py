@@ -72,8 +72,8 @@ def login(request):
                     return redirect(reverse('account:login'))
             if user.check_password(password):
                 if user.is_active:
-                    user_auth = authenticate(request, username=username)
-                    auth_login(request, user_auth)
+                    user_auth = authenticate(request, username=user.username)
+                    auth_login(request, user_auth, backend='')
                     messages.success(request, f'Здравствуйте, {user.username}')
                     if next_page is not None:
                         return redirect(next_page)

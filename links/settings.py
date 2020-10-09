@@ -139,12 +139,12 @@ DEFAULT_FROM_EMAIL = 'linkitservice@yandex.ru'
 EMAIL_USE_TLS = True
 
 AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
     'social_core.backends.google.GoogleOAuth2',
     'social_core.backends.facebook.FacebookOAuth2',
     'social_core.backends.vk.VKOAuth2',
     'social_core.backends.github.GithubOAuth2',
     'account.utils.PasswordlessAuthBackend',
-    'django.contrib.auth.backends.ModelBackend',
 )
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
 SOCIAL_AUTH_FIELDS_STORED_IN_SESSION = ['local_password', ]
