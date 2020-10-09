@@ -141,8 +141,8 @@ def start(update, context):
     chat_id = str(update.message.from_user.id)
     args = " ".join(context.args)
     try:
-        bot_keys = BotKey.objects.get(chat_id=chat_id)
-        update.message.reply_text(words[lang]["hello"].format(escape(bot_keys[0].user.username), settings.HOST,
+        bot_key = BotKey.objects.get(chat_id=chat_id)
+        update.message.reply_text(words[lang]["hello"].format(escape(bot_key.user.username), settings.HOST,
                                                               reverse('account:view_my')),
                                   parse_mode=telegram.ParseMode.MARKDOWN_V2)
     except BotKey.DoesNotExist:
