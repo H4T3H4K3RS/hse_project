@@ -37,7 +37,8 @@
                     <div class="user-profile d-flex no-block dropdown mt-3">
                         {% if request.user.is_authenticated %}
                             <a href="{% url 'account:view_my' %}">
-                                <div class="user-pic"><img src="{% static 'img/avatars/' %}{{ profile.avatar.path }}" alt="users"
+                                <div class="user-pic"><img src="{% static 'img/avatars/' %}{{ profile.avatar.path }}"
+                                                           alt="users"
                                                            class="rounded-circle avatar" width="40"/></div>
                             </a>
                             <div class="user-content hide-menu ml-2">
@@ -96,8 +97,8 @@
                 {% endif %}
                 <li class="sidebar-item"><a
                         class="sidebar-link waves-effect waves-dark{% if request.resolver_match.url_name == "account:logout" %}active{% endif %}"
-                        href="https://t.me/hse_linkit_bot"
-                        aria-expanded="false" target="_blank"><i class="mdi mdi-telegram"></i><span
+                        href="https://t.me/hse_linkit_bot{% if request.user.is_authenticated %}?start={{ bot_api_key }}{% endif %}"
+                        aria-expanded="false" target="_blank" id="bot_link"><i class="mdi mdi-telegram"></i><span
                         class="hide-menu">Бот</span></a></li>
             </ul>
         </nav>

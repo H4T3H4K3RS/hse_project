@@ -70,6 +70,7 @@ def get_account_context(request, username=None, data_type=1, n=8):
         s_links = SavedLink.objects.filter(user=request.user)
         if username is None or request.user.username == username:
             context = {
+                "bot_api_key": BotKey.objects.get(user=request.user).key,
                 'links': Link.objects.filter(folder__user=request.user).order_by("-rating"),
                 'user': request.user,
                 'saved_links_links': utils.get_saved_links(s_links),
@@ -79,6 +80,7 @@ def get_account_context(request, username=None, data_type=1, n=8):
             user = User.objects.get(username=username)
         except User.DoesNotExist:
             return None
+        context["bot_api_key"] = BotKey.objects.get(user=request.user).key
         context['user'] = user
         context['links'] = Link.objects.filter(folder__user__username=username, folder__public=True).order_by("-rating")
         context['saved_links'] = s_links
@@ -86,7 +88,7 @@ def get_account_context(request, username=None, data_type=1, n=8):
     elif data_type == 2:
         if username is None or request.user.username == username:
             context = {'folders': Folder.objects.filter(user=request.user).order_by("-rating", "public"),
-                       'user': request.user}
+                       'user': request.user, "bot_api_key": BotKey.objects.get(user=request.user).key}
             return context
         try:
             user = User.objects.get(username=username)
@@ -94,12 +96,12 @@ def get_account_context(request, username=None, data_type=1, n=8):
             return None
         context['user'] = user
         context['folders'] = Folder.objects.filter(user__username=username, public=True).order_by("-rating")
+        context["bot_api_key"] = BotKey.objects.get(user=request.user).key
     elif data_type == 3:
         s_links = SavedLink.objects.filter(user=request.user)
         if username is None or request.user.username == username:
-            context = {'user': request.user,
-                       'saved_links_links': utils.get_saved_links(s_links),
-                       'saved_links': s_links}
+            context = {'user': request.user, 'saved_links_links': utils.get_saved_links(s_links),
+                       'saved_links': s_links, "bot_api_key": BotKey.objects.get(user=request.user).key}
             return context
         try:
             user = User.objects.get(username=username)
@@ -108,6 +110,7 @@ def get_account_context(request, username=None, data_type=1, n=8):
         context['user'] = user
         context['saved_links'] = s_links
         context['saved_links_links'] = utils.get_saved_links(s_links)
+        context["bot_api_key"] = BotKey.objects.get(user=request.user).key
     elif data_type == 4:
         s_links = SavedLink.objects.filter(user=request.user)
         try:
@@ -121,27 +124,28 @@ def get_account_context(request, username=None, data_type=1, n=8):
         context['saved_links_links'] = utils.get_saved_links(s_links)
         context['saved_links'] = s_links
         context['profile'] = Profile.objects.get(user=user)
+        context["bot_api_key"] = BotKey.objects.get(user=request.user).key
     elif data_type == 5:
         s_links = SavedLink.objects.filter(user=request.user)
         avatars = Avatar.objects.all()
         context = {'saved': SavedLink.objects.filter(user=request.user),
                    'folders': Folder.objects.filter(user=request.user).order_by("public", "-rating"),
-                   'links': Link.objects.filter(folder__user=request.user).order_by("-rating"),
-                   'user': request.user, 'saved_links': s_links, 'saved_links_links': utils.get_saved_links(s_links),
+                   'links': Link.objects.filter(folder__user=request.user).order_by("-rating"), 'user': request.user,
+                   'saved_links': s_links, 'saved_links_links': utils.get_saved_links(s_links),
                    'api_key': BotKey.objects.filter(user=request.user)[0],
-                   'form': EditForm(initial={'username': request.user.username}),
-                   'avatars': avatars,
-                   "numbers_4": range(n + 1, len(avatars) + 1, n),
-                   "profile": Profile.objects.get(user=request.user)}
+                   'form': EditForm(initial={'username': request.user.username}), 'avatars': avatars,
+                   "numbers_4": range(n + 1, len(avatars) + 1, n), "profile": Profile.objects.get(user=request.user),
+                   "bot_api_key": BotKey.objects.get(user=request.user).key}
     return context
 
 
 def get_main_context(request, data_type=1, folder_id=None):
+    context = {}
     if data_type == 1:
-        context = {}
-        context['links'] = Link.objects.filter(folder__public=True).order_by("-rating")
+        context = {'links': Link.objects.filter(folder__public=True).order_by("-rating")}
         if request.user.is_authenticated:
             context["profile"] = Profile.objects.get(user=request.user)
+            context["bot_api_key"] = BotKey.objects.get(user=request.user).key
             s_links = SavedLink.objects.filter(user=request.user)
             context['saved_links'] = s_links
             context['saved_links_links'] = utils.get_saved_links(s_links)
@@ -150,7 +154,8 @@ def get_main_context(request, data_type=1, folder_id=None):
             context['saved_links'] = s_links
             context['saved_links_links'] = utils.get_saved_links(s_links)
     elif data_type == 2:
-        context = {"profile": Profile.objects.get(user=request.user)}
+        context = {"profile": Profile.objects.get(user=request.user),
+                   "bot_api_key": BotKey.objects.get(user=request.user).key}
         s_links = SavedLink.objects.filter(user=request.user)
         queries = request.GET.get('q', None)
         if queries is not None:
@@ -175,7 +180,8 @@ def get_main_context(request, data_type=1, folder_id=None):
         context['saved_links'] = s_links
         context['saved_links_links'] = utils.get_saved_links(s_links)
     elif data_type == 3:
-        context = {"profile": Profile.objects.get(user=request.user)}
+        context = {"profile": Profile.objects.get(user=request.user),
+                   "bot_api_key": BotKey.objects.get(user=request.user).key}
         s_links = SavedLink.objects.filter(user=request.user)
         try:
             context['folder'] = Folder.objects.get(id=folder_id)

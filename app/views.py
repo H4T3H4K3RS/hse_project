@@ -9,7 +9,7 @@ from account.views import handler403
 from app import utils
 from account import utils
 from app.forms import LinkAddForm, FolderAddForm
-from app.models import Link, Folder, Vote, SavedLink
+from app.models import Link, Folder, Vote, SavedLink, BotKey
 
 
 def index(request):
@@ -25,7 +25,8 @@ def search(request):
 
 @login_required
 def link_add(request):
-    context = {"profile": Profile.objects.get(user=request.user)}
+    context = {"profile": Profile.objects.get(user=request.user),
+               "bot_api_key": BotKey.objects.get(user=request.user).key}
     if request.method == "POST":
         link_form = LinkAddForm(request.user, request.POST)
         if link_form.is_valid():
@@ -79,7 +80,8 @@ def link_vote(request, link_id, state):
 
 @login_required
 def link_edit(request, link_id):
-    context = {"profile": Profile.objects.get(user=request.user)}
+    context = {"profile": Profile.objects.get(user=request.user),
+               "bot_api_key": BotKey.objects.get(user=request.user).key}
     if request.method == "POST":
         link_form = LinkAddForm(request.user, request.POST)
         if link_form.is_valid():
@@ -229,13 +231,15 @@ def favourite_delete(request, link_id):
 
 @login_required
 def folder_add(request):
-    context = {"profile": Profile.objects.get(user=request.user)}
+    context = {"profile": Profile.objects.get(user=request.user),
+               "bot_api_key": BotKey.objects.get(user=request.user).key}
     if request.method == "POST":
         folder_form = FolderAddForm(request.POST)
         if folder_form.is_valid():
             try:
                 folder = Folder.objects.get(name=folder_form.data['name'], user=request.user)
-                messages.error(request, f"Вы уже создали подборку \"{folder_form.data['name']}\". Выберите другое название.")
+                messages.error(request,
+                               f"Вы уже создали подборку \"{folder_form.data['name']}\". Выберите другое название.")
                 context["form"] = FolderAddForm(request.POST)
                 return render(request, "folder/add.html", context)
             except Folder.DoesNotExist:
@@ -269,7 +273,8 @@ def folder_view(request, folder_id):
 
 @login_required
 def folder_edit(request, folder_id):
-    context = {"profile": Profile.objects.get(user=request.user)}
+    context = {"profile": Profile.objects.get(user=request.user),
+               "bot_api_key": BotKey.objects.get(user=request.user).key}
     if request.method == "POST":
         folder_form = FolderAddForm(request.POST)
         if folder_form.is_valid():

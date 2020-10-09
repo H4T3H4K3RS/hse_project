@@ -285,6 +285,7 @@ function new_key(selector = "#api_key input") {
             toastr.success("API-ключ обновлён");
             var key = $(selector);
             key.val(data.data);
+            $("#bot_link").attr("href", "https://t.me/hse_linkit_bot?start=" + data.data);
             $(".preloader").fadeOut();
         }
     });
