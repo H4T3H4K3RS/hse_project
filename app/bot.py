@@ -273,7 +273,7 @@ def callback_handler(update, context):
     try:
         query.edit_message_text(answer, reply_markup=keyboard)
     except telegram.error.BadRequest:
-        query.edit_message_text(answer + ".")
+        query.edit_message_text(answer + ".", reply_markup=keyboard)
     # CallbackQueries need to be answered, even if no notification to the user is needed
     # Some clients may have trouble otherwise. See https://core.telegram.org/bots/api#callbackquery
     query.answer()
