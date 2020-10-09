@@ -270,7 +270,10 @@ def callback_handler(update, context):
         profile.lang = language
         profile.save()
         answer = words[get_lang(query, True)]['success']
-    query.edit_message_text(answer, reply_markup=keyboard)
+    try:
+        query.edit_message_text(answer, reply_markup=keyboard)
+    except telegram.error.BadRequest:
+        query.edit_message_text(answer + ".")
     # CallbackQueries need to be answered, even if no notification to the user is needed
     # Some clients may have trouble otherwise. See https://core.telegram.org/bots/api#callbackquery
     query.answer()
