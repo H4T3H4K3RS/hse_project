@@ -132,8 +132,10 @@ function reload(type, reloader, id = "content") {
     $(".preloader").fadeIn();
     if (type === 'account') {
         reload_account_links(reloader, "links_card");
+        $(".preloader").delay(1000).fadeOut();
     } else if (type === 'folder') {
         reload_folder(reloader, "links_card");
+        $(".preloader").delay(1000).fadeOut();
     } else if (type === 'index') {
         reload_index("links_card");
         $(".preloader").delay(1000).fadeOut();
