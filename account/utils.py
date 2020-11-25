@@ -187,6 +187,8 @@ def get_main_context(request, data_type=1, folder_id=None):
         s_links = SavedLink.objects.filter(user=request.user)
         try:
             context['folder'] = Folder.objects.get(id=folder_id)
+            if not context['folder'].public and context['folder'].user != request.user:
+                return None
         except Folder.DoesNotExist:
             return None
         context['links'] = Link.objects.filter(folder_id=folder_id).order_by("-rating")
