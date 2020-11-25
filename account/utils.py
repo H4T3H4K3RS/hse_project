@@ -169,8 +169,8 @@ def get_main_context(request, data_type=1, folder_id=None):
                 q_folders |= Q(name__icontains=query, public=True)
                 q_links |= Q(link__icontains=query, folder__public=True)
             users = Profile.objects.filter(q_users)
-            folders = Folder.objects.filter(q_folders)
-            links = Link.objects.filter(q_links)
+            folders = Folder.objects.filter(q_folders, public=True)
+            links = Link.objects.filter(q_links, folder__public=True)
         else:
             context['value'] = ""
             users = Profile.objects.order_by("-rating")
